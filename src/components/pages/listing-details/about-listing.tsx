@@ -1,0 +1,22 @@
+import React from 'react'
+// import FeaturesList from './feature-list'
+import { Button } from '@/components/ui/button'
+
+const AboutListing = ({ property }: { property: Listing }) => {
+    return (
+        <div>
+            <h2 className="text-lg md:text-xl font-semibold text-gray-800 my-2">About this property</h2>
+            <p className="text-gray-600 text-sm mb-4 max-w-full lg:max-w-130">
+                <span>
+                    {property.subTitle}
+                </span>
+            </p>
+            {/* <FeaturesList property={property} /> */}
+            <Button variant="outline" className="mt-1 bg-transparent w-full sm:w-auto">
+                See all about this property
+            </Button>
+        </div>
+    )
+}
+
+export default AboutListing

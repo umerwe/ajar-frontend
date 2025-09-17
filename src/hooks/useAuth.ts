@@ -1,0 +1,63 @@
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { getUser, loginUser, signUpUser } from "@/services/auth";
+import { AxiosError } from "axios";
+import { toast } from "@/components/ui/toast";
+
+export const useUser = () => {
+    return useQuery({
+    queryKey: ["user"],
+    queryFn: getUser,
+  })
+}
+
+export const useSignup = () => {
+    const router = useRouter();
+
+    const mutation = useMutation({
+        mutationFn: signUpUser,
+        onSuccess: () => {
+            toast({
+                title: "Success",
+                description: "Account created successfully! Redirecting to login..."
+            });
+            router.push("/auth/login");
+        },
+        onError: (error) => {
+            const err = error as AxiosError<ErrorResponse>;
+            toast({
+                title: "Registration Failed",
+                description: err.response?.data?.message || "Something went wrong.",
+                variant: "destructive",
+            });
+        },
+    });
+    return mutation;
+};
+
+export const useLogin = () => {
+    const router = useRouter();
+
+    const mutation = useMutation({
+        mutationFn: loginUser,
+        onSuccess: (token: string) => {
+            localStorage.setItem("token", token);
+            toast({
+                title: "Welcome Back!",
+                description: "You have successfully logged in.",
+                variant: "default",
+            });
+            router.push("/");
+        },
+        onError: (error) => {
+            const err = error as AxiosError<ErrorResponse>;
+            toast({
+                title: "Login Failed",
+                description: err.response?.data?.message || "Please try again.",
+                variant: "destructive",
+            });
+        },
+    });
+
+    return mutation;
+};
