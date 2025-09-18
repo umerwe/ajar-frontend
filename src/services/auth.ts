@@ -6,6 +6,15 @@ export const getUser = async () => {
   return data.data.user
 }
 
+export const updateUser = async (formData: FormData) => {
+  const { data } = await api.put(`/api/users/profile`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  })
+  return data.data.user
+}
+
 export const loginUser = async (credentials: Login) => {
   const { data } = await api.post("/api/users/login", credentials);
   return data.data.token;

@@ -3,7 +3,7 @@ import { AdjustmentsHorizontalIcon, ChevronDownIcon } from "@heroicons/react/24/
 import { useSearchParams, useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { useCategories } from "@/hooks/categories";
+import { useSubCategories } from "@/hooks/useSubCategory";
 import Dropdown from "@/components/ui/dropdown";
 
 interface CategoriesProps {
@@ -16,7 +16,7 @@ interface CategoriesProps {
 const statusOptions = ["Pending", "Accepted", "Rejected", "Completed", "Cancelled"];
 
 const Categories = () => {
-  const { data = [] } = useCategories();
+  const { data = [] } = useSubCategories();
   const searchParams = useSearchParams();
   const params = useParams();
   const router = useRouter();
@@ -40,7 +40,7 @@ const Categories = () => {
       : categoryParam === category._id;
 
   const handleStatusSelect = (status: string) => {
-    router.push(`/listing/status/${status.toLowerCase()}`);
+    router.push(`/listing?status=${status.toLowerCase()}`);
   };
 
   const mobileButton = (

@@ -1,7 +1,7 @@
 import api from "@/lib/axios";
 
 export async function getBooking(status?: string) {
-  const endpoint = status ? `/api/bookings?status=${status}` : `/api/bookings`;
+  const endpoint = status ? `/api/bookings?status=${status}&page=2` : `/api/bookings`;
   const { data } = await api.get(endpoint);
   return data.data;
 }

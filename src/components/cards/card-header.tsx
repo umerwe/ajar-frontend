@@ -15,7 +15,6 @@ interface CardTopProps {
 
 const CardTop = ({ property, showRemoveButton = false }: CardTopProps) => {
   const images: string[] = property?.rentalImages?.slice(0, 5);
-  console.log(images)
 
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [Autoplay({ delay: 3000, stopOnMouseEnter: true })])
 

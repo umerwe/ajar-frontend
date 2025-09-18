@@ -1,16 +1,18 @@
 "use client";
 
 import { useLayoutVisibility } from "@/hooks/useLayoutVisibility";
-import Categories from "./categories";
 import Navbar from "./navbar/navbar";
+import SubCategories from "./sub-categories";
+import { StatusOptions } from "./status-options";
 
 const MainLayout = () => {
-  const { showCategories } = useLayoutVisibility();
+  const { showCategories, hasSearchParams } = useLayoutVisibility();
 
   return (
     <div>
       <Navbar />
-      {showCategories && <Categories />}
+      {showCategories && <SubCategories />}
+      {hasSearchParams && <StatusOptions /> }
     </div>
   );
 };

@@ -1,5 +1,6 @@
 "use client";
 import { Button } from "./button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface PaginationProps {
   currentPage: number;
@@ -11,7 +12,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) 
   const getPageNumbers = () => {
     const pages = [];
     const maxVisiblePages = 5;
-    
+
     let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
     const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
 
@@ -28,30 +29,42 @@ const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) 
 
   return (
     <div className="flex justify-center items-center gap-2 my-6">
+      {/* Previous button */}
       <Button
         variant="outline"
+        size="icon"
         disabled={currentPage === 1}
         onClick={() => onPageChange(currentPage - 1)}
+        className="rounded-full"
       >
-        Previous
+        <ChevronLeft className="h-4 w-4 text-aqua" />
       </Button>
 
+      {/* Page numbers */}
       {getPageNumbers().map((page) => (
         <Button
           key={page}
-          variant={currentPage === page ? "default" : "outline"}
           onClick={() => onPageChange(page)}
+          className={`rounded-full w-10 h-10 p-0 ${
+            currentPage === page
+              ? "bg-header text-white hover:text-white border-0"
+              : "bg-transparent"
+          }`}
+          variant="outline"
         >
           {page}
         </Button>
       ))}
 
+      {/* Next button */}
       <Button
         variant="outline"
+        size="icon"
         disabled={currentPage === totalPages}
         onClick={() => onPageChange(currentPage + 1)}
+        className="rounded-full"
       >
-        Next
+        <ChevronRight className="h-4 w-4 text-aqua" />
       </Button>
     </div>
   );

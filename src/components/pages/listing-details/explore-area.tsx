@@ -1,6 +1,5 @@
 import { Button } from '@/components/ui/button'
 import { ChevronRight } from 'lucide-react'
-import Image from 'next/image'
 
 const ExploreArea = ({ property }: { property: Listing }) => {
     return (
@@ -8,35 +7,48 @@ const ExploreArea = ({ property }: { property: Listing }) => {
             <h2 className="text-lg md:text-xl font-semibold text-gray-800">Explore the area</h2>
 
             <div className="border-2 border-gray-300 rounded-xl">
-                {/* Image / map */}
+                {/* Google Map instead of Image */}
                 <div className="w-full h-40 sm:h-54 md:h-44 lg:h-48 bg-gray-200 rounded-t-xl overflow-hidden relative">
-                    <Image
-                        src={process.env.NEXT_PUBLIC_API_BASE_URL + property.rentalImages[0]}
-                        fill alt="property-img"
-                        className="object-cover"
-                    />
+                    <iframe
+                        width="100%"
+                        height="100%"
+                        style={{ border: 0 }}
+                        referrerPolicy="no-referrer-when-downgrade"
+                        src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(property.address)}`}
+                    ></iframe>
                 </div>
+
                 <div className="p-3 md:p-4">
                     <p className="text-sm md:text-base font-medium text-gray-800">{property.address}</p>
-                    <span className="text-aqua text-sm flex items-center cursor-pointer">
+                    <a
+                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(property.address)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-aqua text-sm flex items-center cursor-pointer"
+                    >
                         <p>View in the map</p>
-                        <ChevronRight
-                            className="w-4 h-4 ml-1"
-                        />
-                    </span>
+                        <ChevronRight className="w-4 h-4 ml-1" />
+                    </a>
                 </div>
             </div>
+
             <div className="p-3 md:p-4 pt-0 rounded-lg space-y-3">
-                
-                <Button variant="outline" className="w-full md:w-auto">
-                    See all about this area
-                </Button>
+                <a
+                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(property.address)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    <Button variant="outline" className="w-full md:w-auto">
+                        See all about this area
+                    </Button>
+                </a>
             </div>
         </div>
     )
 }
 
-export default ExploreArea;
+export default ExploreArea
+
 
 // {property.nearLocation.map((item, i) => (
 //     <div key={i} className="flex items-center justify-between text-sm">
