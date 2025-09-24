@@ -1,6 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
-import "./globals.css"
+import './globals.css'
 import Providers from "@/components/providers/provider"
 import { hasLocale } from "next-intl"
 import { notFound } from "next/navigation"

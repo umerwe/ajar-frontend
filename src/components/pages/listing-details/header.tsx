@@ -8,7 +8,7 @@ interface HeaderProps {
     title: string
 }
 
-const Header = ({ status,title }: HeaderProps) => {
+const Header = ({ status, title }: HeaderProps) => {
     const router = useRouter();
     return (
         <div className="flex items-center justify-between pt-6 bg-white">
