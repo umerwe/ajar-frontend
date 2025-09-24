@@ -11,7 +11,7 @@ const CardBottom = ({ property }: { property: Listing }) => {
   return (
     <CardFooter className="pl-2 sm:mb-2 min-[500px]:px-3 pb-2 pt-0 flex justify-between items-center mt-2">
       <div className="flex flex-col">
-        <span className="text-sm min-[500px]:text-lg font-bold text-gray-900">${property.price}.00/</span>
+        <span className="text-sm min-[500px]:text-base xl:text-lg font-bold text-gray-900">${property.price}.00/</span>
         <span className="text-sm text-gray-custom -mt-1 font-medium">day</span>
       </div>
 

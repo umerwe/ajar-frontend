@@ -30,7 +30,7 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false }: Skelet
 
     case "cards":
       return (
-        <div>
+        <div className="mb-15">
           <div className={`px-6 py-8 ${isFav ? "block" : "hidden"}`}>
             <div className="h-6 w-40 bg-gray-200 rounded animate-pulse mb-2" />
             <div className="h-4 w-28 bg-gray-200 rounded animate-pulse" />
@@ -42,25 +42,38 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false }: Skelet
                   key={index}
                   className="w-full sm:max-w-[320px] mx-auto border-0 bg-white shadow-sm pb-0 animate-pulse"
                 >
-                  {/* Top / Image carousel placeholder */}
-                  <div className="relative w-full">
-                    <div className="w-full h-40 min-[500px]:h-50 sm:h-64 bg-gray-200 rounded-2xl" />
-                    {/* Fake dot indicators */}
-                    <div className="absolute bottom-2 w-full flex justify-center space-x-1.5">
-                      {Array.from({ length: 3 }).map((_, dotIndex) => (
-                        <div
-                          key={dotIndex}
-                          className="h-1.5 w-1.5 rounded-full bg-gray-300"
-                        />
-                      ))}
+                  <div className="flex sm:block items-center min-[500px]:gap-2">
+                    {/* Top / Image carousel placeholder */}
+                    <div className="w-[40%] min-[500px]:w-[35%] sm:w-full">
+                      <div className="relative w-full">
+                        <div className="w-full h-40 min-[500px]:h-50 sm:h-64 bg-gray-200 rounded-2xl" />
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Body placeholders (CardBody + CardBottom mimic) */}
-                  <div className="flex flex-col gap-2 mt-3 px-2 pb-3">
-                    <div className="h-4 bg-gray-200 rounded w-3/4" />
-                    <div className="h-4 bg-gray-200 rounded w-1/2" />
-                    <div className="h-4 bg-gray-200 rounded w-2/3" />
+                    {/* Body + Bottom placeholders */}
+                    <div className="flex flex-col sm:mt-0 gap-2 w-[60%] min-[500px]:w-[65%] sm:w-full">
+                      {/* CardBody placeholders */}
+                      <div className="px-2 mt-5">
+                        {/* Title + Rating */}
+                        <div className="flex items-center justify-between">
+                          <div className="h-4 bg-gray-200 rounded w-3/4" />
+                          <div className="flex items-center gap-1">
+                            <div className="h-4 bg-gray-200 rounded w-8" />
+                          </div>
+                        </div>
+                        {/* Location */}
+                        <div className="h-4 bg-gray-200 rounded w-2/3 mt-2" />
+                      </div>
+
+                      {/* CardBottom placeholders */}
+                      <div className="px-2 sm:mb-2 min-[500px]:px-3 pb-2 pt-0 flex justify-between items-center mt-2">
+                        <div className="flex flex-col gap-1">
+                          <div className="h-5 bg-gray-200 rounded w-16" />
+                          <div className="h-4 bg-gray-200 rounded w-12" />
+                        </div>
+                        <div className="h-7.5 min-[500px]:h-9 bg-gray-200 rounded w-24" />
+                      </div>
+                    </div>
                   </div>
                 </Card>
               ))}

@@ -20,7 +20,7 @@ const ListingContent = ({ isHome, initialCategory }: ListingContentProps) => {
   const [currentPage, setCurrentPage] = useState(1)
   const limit = isHome ? 5 : 10
 
-  const { data, isLoading, isError } = useGetMarketplaceListings({
+  const { data, isLoading, isError, isFetching } = useGetMarketplaceListings({
     page: currentPage,
     limit,
     ...(initialCategory ? { subCategory: initialCategory } : {}),
@@ -29,7 +29,7 @@ const ListingContent = ({ isHome, initialCategory }: ListingContentProps) => {
   const listings = data?.listings ?? []
   const totalCount = data?.total ?? 0
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return <SkeletonLoader count={isHome ? 5 : 10} />;
   }
 

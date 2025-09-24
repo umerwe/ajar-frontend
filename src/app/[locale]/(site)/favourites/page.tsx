@@ -6,12 +6,12 @@ import SkeletonLoader from "@/components/common/skeleton-loader";
 import Error from "@/components/common/error";
 
 const FavouritesPage = () => {
-  const { data = [], isLoading, isError } = useGetFavourite();
+  const { data = [], isLoading, isError,isFetching } = useGetFavourite();
   const listings = data?.favourites?.map((favourite: Favourite) => favourite.listing).filter(Boolean) || []
   const count = data.count || 0
   const countStatus = count > 1 ? "products" : "product"
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return <SkeletonLoader isFav={true} />
   }
 
