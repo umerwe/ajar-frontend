@@ -9,6 +9,12 @@ type ProviderProps = {
   dehydratedState: DehydratedState
 }
 
+interface SkeletonLoaderProps {
+  count?: number;
+  variant?: string;
+  isFav?: boolean;
+}
+
 interface MarketplaceListingsProps {
   page?: number
   limit?: number

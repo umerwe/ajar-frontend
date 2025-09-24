@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
-import Loader from "@/components/common/loader";
 
 interface DecodedToken {
   id: string;
@@ -52,13 +51,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   }, [pathname, router]);
 
   if (!isVerified)
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <Loader
-          className="w-12 h-12 border-t-blue"
-        />
-      </div>
-    );
+    return null
 
   return <>{children}</>;
 }

@@ -5,8 +5,17 @@ import Link from "next/link";
 import Image from "next/image";
 import { useSubCategories } from "@/hooks/useSubCategory";
 import Dropdown from "@/components/ui/dropdown";
+import SkeletonLoader from "./common/skeleton-loader";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
-interface CategoriesProps {
+interface SubCategoryProps {
   _id?: string;
   name: string;
   slug?: string;
@@ -15,29 +24,34 @@ interface CategoriesProps {
 
 const statusOptions = ["Pending", "Accepted", "Rejected", "Completed", "Cancelled"];
 
-const Categories = () => {
-  const { data = [] } = useSubCategories();
+const SubCategories = () => {
+  const { data = [], isLoading } = useSubCategories();
   const searchParams = useSearchParams();
   const params = useParams();
   const router = useRouter();
 
-  const categoryParam = searchParams.get("category_id") || (params.category_id as string | null);
+  if (isLoading) {
+    return <SkeletonLoader variant="subcategories" count={10} />;
+  }
 
-  const allCategory = { name: "All", slug: "all", icon: "/ai-logo.png" };
-  const categories = [allCategory, ...data];
+  const subCategoryParam =
+    searchParams.get("category_id") || (params.category_id as string | null);
 
-  const activeCategory =
-    categoryParam && categories.find((c) => c._id === categoryParam)
-      ? categories.find((c) => c._id === categoryParam)!
-      : allCategory;
+  const allSubCategory = { name: "All", slug: "all", icon: "/ai-logo.png" };
+  const subCategories = [allSubCategory, ...data];
 
-  const getHref = (category: CategoriesProps) =>
-    category.slug === "all" ? "/listing" : `/listing/${category._id}`;
+  const activeSubCategory =
+    subCategoryParam && subCategories.find((c) => c._id === subCategoryParam)
+      ? subCategories.find((c) => c._id === subCategoryParam)!
+      : allSubCategory;
 
-  const isActive = (category: CategoriesProps) =>
-    category.slug === "all"
-      ? !categoryParam || categoryParam === "all"
-      : categoryParam === category._id;
+  const getHref = (subCategory: SubCategoryProps) =>
+    subCategory.slug === "all" ? "/listing" : `/listing/${subCategory._id}`;
+
+  const isActive = (subCategory: SubCategoryProps) =>
+    subCategory.slug === "all"
+      ? !subCategoryParam || subCategoryParam === "all"
+      : subCategoryParam === subCategory._id;
 
   const handleStatusSelect = (status: string) => {
     router.push(`/listing?status=${status.toLowerCase()}`);
@@ -54,12 +68,12 @@ const Categories = () => {
         <Image
           width={20}
           height={20}
-          src={activeCategory.icon || "/ai-logo.png"}
-          alt={`${activeCategory.name} icon`}
+          src={activeSubCategory.icon || "/ai-logo.png"}
+          alt={`${activeSubCategory.name} icon`}
           className="w-5 h-5"
         />
         <span className="text-sm font-semibold text-[#01c89b]">
-          {activeCategory.name}
+          {activeSubCategory.name}
         </span>
       </div>
       <ChevronDownIcon className="w-4 h-4 text-gray-500" />
@@ -69,7 +83,7 @@ const Categories = () => {
   const mobileContent = (
     <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-50 overflow-hidden">
       <div className="py-2">
-        {categories.map((cat, i) => {
+        {subCategories.map((cat, i) => {
           const active = isActive(cat);
           return (
             <Link
@@ -129,7 +143,7 @@ const Categories = () => {
     <div className="flex justify-between px-4 sm:px-6 md:px-9 my-4">
       {/* Desktop */}
       <div className="hidden md:flex flex-wrap gap-3 flex-grow">
-        {categories.map((cat, i) => {
+        {subCategories.slice(0, 10).map((cat, i) => {
           const active = isActive(cat);
           return (
             <Link
@@ -151,21 +165,67 @@ const Categories = () => {
             </Link>
           );
         })}
+
+        {/* Show more button */}
+        {subCategories.length > 10 && (
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                variant="secondary"
+                className="rounded-full pl-8 py-5 flex items-center gap-2"
+              >
+                Show all
+                <ChevronDownIcon className="w-4 h-4" />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>All Categories</DialogTitle>
+              </DialogHeader>
+              <div className="flex flex-wrap gap-3 mt-4">
+                {subCategories.map((cat, i) => {
+                  const active = isActive(cat);
+                  return (
+                    <DialogTrigger asChild key={i}>
+                      <Link
+                        href={getHref(cat)}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-full transition-colors duration-200 ${active
+                          ? "text-aqua border-2 border-t-aqua border-r-aqua border-b-blue border-l-blue bg-transparent"
+                          : "bg-gray-100 text-gray-400 border border-transparent hover:border-aqua hover:text-aqua"
+                          }`}
+                      >
+                        <Image
+                          width={20}
+                          height={20}
+                          src={cat?.icon || "/ai-logo.png"}
+                          alt={`${cat.name} icon`}
+                          className="w-5 h-5"
+                        />
+                        <span className="text-sm font-semibold">{cat.name}</span>
+                      </Link>
+                    </DialogTrigger>
+                  );
+                })}
+              </div>
+            </DialogContent>
+          </Dialog>
+        )}
+
       </div>
 
+      {/* Mobile */}
       <div className="md:hidden flex-grow max-w-50 relative">
         <Dropdown button={mobileButton} className="w-full">
           {mobileContent}
         </Dropdown>
       </div>
 
+      {/* Filter */}
       <div className="relative">
-        <Dropdown button={filterButton}>
-          {filterContent}
-        </Dropdown>
+        <Dropdown button={filterButton}>{filterContent}</Dropdown>
       </div>
     </div>
   );
 };
 
-export default Categories;
+export default SubCategories;

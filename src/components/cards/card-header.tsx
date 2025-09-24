@@ -15,9 +15,12 @@ interface CardTopProps {
 }
 
 const CardTop = ({ property, showRemoveButton = false }: CardTopProps) => {
-  const images: string[] = property?.rentalImages?.slice(0, 5);
+  const images: string[] = property?.rentalImages?.slice(0, 5) || []
 
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [Autoplay({ delay: 3000, stopOnMouseEnter: true })])
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    { loop: true },
+    [Autoplay({ delay: 3000, stopOnMouseEnter: true })]
+  )
 
   const [selectedIndex, setSelectedIndex] = useState(0)
 
@@ -53,33 +56,54 @@ const CardTop = ({ property, showRemoveButton = false }: CardTopProps) => {
         )}
       </div>
 
-      {/* Carousel */}
-      <div className="overflow-hidden rounded-2xl" ref={emblaRef}>
-        <div className="flex">
-          {images.map((imgUrl, index) => (
-            <div key={index} className="relative flex-[0_0_100%] h-40 min-[500px]:h-50 sm:h-64">
-              <Image
-                src={process.env.NEXT_PUBLIC_API_BASE_URL + imgUrl}
-                alt={`${imgUrl}-img`}
-                fill
-                className="object-cover rounded-2xl"
-              />
+      {/* If more than 1 image → show carousel, else just single image */}
+      {images.length > 1 ? (
+        <>
+          {/* Carousel */}
+          <div className="overflow-hidden rounded-2xl" ref={emblaRef}>
+            <div className="flex">
+              {images.map((imgUrl, index) => (
+                <div
+                  key={index}
+                  className="relative flex-[0_0_100%] h-40 min-[500px]:h-50 sm:h-64"
+                >
+                  <Image
+                    src={process.env.NEXT_PUBLIC_API_BASE_URL + imgUrl}
+                    alt={`${imgUrl}-img`}
+                    fill
+                    className="object-cover rounded-2xl"
+                  />
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
 
-      {/* Dots */}
-      <div className="flex justify-center mt-3 space-x-1.5 z-10">
-        {images.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => emblaApi?.scrollTo(index)}
-            className={`h-1.5 w-1.5 -mt-10 rounded-full transition-all duration-300 ${index === selectedIndex ? "bg-white w-2.5" : "bg-gray-300"
-              }`}
-          />
-        ))}
-      </div>
+          {/* Dots */}
+          <div className="flex justify-center mt-3 space-x-1.5 z-10">
+            {images.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => emblaApi?.scrollTo(index)}
+                className={`h-1.5 w-1.5 -mt-10 rounded-full transition-all duration-300 ${index === selectedIndex
+                    ? "bg-white w-2.5"
+                    : "bg-gray-300"
+                  }`}
+              />
+            ))}
+          </div>
+        </>
+      ) : (
+        images[0] && (
+          <div className="relative h-40 min-[500px]:h-50 sm:h-64 mb-3 rounded-2xl overflow-hidden">
+            <Image
+              src={process.env.NEXT_PUBLIC_API_BASE_URL + images[0]}
+              alt="single-img"
+              fill
+              className="object-cover rounded-2xl"
+            />
+          </div>
+        )
+      )}
     </CardHeader>
   )
 }

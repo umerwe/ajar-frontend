@@ -11,28 +11,29 @@
 // import { RectangleGroupIcon } from "@heroicons/react/24/outline";
 import { CardContent } from "@/components/ui/card";
 import { Listing } from "@/types/listing";
+import { capitalizeWords } from "@/utils/capitalizeWords";
 import { Star } from "lucide-react";
 
-const CardBody = ({ property }: {property : Listing}) => {
+const CardBody = ({ property }: { property: Listing }) => {
   const hasLocation = "location" in property;
   const isNotFav = "leaser" in property;
-  
+
   return (
     <CardContent className="px-2 -mt-1">
       {/* Title + Rating */}
       <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-gray-900 text-md min-[500px]:text-lg truncate">{property?.name}</h3>
+        <h3 className="font-semibold text-gray-900 text-md min-[500px]:text-lg truncate">{capitalizeWords(property?.name)}</h3>
         {
-          isNotFav  && <div className="flex items-center gap-1 text-xs sm:text-sm">
-          <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-400 text-yellow-400" />
-          <span className="text-header">{property.ratings?.count || 0}</span>
-          <span className="text-header">({property.ratings?.average || 0})</span>
-        </div>
+          isNotFav && <div className="flex items-center gap-1 text-xs sm:text-sm">
+            <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-400 text-yellow-400" />
+            <span className="text-header">{property.ratings?.count || 0}</span>
+            <span className="text-header">({property.ratings?.average || 0})</span>
+          </div>
         }
       </div>
 
       {/* Location */}
-      {!hasLocation && isNotFav &&(
+      {!hasLocation && isNotFav && (
         <p className="text-xs min-[500px]:text-sm text-[#00CC99] font-medium mb-2 truncate pl-1">
           Location: {property.address}
         </p>
