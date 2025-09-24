@@ -13,6 +13,7 @@ interface MarketplaceListingsProps {
   page?: number
   limit?: number
   subCategory?: string
+  currentPage?: number
 }
 
 interface ListingProps {

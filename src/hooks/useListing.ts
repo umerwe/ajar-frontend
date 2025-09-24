@@ -3,10 +3,12 @@ import { getList, getListing } from "@/services/listing"
 
 export function useGetMarketplaceListings(params: MarketplaceListingsProps) {
   return useQuery({
-    queryKey: ["marketplaceListings"],
+    queryKey: ["marketplaceListings", params],
     queryFn: () => getListing(params),
+    placeholderData: (prevData) => prevData,
   })
 }
+
 
 export function useGetMarketplaceListing(id?: string) {
   return useQuery({
