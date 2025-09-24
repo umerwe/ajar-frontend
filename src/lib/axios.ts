@@ -1,7 +1,7 @@
 import axios from "axios";
-
+import { baseURL } from "@/config/constants";
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL
+  baseURL
 });
 
 // Interceptor to add token automatically
@@ -14,6 +14,3 @@ api.interceptors.request.use((config) => {
 });
 
 export default api;
-
-
-// http://192.168.18.64:5000

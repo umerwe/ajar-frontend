@@ -1,4 +1,4 @@
-import { baseUrl } from "@/config/constants";
+import { baseURL } from "@/config/constants";
 import { io, Socket } from "socket.io-client";
 
 let socket: Socket | null = null;
@@ -7,7 +7,7 @@ export const getSocket = (): Socket => {
     if (!socket) {
         const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
-        socket = io(baseUrl, {
+        socket = io(baseURL, {
             transports: ["websocket"],
             withCredentials: true,
             auth: {
