@@ -11,7 +11,7 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false }: Skelet
             {Array.from({ length: count }).map((_, i) => (
               <div
                 key={i}
-                className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-200 animate-pulse w-28 h-10"
+                className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-200 animate-pulse w-24 h-10"
               />
             ))}
           </div>

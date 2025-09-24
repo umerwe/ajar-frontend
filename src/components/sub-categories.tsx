@@ -31,7 +31,7 @@ const SubCategories = () => {
   const router = useRouter();
 
   if (isLoading) {
-    return <SkeletonLoader variant="subcategories" count={10} />;
+    return <SkeletonLoader variant="subcategories" count={7} />;
   }
 
   const subCategoryParam =

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 
 const NotFound = () => {
   return (
-    <div className="flex items-center justify-center py-16">
+    <div className="flex items-center justify-center min-h-screen">
       <div className="text-center max-w-md mx-auto">
         <div className="bg-gray-50 rounded-2xl shadow-sm border py-6 px-12">
           <div className="mb-4">

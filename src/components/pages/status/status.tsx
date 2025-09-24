@@ -5,9 +5,12 @@ import { BookingData } from "@/data/booking-data";
 import { useBooking } from "@/hooks/useBooking";
 import { Booking } from "@/types/booking";
 import NotFound from "@/components/common/not-found";
+import SkeletonLoader from "@/components/common/skeleton-loader";
 
 const Status = ({ status }: { status: string }) => {
   const { data = [], isLoading } = useBooking(status);
+
+  if (isLoading) return <SkeletonLoader />;
 
   const bookings = data?.data?.bookings.filter((x: Booking) => x.marketplaceListingId !== null) || [];
 
@@ -19,10 +22,7 @@ const Status = ({ status }: { status: string }) => {
 
   return (
     <div className="my-4">
-      {
-        !isLoading &&
-        <MainCard listings={completedListings} />
-      }
+      <MainCard listings={completedListings} />
     </div>
   );
 };

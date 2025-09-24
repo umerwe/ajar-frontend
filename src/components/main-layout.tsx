@@ -3,7 +3,7 @@
 import { useLayoutVisibility } from "@/hooks/useLayoutVisibility";
 import Navbar from "./navbar/navbar";
 import SubCategories from "./sub-categories";
-import { StatusOptions } from "./status-options";
+import StatusOptions from "./status-options";
 
 const MainLayout = () => {
   const { showCategories, hasSearchParams } = useLayoutVisibility();
