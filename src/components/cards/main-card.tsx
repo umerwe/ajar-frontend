@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import CardTop from "./card-header";
 import CardBody from "./card-body";
 import CardBottom from "./card-footer";
+import { Listing } from "@/types/listing";
 
 interface MainCardProps {
   listings: Listing[];

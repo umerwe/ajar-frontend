@@ -1,4 +1,5 @@
 import MainLayout from "@/components/main-layout";
+import { SocketProvider } from "@/context/SocketContext";
 
 export default async function Layout({
   children,
@@ -8,8 +9,10 @@ export default async function Layout({
 
   return (
     <>
+    <SocketProvider>
         <MainLayout />
         <main className="flex-1">{children}</main>
+    </SocketProvider>
     </>
   );
 }

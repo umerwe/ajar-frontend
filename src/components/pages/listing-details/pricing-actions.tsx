@@ -5,6 +5,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { RatingDialog } from "./rating-dialog"
 import { getActionDetails } from "@/lib/actions/getAction"
+import { Listing } from "@/types/listing"
 
 
 const PricingActions = ({ property }: { property: Listing }) => {

@@ -1,3 +1,4 @@
+import { AuthLayoutProps } from "@/types/auth"
 import Image from "next/image"
 
 export default function AuthLayout({ FormComponent, isVerfication = true }: AuthLayoutProps) {

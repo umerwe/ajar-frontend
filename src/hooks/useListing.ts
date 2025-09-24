@@ -1,10 +1,9 @@
 import { useQuery } from "@tanstack/react-query"
 import { getList, getListing } from "@/services/listing"
 
-
 export function useGetMarketplaceListings(params: MarketplaceListingsProps) {
   return useQuery({
-    queryKey: ["marketplaceListings", params],
+    queryKey: ["marketplaceListings"],
     queryFn: () => getListing(params),
   })
 }

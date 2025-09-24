@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button"
+import { Listing } from "@/types/listing"
 import { MapPin, Star } from "lucide-react"
 
 const CoreDetails = ({ property }: { property: Listing }) => {

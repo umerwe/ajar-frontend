@@ -1,3 +1,4 @@
+import { Listing } from '@/types/listing'
 import { capitalizeWords } from '@/utils/capitalizeWords'
 import { MessageCircleMore, Star } from 'lucide-react'
 import Image from 'next/image'

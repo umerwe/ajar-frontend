@@ -10,6 +10,7 @@
 // } from "lucide-react";
 // import { RectangleGroupIcon } from "@heroicons/react/24/outline";
 import { CardContent } from "@/components/ui/card";
+import { Listing } from "@/types/listing";
 import { Star } from "lucide-react";
 
 const CardBody = ({ property }: {property : Listing}) => {

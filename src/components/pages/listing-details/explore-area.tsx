@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button'
+import { Listing } from '@/types/listing'
 import { ChevronRight } from 'lucide-react'
 
 const ExploreArea = ({ property }: { property: Listing }) => {

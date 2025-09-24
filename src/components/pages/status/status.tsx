@@ -4,11 +4,12 @@ import MainCard from "@/components/cards/main-card";
 import { BookingData } from "@/data/booking-data";
 import { useBooking } from "@/hooks/useBooking";
 import NoDataFound from "@/components/common/no-data-found";
+import { Booking } from "@/types/booking";
 
 const Status = ({ status }: { status: string }) => {
   const { data = [], isLoading } = useBooking(status);
 
-  const bookings = data?.data?.bookings.filter((x: any) => x.marketplaceListingId !== null) || [];
+  const bookings = data?.data?.bookings.filter((x: Booking) => x.marketplaceListingId !== null) || [];
 
   if (!bookings.length && !isLoading) return <NoDataFound />;
 

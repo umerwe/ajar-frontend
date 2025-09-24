@@ -7,6 +7,7 @@ import { RemoveFavouriteButton } from "@/components/ui/remove-favourite-button"
 import useEmblaCarousel from "embla-carousel-react"
 import Autoplay from "embla-carousel-autoplay"
 import { useState, useEffect } from "react"
+import { Listing } from "@/types/listing"
 
 interface CardTopProps {
   property: Listing
@@ -58,7 +59,7 @@ const CardTop = ({ property, showRemoveButton = false }: CardTopProps) => {
           {images.map((imgUrl, index) => (
             <div key={index} className="relative flex-[0_0_100%] h-40 min-[500px]:h-50 sm:h-64">
               <Image
-                src={process.env.NEXT_PUBLIC_API_BASE_URL+imgUrl}
+                src={process.env.NEXT_PUBLIC_API_BASE_URL + imgUrl}
                 alt={`${imgUrl}-img`}
                 fill
                 className="object-cover rounded-2xl"

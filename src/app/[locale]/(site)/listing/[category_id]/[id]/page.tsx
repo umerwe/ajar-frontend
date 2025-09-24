@@ -22,7 +22,6 @@ const ListingItems = () => {
   const id = params?.id as string
 
   const { data: listingData, isLoading, isError, error } = useGetMarketplaceListing(id);
-
   return (
     <div>
       <StateHandler

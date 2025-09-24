@@ -2,9 +2,8 @@
 
 import Header from "@/components/pages/listing-details/header";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
 import { useUser } from "@/hooks/useAuth";
-import { ChevronRight, Pencil, LogOut } from "lucide-react"
+import { ChevronRight, Pencil } from "lucide-react"
 import {
     Dialog,
     DialogContent,
@@ -15,14 +14,19 @@ import {
 import EditProfileForm from "@/components/forms/edit-profile";
 import React from "react";
 import { profileItems } from "@/data/profileMenuItems";
+import LogoutButton from "@/components/auth/logout-btn";
 
 function Progress({ value, className }: { value: number; className?: string }) {
     return (
         <div className={`w-full bg-gray-200 rounded-full h-2 ${className}`}>
-            <div className="bg-aqua h-2 rounded-full transition-all duration-300" style={{ width: `${value}%` }} />
+            <div
+                className="bg-aqua h-2 rounded-full transition-all duration-300"
+                style={{ width: `${value}%` }}
+            />
         </div>
     )
 }
+
 const capitalizeWord = (word: string) => {
     return word
         .split(" ")
@@ -30,11 +34,11 @@ const capitalizeWord = (word: string) => {
         .join(" ");
 };
 
-
 export default function SettingsPage() {
     const { data: user = [], isLoading, isError } = useUser();
 
     const [file, setFile] = React.useState<File | null>(null);
+    const [open, setOpen] = React.useState(false); // control dialog
 
     if (isLoading) {
         return (
@@ -55,25 +59,31 @@ export default function SettingsPage() {
     return (
         <div className="min-h-screen bg-gray-50">
             <div className="px-3 sm:px-7">
-                <Header
-                    title="Settings"
-                />
+                <Header title="Settings" />
             </div>
+
             <div className="mx-auto max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl">
                 {/* Profile Section */}
                 <div className="bg-white px-4 py-6">
                     <div className="flex flex-col items-center space-y-3">
-                        <Avatar className="h-20 w-20">
+                        <Avatar className="h-20 w-20 overflow-hidden rounded-full">
                             {user?.profilePicture ? (
-                                <AvatarImage src={process.env.NEXT_PUBLIC_API_BASE_URL + user?.profilePicture} alt={"user-img"} />
+                                <AvatarImage
+                                    src={process.env.NEXT_PUBLIC_API_BASE_URL + user?.profilePicture}
+                                    alt="user-img"
+                                    className="w-full h-full object-cover object-center"
+                                />
                             ) : null}
                             <AvatarFallback className="text-2xl font-semibold bg-header text-white">
                                 {user?.name.charAt(0).toUpperCase() || ""}
                             </AvatarFallback>
                         </Avatar>
 
+
                         <div className="text-center">
-                            <h2 className="text-lg font-semibold text-gray-900">{capitalizeWord(user?.name) || "User"}</h2>
+                            <h2 className="text-lg font-semibold text-gray-900">
+                                {capitalizeWord(user?.name) || "User"}
+                            </h2>
                             <p className="text-sm text-gray-500">{user.email}</p>
                         </div>
 
@@ -87,7 +97,9 @@ export default function SettingsPage() {
                                 <ChevronRight className="h-5 w-5 text-gray-400" />
                             </div>
                             <Progress value={50} className="h-2 mb-2" />
-                            <p className="text-xs text-gray-500">You are 50% steps away to complete your profile</p>
+                            <p className="text-xs text-gray-500">
+                                You are 50% steps away to complete your profile
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -97,14 +109,13 @@ export default function SettingsPage() {
                     {profileItems.map((item, index) => {
                         const Icon = item.icon;
 
-                        // Special case for Edit Profile
                         if (item.label === "Edit Profile") {
                             return (
-                                <Dialog key={index}>
+                                <Dialog key={index} open={open} onOpenChange={setOpen}>
                                     <DialogTrigger asChild>
                                         <div className="flex items-center justify-between px-4 py-4 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 cursor-pointer transition-colors">
                                             <div className="flex items-center space-x-3">
-                                                <Icon className={`h-5 w-5 text-aqua`} />
+                                                <Icon className="h-5 w-5 text-aqua" />
                                                 <span className="text-gray-900 font-medium">{item.label}</span>
                                             </div>
                                             <ChevronRight className="h-6 w-6 text-aqua" />
@@ -119,16 +130,18 @@ export default function SettingsPage() {
                                         {/* Avatar with Edit Icon Overlay */}
                                         <div className="flex justify-center mb-4">
                                             <div className="relative group">
-                                                <Avatar className="h-24 w-24">
+                                                <Avatar className="h-24 w-24 overflow-hidden rounded-full">
                                                     {file ? (
                                                         <AvatarImage
                                                             src={URL.createObjectURL(file)}
                                                             alt="New preview"
+                                                            className="w-full h-full object-cover object-center"
                                                         />
                                                     ) : user?.profilePicture ? (
                                                         <AvatarImage
                                                             src={process.env.NEXT_PUBLIC_API_BASE_URL + user?.profilePicture}
                                                             alt={user?.name || "User"}
+                                                            className="w-full h-full object-cover object-center"
                                                         />
                                                     ) : (
                                                         <AvatarFallback className="text-2xl font-semibold bg-header text-white">
@@ -145,7 +158,6 @@ export default function SettingsPage() {
                                                     <Pencil className="h-4 w-4" />
                                                 </label>
 
-                                                {/* Hidden Input */}
                                                 <input
                                                     id="profile-upload"
                                                     type="file"
@@ -161,14 +173,11 @@ export default function SettingsPage() {
                                             </div>
                                         </div>
 
-
-                                        {/* Pass file as prop */}
-                                        <EditProfileForm file={file} />
-
+                                        {/* Pass setOpen so form can close dialog */}
+                                        <EditProfileForm file={file} setOpen={setOpen} />
                                     </DialogContent>
-
                                 </Dialog>
-                            );
+                            )
                         }
 
                         return (
@@ -177,31 +186,22 @@ export default function SettingsPage() {
                                 className="flex items-center justify-between px-4 py-4 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 cursor-pointer transition-colors"
                             >
                                 <div className="flex items-center space-x-3">
-                                    <Icon className={`h-5 w-5 text-aqua`} />
+                                    <Icon className="h-5 w-5 text-aqua" />
                                     <span className="text-gray-900 font-medium">{item.label}</span>
                                 </div>
                                 <ChevronRight className="h-6 w-6 text-aqua" />
                             </div>
-                        );
+                        )
                     })}
-
                 </div>
 
                 {/* Bottom Button */}
                 <div className="p-4 bg-white mt-2">
-                    <Button
-                        variant="destructive"
-                        className="w-full sm:text-base py-5.5"
-                    >
-                        <LogOut /> Log Out
-                    </Button>
+                    <LogoutButton variant="full" />
                 </div>
 
-                {/* Bottom spacing for mobile */}
                 <div className="h-8"></div>
             </div>
         </div>
     )
 }
-
-

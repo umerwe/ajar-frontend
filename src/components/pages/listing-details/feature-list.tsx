@@ -1,3 +1,4 @@
+import { Listing } from "@/types/listing";
 import {
     Check,
     AirVent,

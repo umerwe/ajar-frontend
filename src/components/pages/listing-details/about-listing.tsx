@@ -1,6 +1,7 @@
 import React from 'react'
 // import FeaturesList from './feature-list'
 import { Button } from '@/components/ui/button'
+import { Listing } from '@/types/listing'
 
 const AboutListing = ({ property }: { property: Listing }) => {
     return (

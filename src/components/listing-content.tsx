@@ -8,6 +8,7 @@ import Link from "next/link"
 import { useGetMarketplaceListings } from "@/hooks/useListing"
 import StateHandler from "@/components/common/state-handler"
 import { Search } from "lucide-react"
+import { Listing } from "@/types/listing"
 
 interface ListingContentProps {
   isHome?: boolean
@@ -25,7 +26,7 @@ const ListingContent = ({ isHome, initialCategory }: ListingContentProps) => {
   })
   const listings = data?.listings ?? []
   const totalCount = data?.total ?? 0
-  
+
   // Only filter if initialCategory exists and the subCategory is an object with matching _id
   const filteredListings = initialCategory
     ? listings.filter(

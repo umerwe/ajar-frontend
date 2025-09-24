@@ -1,6 +1,7 @@
 import { CardFooter } from "../ui/card"
 import { Button } from "../ui/button"
 import Link from "next/link"
+import { Listing } from "@/types/listing"
 
 const CardBottom = ({ property }: { property: Listing }) => {
   const scrollToTop = () => {

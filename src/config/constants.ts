@@ -1,1 +1,1 @@
-export const baseUrl = "https://ajar-server.hostdonor.com"
+export const baseUrl = "http://192.168.18.64:5000"

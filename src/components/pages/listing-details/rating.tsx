@@ -1,3 +1,4 @@
+import { Listing } from "@/types/listing"
 import { ChevronRight } from "lucide-react"
 
 const Rating = ({ property }: {property : Listing}) => {
