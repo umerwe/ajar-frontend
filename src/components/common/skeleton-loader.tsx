@@ -31,9 +31,12 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false }: Skelet
     case "cards":
       return (
         <div className="mb-15">
-          <div className={`px-6 py-8 ${isFav ? "block" : "hidden"}`}>
-            <div className="h-6 w-40 bg-gray-200 rounded animate-pulse mb-2" />
-            <div className="h-4 w-28 bg-gray-200 rounded animate-pulse" />
+          <div className={`flex items-center justify-between px-6 pt-6 bg-white ${isFav ? "block" : "hidden"}`}>
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-10 h-10 rounded-lg bg-gray-200" />
+              <div className="h-6 w-40 bg-gray-200 rounded" />
+            </div>
+            <div className="px-3 py-1 w-24 h-6 bg-gray-200 rounded" />
           </div>
           <div className="min-h-[400px]">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 3xl:grid-cols-6 gap-4 p-4 w-full">
