@@ -143,7 +143,7 @@ const SubCategories = () => {
     <div className="flex justify-between px-4 sm:px-6 md:px-9 my-4">
       {/* Desktop */}
       <div className="hidden md:flex flex-wrap gap-3 flex-grow">
-        {subCategories.slice(0, 10).map((cat, i) => {
+        {subCategories.slice(0, 6).map((cat, i) => {
           const active = isActive(cat);
           return (
             <Link
@@ -167,7 +167,7 @@ const SubCategories = () => {
         })}
 
         {/* Show more button */}
-        {subCategories.length > 10 && (
+        {subCategories.length > 6 && (
           <Dialog>
             <DialogTrigger asChild>
               <Button

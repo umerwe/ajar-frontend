@@ -1,9 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { X, Star } from "lucide-react"
+import { Star } from "lucide-react"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 
@@ -18,16 +17,13 @@ export const RatingDialog = ({ open, onClose }: RatingDialogProps) => {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-sm p-0 gap-0">
+      <DialogContent className="max-w-sm px-0 py-3 gap-0">
         <VisuallyHidden>
           <DialogTitle>Rate Our App Experience</DialogTitle>
         </VisuallyHidden>
 
         {/* Header with close button */}
         <div className="flex justify-end p-4 pb-0">
-          <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8 rounded-full hover:bg-gray-100">
-            <X className="h-8 w-8" />
-          </Button>
         </div>
 
         {/* Content */}
@@ -56,7 +52,7 @@ export const RatingDialog = ({ open, onClose }: RatingDialogProps) => {
               placeholder="Type Here...."
               value={review}
               onChange={(e) => setReview(e.target.value)}
-              className="min-h-[100px] mt-1 resize-none border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+              className="min-h-[100px] mt-1 resize-none"
             />
           </div>
         </div>
