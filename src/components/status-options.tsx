@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Dropdown from "@/components/ui/dropdown";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 
-const statusOptions = ["Pending", "Accepted", "Rejected", "Completed", "Cancelled"];
+const statusOptions = ["Pending", "Approved", "Rejected", "Completed", "Cancelled"];
 
 const StatusOptions = () => {
     const searchParams = useSearchParams();

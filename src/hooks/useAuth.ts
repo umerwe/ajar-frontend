@@ -54,8 +54,7 @@ export const useLogin = () => {
         onSuccess: (token: string) => {
             localStorage.setItem("token", token);
             toast({
-                title: "Welcome Back!",
-                description: "You have successfully logged in.",
+                title: "Login Successfully",
                 variant: "default",
             });
             router.push("/");

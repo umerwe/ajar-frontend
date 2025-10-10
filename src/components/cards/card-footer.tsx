@@ -3,7 +3,7 @@ import { Button } from "../ui/button"
 import Link from "next/link"
 import { Listing } from "@/types/listing"
 
-const CardBottom = ({ property }: { property: Listing }) => {
+const CardBottom = ({ property, type }: { property: Listing, type?: "booking" | "listing" }) => {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" })
   }
@@ -16,7 +16,7 @@ const CardBottom = ({ property }: { property: Listing }) => {
       </div>
 
       <Link
-        href={`/listing/${property.subCategory?._id}/${property._id}`}
+        href={`/listing/${type === "booking" ? property.subCategory : property.subCategory?._id}/${property._id}`}
         onClick={scrollToTop}
       >
         <Button variant="outline" className="px-3.5 h-7.5 min-[500px]:h-9 min:[500px]:px-4 text-xs bg-transparent">

@@ -9,6 +9,12 @@ type ProviderProps = {
   dehydratedState: DehydratedState
 }
 
+interface Document {
+  value: string;
+  name: string;
+  filesUrl: string[];
+}
+
 interface SkeletonLoaderProps {
   count?: number;
   variant?: string;

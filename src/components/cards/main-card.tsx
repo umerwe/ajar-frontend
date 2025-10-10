@@ -7,14 +7,14 @@ import { Listing } from "@/types/listing";
 interface MainCardProps {
   listings: Listing[];
   showRemoveButton?: boolean;
-  variant?: "grid" | "saved";
+  type?: "booking" | "listing";
 }
 
-const MainCard = ({ listings, showRemoveButton = false }: MainCardProps) => {
+const MainCard = ({ listings, showRemoveButton = false, type }: MainCardProps) => {
   return (
     <div className="min-h-[400px]">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 3xl:grid-cols-6 gap-4 p-4 w-full">
-        {listings.map((property,index) => (
+        {listings.map((property, index) => (
           <Card
             key={index}
             className="w-full sm:max-w-[320px] mx-auto border-0 bg-white shadow-sm hover:shadow-md transition-shadow duration-200 pb-0"
@@ -25,7 +25,10 @@ const MainCard = ({ listings, showRemoveButton = false }: MainCardProps) => {
               </div>
               <div className="flex flex-col sm:mt-0 gap-2 w-[60%] min:[500px]:w-[65%] sm:w-full">
                 <CardBody property={property} />
-                <CardBottom property={property} />
+                <CardBottom
+                  property={property}
+                  type={type}
+                />
               </div>
             </div>
           </Card>

@@ -22,7 +22,7 @@ const Status = ({ status }: { status: string }) => {
 
   return (
     <div className="my-4">
-      <MainCard listings={completedListings} />
+      <MainCard listings={completedListings} type="booking" />
     </div>
   );
 };

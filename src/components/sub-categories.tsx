@@ -22,7 +22,7 @@ interface SubCategoryProps {
   icon?: string | { src: string };
 }
 
-const statusOptions = ["Pending", "Accepted", "Rejected", "Completed", "Cancelled"];
+const statusOptions = ["Pending", "Approved", "Rejected", "Completed", "Cancelled"];
 
 const SubCategories = () => {
   const { data = [], isLoading } = useSubCategories();

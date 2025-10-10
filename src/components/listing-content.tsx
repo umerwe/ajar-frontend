@@ -57,7 +57,10 @@ const ListingContent = ({ isHome, initialCategory }: ListingContentProps) => {
 
   return (
     <div className="mb-20">
-      <MainCard listings={filteredListings} />
+      <MainCard
+        listings={filteredListings}
+
+      />
 
       {!isHome && totalPages > 1 && (
         <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />

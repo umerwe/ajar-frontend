@@ -3,7 +3,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Star, Users, Bed, Wifi, Clock, Info } from 'lucide-react';
+import { Star, Users, Bed, Wifi, Clock, Info, Loader } from 'lucide-react';
 import Header from "@/components/pages/listing-details/header";
 import GuestInformationFields from "@/components/forms/guest-information-fields";
 import PriceDetails from "@/components/pages/check-out/price-details";
@@ -13,13 +13,12 @@ import Image from "next/image";
 import CancellationPolicy from "@/components/pages/check-out/cancellation-policy";
 import { Button } from "@/components/ui/button";
 import { CombinedFormData, combinedSchema } from "@/validations/checkout";
-import { useParams } from "next/navigation";
 import { useGetBookingId } from "@/hooks/useBooking";
 
 // Types for listing and booking data
 interface Listing {
     name: string;
-    images: string[];
+    rentalImages: string[];
     ratings: {
         average: number;
         count: number;
@@ -54,10 +53,14 @@ interface CheckoutPageClientProps {
 }
 
 const CheckoutPage = () => {
-    const params = useParams();
-    const id = params?.id as string;
+    // const params = useParams();
+    // const id = params?.id as string;
+    const id = "68db84453ea0f99bc8bcfdcb";
+    const { data = [], isLoading } = useGetBookingId(id);
 
-    const { data, isLoading } = useGetBookingId(id);
+    // if (data.length === 0) {
+    //     return <div>No Booking found</div>
+    // }
 
     const listing = data?.marketplaceListingId;
     const isVehicle = true;
@@ -121,7 +124,7 @@ const CheckoutPageClient = ({
     };
 
     if (isLoading) {
-        return <div>Loading</div>
+        return <div className="flex items-center justify-center min-h-screen"><Loader /></div>
     }
 
     return (
@@ -172,7 +175,7 @@ const CheckoutPageClient = ({
                                 <div className="flex gap-4 mb-4">
                                     <div className="w-24 h-24 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0 relative">
                                         <Image
-                                            src={listing.images[0]}
+                                            src={process.env.NEXT_PUBLIC_API_BASE_URL + listing?.rentalImages[0]}
                                             alt={listing?.name || "listing-img"}
                                             fill
                                             className="object-cover"

@@ -11,7 +11,7 @@ const FavouritesPage = () => {
   const listings = data?.favourites?.map((favourite: Favourite) => favourite.listing).filter(Boolean) || []
 
   if (isLoading || isFetching) {
-    return <SkeletonLoader isFav={true}/>
+    return <SkeletonLoader isFav={true} />
   }
 
   if (isError) {

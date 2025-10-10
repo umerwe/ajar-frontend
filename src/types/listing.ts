@@ -35,7 +35,8 @@ export interface Listing  {
     currentBookingId : string
     facilities: string[];
     nearLocation: string[];
-    createdAt: string; // ISO date string
-    updatedAt: string; // ISO date string
+    documents: Document[];
+    createdAt: string; 
+    updatedAt: string; 
     __v: number;
   };

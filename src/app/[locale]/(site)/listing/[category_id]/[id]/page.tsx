@@ -16,12 +16,15 @@ import ExploreArea from "@/components/pages/listing-details/explore-area"
 import AboutListing from "@/components/pages/listing-details/about-listing"
 import SkeletonLoader from "@/components/common/skeleton-loader"
 import Error from "@/components/common/error"
+import Document from "@/components/pages/listing-details/document"
+import { useUser } from "@/hooks/useAuth"
 
 const ListingItems = () => {
   const params = useParams()
   const id = params?.id as string
 
   const { data: listingData, isLoading, isError } = useGetMarketplaceListing(id);
+  const { data: user } = useUser();
 
   if (isLoading) {
     return <SkeletonLoader variant="listing" />
@@ -65,6 +68,12 @@ const ListingItems = () => {
           <Rating
             property={listingData}
           />
+
+          {
+            listingData.leaser._id !== user?._id && (
+              <Document property={listingData} />
+            )
+          }
 
           {/* <GuestLikedPost property={property} /> */}
 
