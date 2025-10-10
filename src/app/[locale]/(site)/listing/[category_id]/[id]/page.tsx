@@ -70,7 +70,7 @@ const ListingItems = () => {
           />
 
           {
-            listingData.leaser._id !== user?._id && (
+            listingData.leaser._id === user?._id && (
               <Document property={listingData} />
             )
           }
