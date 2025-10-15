@@ -23,6 +23,7 @@ import { useGetUserDocument } from "@/hooks/useDocument";
 
 export default function SettingsPage() {
     const { data: user = [], isLoading, isError } = useUser();
+    console.log(user)
     const { data: documents = [], isLoading: documentsLoading } = useGetUserDocument();
     const [file, setFile] = React.useState<File | null>(null);
     const [open, setOpen] = React.useState(false);

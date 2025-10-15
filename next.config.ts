@@ -17,6 +17,11 @@ const nextConfig: NextConfig = {
         hostname: 'ajar-server.hostdonor.com', // ✅ add this for production
         pathname: '/uploads/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'sj61d7kn-5000.inc1.devtunnels.ms', // ✅ added devtunnel domain
+        pathname: '/uploads/**',
+      },
     ],
   },
 };

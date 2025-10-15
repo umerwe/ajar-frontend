@@ -255,6 +255,66 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false }: Skelet
           </div>
         </div>
       )
+
+    case "chat":
+      return (
+        <>
+          {Array.from({ length: count }).map((_, i) => (
+            <div key={i} className="flex items-center gap-3 p-3 animate-pulse">
+              <div className="w-12 h-12 rounded-full bg-gray-200"></div>
+              <div className="flex-1 min-w-0">
+                <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                <div className="h-3 bg-gray-200 rounded w-1/3"></div>
+              </div>
+              <div className="flex flex-col items-end space-y-2">
+                <div className="h-3 w-8 bg-gray-200 rounded"></div>
+                <div className="h-5 w-5 bg-gray-200 rounded-full"></div>
+              </div>
+            </div>
+          ))}
+        </>
+      );
+
+    case "messages":
+      return (
+        <div className="space-y-5">
+          {[...Array(count)].map((_, i) => {
+            const isSent = i % 2 === 1;
+            return (
+              <div
+                key={i}
+                className={`flex items-start gap-2 ${isSent ? "justify-end" : "justify-start"}`}
+              >
+                {/* Receiver Avatar (left side only) */}
+                {!isSent && (
+                  <div className="w-8 h-8 rounded-full bg-gray-200 animate-pulse" />
+                )}
+
+                {/* Message Bubble Skeleton */}
+                <div
+                  className={`flex flex-col gap-2 ${isSent ? "items-end" : "items-start"
+                    }`}
+                >
+                  <div
+                    className={`h-3 w-16 bg-gray-200 rounded animate-pulse ${isSent ? "self-end" : ""
+                      }`}
+                  />
+                  <div
+                    className={`h-10 w-52 bg-gray-200 rounded-xl animate-pulse ${isSent ? "self-end" : ""
+                      }`}
+                  />
+                </div>
+
+                {/* Sender Avatar (right side only) */}
+                {isSent && (
+                  <div className="w-8 h-8 rounded-full bg-gray-200 animate-pulse" />
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )
+      
     default: <div></div>;
 
   }
