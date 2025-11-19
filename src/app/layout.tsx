@@ -2,9 +2,9 @@ import type React from "react"
 import type { Metadata } from "next"
 import './globals.css'
 import Providers from "@/components/providers/provider"
-import { hasLocale } from "next-intl"
-import { notFound } from "next/navigation"
-import { routing } from "@/i18n/routing"
+// import { hasLocale } from "next-intl"
+// import { notFound } from "next/navigation"
+// import { routing } from "@/i18n/routing"
 
 import { QueryClient, dehydrate } from "@tanstack/react-query"
 
@@ -15,16 +15,15 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({
   children,
-  params,
 }: {
   children: React.ReactNode
   params: Promise<{ locale: string }>
 }) {
-  const { locale } = await params
-  if (!hasLocale(routing.locales, locale)) {
-    notFound()
-  }
-  const messages = (await import(`../../../messages/${locale}.json`)).default
+  // const { locale } = await params
+  // if (!hasLocale(routing.locales, locale)) {
+  //   notFound()
+  // }
+  // const messages = (await import(`../../../messages/${locale}.json`)).default
 
   // Create QueryClient and prefetch data on server
   const queryClient = new QueryClient({
@@ -38,9 +37,12 @@ export default async function RootLayout({
   const dehydratedState = dehydrate(queryClient)
 
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <body className={`font-sans`}>
-        <Providers locale={locale} messages={messages} dehydratedState={dehydratedState}>
+        {/* <Providers locale={locale} messages={messages} dehydratedState={dehydratedState}>
+          <main className="flex-1">{children}</main>
+        </Providers> */}
+        <Providers dehydratedState={dehydratedState}>
           <main className="flex-1">{children}</main>
         </Providers>
       </body>

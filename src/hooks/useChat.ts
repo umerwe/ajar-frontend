@@ -14,9 +14,9 @@ export function useSendMessage() {
   });
 }
 
-export function useGetMessages(id: string, page: number) {
+export function useGetMessages(id: string, page?: number) {
   return useQuery({
-    queryKey: ["messages", id],
+    queryKey: ["messages", id, page],
     queryFn: () => getMessages(id, page),
   });
 }

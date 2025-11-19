@@ -4,8 +4,8 @@ type ErrorResponse = {
 
 type ProviderProps = {
   children: React.ReactNode
-  messages: Messages
-  locale: string
+  messages?: Messages
+  locale?: string
   dehydratedState: DehydratedState
 }
 

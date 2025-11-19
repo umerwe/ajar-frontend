@@ -11,7 +11,7 @@ export async function sendMessage(payload: MessagePayload) {
   return data.data;
 }
 
-export async function getMessages(id: string, page: number) {
+export async function getMessages(id: string, page?: number) {
   const { data } = await api.get(`/api/chats/${id}/messages?page=${page}`);
   return data.data;
 }

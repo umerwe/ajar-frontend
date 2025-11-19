@@ -15,6 +15,7 @@ import { Chat, Participant } from "@/types/chat";
 
 const ChatList = ({ id }: { id?: string }) => {
     const { data: user, isLoading } = useUser();
+    
     const { data, isLoading: chatLoading } = useGetChatList();
 
     const chats = data?.chats?.map((chat: Chat) => ({
@@ -56,7 +57,7 @@ const ChatList = ({ id }: { id?: string }) => {
 
                         return (
                             <Link
-                                href={`/chat/${chat._id}`}
+                                href={`/chat?id=${chat._id}`}
                                 key={chat._id}
                                 className={clsx(
                                     "flex items-center gap-3 p-3 cursor-pointer transition-all duration-150",

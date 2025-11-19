@@ -25,6 +25,7 @@ export interface Message {
   text: string;
   createdAt: string;
   updatedAt?: string;
+  error?: boolean;
 }
 
 export interface Participant {

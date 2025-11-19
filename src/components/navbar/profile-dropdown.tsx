@@ -7,6 +7,7 @@ import { profileMenuItems } from "@/data/profileMenuItems";
 import Dropdown from "@/components/ui/dropdown";
 import { useUser } from "@/hooks/useAuth";
 import { Skeleton } from "../ui/skeleton";
+import { capitalizeWords } from "@/utils/capitalizeWords";
 
 export default function ProfileDropdown() {
   const { data: user = {}, isLoading } = useUser();
@@ -79,7 +80,7 @@ export default function ProfileDropdown() {
             ) : (
               <>
                 <p className="text-sm font-medium text-gray-900 truncate">
-                  {user?.name}
+                  {capitalizeWords(user?.name)}
                 </p>
                 <p className="text-xs text-gray-500 truncate">{user?.email}</p>
               </>

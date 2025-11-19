@@ -2,14 +2,16 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { Login, LoginSchema } from "@/validations/auth"
 import { useLogin } from "@/hooks/useAuth"
 import Input from "../fields/auth-input"
-import Button from "../auth/button";
-import Header from "../auth/header";
-import Footer from "../auth/footer";
+import Button from "../auth/button"
+import Header from "../auth/header"
+import Footer from "../auth/footer"
+import { signIn } from "next-auth/react"
+import { FcGoogle } from "react-icons/fc"
 
 const LoginForm = () => {
   const {
@@ -23,15 +25,14 @@ const LoginForm = () => {
       password: "",
       role: "user",
     },
-  });
+  })
 
   const [keepSignedIn, setKeepSignedIn] = useState(false)
-
-  const { mutate ,isPending } = useLogin();
+  const { mutate, isPending } = useLogin()
 
   const onSubmit = (formData: Login) => {
-    mutate(formData);
-  };
+    mutate(formData)
+  }
 
   return (
     <div className="bg-white rounded-xl shadow-2xl px-4 py-8 sm:p-8 w-full lg:w-[120%]">
@@ -40,7 +41,12 @@ const LoginForm = () => {
         description="Let's create new account to explore more"
       />
 
-      <form onSubmit={handleSubmit(onSubmit)} className={`${errors.email || errors.password ? 'space-y-3' : 'space-y-5'}`}>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className={`${
+          errors.email || errors.password ? "space-y-3" : "space-y-5"
+        }`}
+      >
         <Input
           label="Email or Phone Number"
           type="email"
@@ -67,17 +73,36 @@ const LoginForm = () => {
             />
             <span className="ml-2 text-gray-600">Keep me signed in</span>
           </label>
-          <Link href="/forgot-password" className="text-aqua hover:text-teal-600 font-medium">
+          <Link
+            href="/forgot-password"
+            className="text-aqua hover:text-teal-600 font-medium"
+          >
             Forgot password
           </Link>
         </div>
 
-        <Button
-          text="Sign In"
-          isPending = {isPending}
-        />
+        <Button text="Sign In" isPending={isPending} />
+
+        {/* 👇 Divider */}
+        <div className="flex items-center my-4">
+          <div className="flex-grow border-t border-gray-300" />
+          <span className="mx-2 text-gray-500 text-sm">or</span>
+          <div className="flex-grow border-t border-gray-300" />
+        </div>
+
+        {/* 👇 Google login button */}
+        <button
+          type="button"
+          onClick={() => signIn("google")}
+          className="w-full flex items-center justify-center gap-3 border border-gray-300 rounded-lg py-2 hover:bg-gray-100 transition-all"
+        >
+          <FcGoogle className="text-2xl" />
+          <span className="text-gray-700 font-medium">
+            Sign in with Google
+          </span>
+        </button>
       </form>
-      
+
       <Footer
         linkHref="/auth/signup"
         linkText="Sign up here"

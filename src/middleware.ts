@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server'
+export { auth as middleware } from "@/auth"
 import createMiddleware from 'next-intl/middleware'
 import { routing } from './i18n/routing'
 
