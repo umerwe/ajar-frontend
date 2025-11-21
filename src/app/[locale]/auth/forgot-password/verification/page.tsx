@@ -8,7 +8,9 @@ export const metadata: Metadata = {
 };
 
 const Verification = () => {
-    return <AuthLayout FormComponent={<EmailVerificationForm />} />
+    return <AuthLayout FormComponent={
+        <EmailVerificationForm type="password" />
+    } />
 }
 
 export default Verification

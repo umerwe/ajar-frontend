@@ -2,7 +2,7 @@ import React from 'react'
 
 interface AuthHeaderProps {
     title: string,
-    description : string
+    description ?: string
     className ?: string
 }
 

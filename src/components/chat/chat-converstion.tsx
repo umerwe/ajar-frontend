@@ -94,13 +94,21 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
   }, [chatId, isChatActive]);
 
   // ✅ Send new message through socket only
-  const handleSend = (text: string) => {
+  const handleSend = (text: string, fileUrl?: string) => {
     if (!user || !chatId || !data?.receiver?._id) return;
-    socket?.emit("message:send", {
-      chatId,
-      receiver: data.receiver._id,
-      text,
-    });
+    if (fileUrl) {
+      console.log("fileUrl", fileUrl);
+      // socket?.emit("message:send", {
+      //   chatId,
+      //   receiver: data.receiver._id,
+      //   attachments: [fileUrl],
+      // });
+    }
+    // socket?.emit("message:send", {
+    //   chatId,
+    //   receiver: data.receiver._id,
+    //   text,
+    // });
   };
 
   // ✅ Render UI
@@ -157,9 +165,8 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
               className={`flex ${isSent ? "justify-end" : "justify-start"} mb-5`}
             >
               <div
-                className={`flex flex-col relative ${
-                  isSent ? "items-end text-right" : "items-start text-left"
-                }`}
+                className={`flex flex-col relative ${isSent ? "items-end text-right" : "items-start text-left"
+                  }`}
               >
                 {/* Avatar */}
                 <div className={`absolute ${isSent ? "right-0" : "left-0"} top-9`}>
@@ -180,26 +187,23 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
 
                 {/* Name */}
                 <div
-                  className={`mt-9 text-xs font-medium text-gray-500 ${
-                    isSent ? "pr-10" : "pl-10"
-                  }`}
+                  className={`mt-9 text-xs font-medium text-gray-500 ${isSent ? "pr-10" : "pl-10"
+                    }`}
                 >
                   {isSent ? "You" : capitalizeWords(sender.name)}
                 </div>
 
                 {/* Message Bubble */}
                 <div
-                  className={`mt-1 px-3 py-2 rounded-lg text-sm max-w-xs ${
-                    isSent
-                      ? "bg-aqua text-white rounded-br-none mr-10"
-                      : "bg-gray-100 text-gray-800 rounded-bl-none ml-10"
-                  }`}
+                  className={`mt-1 px-3 py-2 rounded-lg text-sm max-w-xs ${isSent
+                    ? "bg-aqua text-white rounded-br-none mr-10"
+                    : "bg-gray-100 text-gray-800 rounded-bl-none ml-10"
+                    }`}
                 >
                   <p>{msg.text}</p>
                   <span
-                    className={`block text-[10px] mt-1 ${
-                      isSent ? "text-white" : "text-gray-400"
-                    }`}
+                    className={`block text-[10px] mt-1 ${isSent ? "text-white" : "text-gray-400"
+                      }`}
                   >
                     {new Date(msg.createdAt).toLocaleTimeString([], {
                       hour: "2-digit",
@@ -219,7 +223,12 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
       </div>
 
       {/* ---------------- INPUT ---------------- */}
-      <SendMessage onSend={handleSend} isSending={false} />
+      <SendMessage
+        onSend={handleSend}
+        isSending={false}
+        chatId={chatId}
+        receiverId={data?.receiver?._id}
+      />
     </div>
   );
 };

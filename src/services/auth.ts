@@ -2,7 +2,7 @@ import api from "@/lib/axios";
 import { Login, Register } from "@/validations/auth";
 
 export const getUser = async () => {
-  const {data} = await api.get(`/api/users/details`);
+  const { data } = await api.get(`/api/users/details`);
   return data.data.user
 }
 
@@ -23,4 +23,13 @@ export const loginUser = async (credentials: Login) => {
 export const signUpUser = async (credentials: Register) => {
   await api.post("/api/users/signup", credentials);
 };
+
+export const forgotPassword = async (email: string) => {
+  await api.post("/api/users/forgot-password", { email });
+};
+
+export const resetPassword = async ({ email, password }: { email: string, password: string }) => {
+  await api.post("/api/users/reset-password", { email, password });
+};
+
 

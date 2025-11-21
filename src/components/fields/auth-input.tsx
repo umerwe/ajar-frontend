@@ -54,11 +54,13 @@ const AuthInput = <T extends FieldValues>({
                 <input
                     type={inputType}
                     placeholder={placeholder}
-                    className={`w-full ${type && iconMap[type] ? "pl-11" : "pl-3"
-                        } ${(type === "password" || type === "confirmPassword") ? "pr-12" : "pr-4"} py-3 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:ring-aqua focus:outline-none focus:ring-2 focus:border-transparent`}
+                    className={`w-full ${type && iconMap[type] ? "pl-11" : "pl-3"} ${(type === "password" || type === "confirmPassword") ? "pr-12" : "pr-4"
+                        } py-3 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:ring-aqua focus:outline-none focus:ring-2 focus:border-transparent 
+    ${type === "number" ? "no-spin" : ""}`} // ← add this
                     {...register}
                     {...rest}
                 />
+
                 {(type === "password" || type === "confirmPassword") && (
                     <button
                         type="button"

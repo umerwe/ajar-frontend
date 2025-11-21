@@ -43,9 +43,8 @@ const LoginForm = () => {
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className={`${
-          errors.email || errors.password ? "space-y-3" : "space-y-5"
-        }`}
+        className={`${errors.email || errors.password ? "space-y-3" : "space-y-5"
+          }`}
       >
         <Input
           label="Email or Phone Number"
@@ -74,7 +73,7 @@ const LoginForm = () => {
             <span className="ml-2 text-gray-600">Keep me signed in</span>
           </label>
           <Link
-            href="/forgot-password"
+            href="/auth/forgot-password"
             className="text-aqua hover:text-teal-600 font-medium"
           >
             Forgot password
@@ -94,10 +93,10 @@ const LoginForm = () => {
         <button
           type="button"
           onClick={() => signIn("google")}
-          className="w-full flex items-center justify-center gap-3 border border-gray-300 rounded-lg py-2 hover:bg-gray-100 transition-all"
+          className="w-full flex items-center justify-center gap-3 border border-gray-300 rounded-full py-2 hover:bg-gray-100 transition-all"
         >
           <FcGoogle className="text-2xl" />
-          <span className="text-gray-700 font-medium">
+          <span className="text-gray-700 text-sm font-medium">
             Sign in with Google
           </span>
         </button>

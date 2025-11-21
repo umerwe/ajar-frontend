@@ -5,11 +5,12 @@ type FooterProps = {
     messageText: string;
     linkHref: string;
     linkText: string;
+    className?: string;
 };
 
-const Footer = ({ messageText, linkHref, linkText }: FooterProps) => {
+const Footer = ({ messageText, linkHref, linkText, className="mt-4" }: FooterProps) => {
     return (
-        <div className="text-center text-sm mt-4">
+        <div className={`text-center text-sm ${className}`}>
             <span className="text-gray-600 mr-1">{messageText}</span>
             <Link
                 href={linkHref}

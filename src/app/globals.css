@@ -144,6 +144,16 @@
     @apply bg-background text-foreground;
   }
 }
+/* remove number input arrows */
+.no-spin::-webkit-inner-spin-button,
+.no-spin::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.no-spin {
+  -moz-appearance: textfield; /* Firefox */
+}
 
 @layer utilities {
   /* Gradient background utilities */

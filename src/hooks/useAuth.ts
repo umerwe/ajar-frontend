@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { getUser, loginUser, signUpUser, updateUser } from "@/services/auth";
+import { forgotPassword, getUser, loginUser, resetPassword, signUpUser, updateUser } from "@/services/auth";
 import { toast } from "@/components/ui/toast";
 import { AxiosError } from "axios";
 
@@ -30,9 +30,9 @@ export const useSignup = () => {
         onSuccess: () => {
             toast({
                 title: "Success",
-                description: "Account created successfully! Redirecting to login..."
+                description: "Account created successfully! Please check your email for verification."
             });
-            router.push("/auth/login");
+            router.push("/auth/verification");
         },
         onError: (error) => {
             const err = error as AxiosError<ErrorResponse>;
@@ -71,3 +71,43 @@ export const useLogin = () => {
 
     return mutation;
 };
+
+export const useForgotPassword = () => {
+    const router = useRouter();
+
+    const mutation = useMutation({
+        mutationFn: forgotPassword,
+        onSuccess: () => {
+            toast({
+                title: "Success",
+                description: "A verification code has been sent to your email."
+            });
+            router.push("/auth/forgot-password/verification");
+        },
+        onError: (error) => {
+            const err = error as AxiosError<ErrorResponse>;
+            toast({
+                title: "Registration Failed",
+                description: err.response?.data?.message || "Something went wrong.",
+                variant: "destructive",
+            });
+        },
+    });
+    return mutation;
+};
+
+export const useResetPassword = () => {
+    const mutation = useMutation({
+        mutationFn: resetPassword,
+        onError: (error) => {
+            const err = error as AxiosError<ErrorResponse>;
+            toast({
+                title: "Registration Failed",
+                description: err.response?.data?.message || "Something went wrong.",
+                variant: "destructive",
+            });
+        },
+    });
+    return mutation;
+};
+

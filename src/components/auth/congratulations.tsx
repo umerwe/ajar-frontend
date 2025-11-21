@@ -1,16 +1,65 @@
-import Link from "next/link";
-import Image from "next/image";
-import { Button } from "../ui/button";
+"use client";
 
-export default function CongratulationsPage() {
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+} from "@/components/ui/dialog";
+
+interface CongratulationsDialogProps {
+    open: boolean;
+    title?: string;
+    description?: string;
+    redirectTo?: string;
+    seconds?: number;
+}
+
+export default function CongratulationsDialog({
+    open,
+    title = "Congratulations!",
+    description = "Your Account has been successfully created.",
+    redirectTo = "/auth/login",
+    seconds = 4,
+}: CongratulationsDialogProps) {
+    const router = useRouter();
+    const [timeLeft, setTimeLeft] = useState(seconds);
+
+    useEffect(() => {
+        if (!open) return;
+
+        const interval = setInterval(() => {
+            setTimeLeft((prev) => prev - 1);
+        }, 1000);
+
+        const timeout = setTimeout(() => {
+            router.push(redirectTo);
+        }, seconds * 1000);
+
+        return () => {
+            clearInterval(interval);
+            clearTimeout(timeout);
+        };
+    }, [open, router, seconds, redirectTo]);
+
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-auth p-4">
-            <div className="max-w-sm w-full rounded-md mx-auto text-center bg-white px-4 pt-3 pb-8">
-                {/* Congratulations Image */}
+        <Dialog open={open} onOpenChange={() => {}} modal>
+            <DialogContent
+                showCloseButton={false}
+                className="max-w-sm rounded-md text-center px-4 pt-3 pb-8"
+                // Prevent closing on click outside
+                onInteractOutside={(e) => e.preventDefault()}
+                onEscapeKeyDown={(e) => e.preventDefault()}
+            >
+                {/* Image */}
                 <div className="mb-8 flex justify-center">
                     <Image
                         src="/congratulations-img.png"
-                        alt="Congratulations illustration"
+                        alt="Congratulations"
                         width={200}
                         height={200}
                         className="object-contain"
@@ -19,21 +68,20 @@ export default function CongratulationsPage() {
                 </div>
 
                 {/* Header */}
-                <div className="mb-6">
-                    <h1 className="text-2xl font-bold text-black mb-1">Congratulations!</h1>
-                    <p className="text-gray-custom text-sm max-w-50 m-auto">
-                        Your Account Has been successfully created
-                    </p>
-                </div>
+                <DialogHeader>
+                    <DialogTitle className="text-2xl text-center font-bold text-black">
+                        {title}
+                    </DialogTitle>
+                    <DialogDescription className="text-gray-custom text-sm max-w-100 mx-auto">
+                        {description}
+                    </DialogDescription>
+                </DialogHeader>
 
-                {/* Login Button */}
-                <Link
-                    href="/login">
-                    <Button variant='destructive' className ="w-full">
-                        Log In
-                    </Button>
-                </Link>
-            </div>
-        </div>
+                {/* Redirect Info */}
+                <p className="text-sm text-gray-custom mt-4">
+                    Redirecting to login page in <strong>{timeLeft}s</strong>...
+                </p>
+            </DialogContent>
+        </Dialog>
     );
 }
