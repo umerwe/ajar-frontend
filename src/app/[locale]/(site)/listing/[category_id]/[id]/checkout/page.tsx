@@ -1,299 +1,198 @@
 "use client";
 
-import React from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Star, Users, Bed, Wifi, Clock, Info, Loader } from 'lucide-react';
+import React, { useState } from "react";
+import { Star, Calendar } from 'lucide-react';
+import { useParams } from "next/navigation";
+import { useGetMarketplaceListing } from "@/hooks/useListing";
 import Header from "@/components/pages/listing-details/header";
-import GuestInformationFields from "@/components/forms/guest-information-fields";
-import PriceDetails from "@/components/pages/check-out/price-details";
-import PaymentFields from "@/components/forms/payment-fields";
-import CheckInOutTime from "@/components/pages/check-out/check-in-out-time";
-import Image from "next/image";
-import CancellationPolicy from "@/components/pages/check-out/cancellation-policy";
-import { Button } from "@/components/ui/button";
-import { CombinedFormData, combinedSchema } from "@/validations/checkout";
-import { useGetBookingId } from "@/hooks/useBooking";
-
-// Types for listing and booking data
-interface Listing {
-    name: string;
-    rentalImages: string[];
-    ratings: {
-        average: number;
-        count: number;
-    };
-}
-
-interface BookingData {
-    marketplaceListingId: Listing;
-    noOfGuests: number;
-    dates: {
-        checkIn: string;
-        checkOut: string;
-    };
-    priceDetails: {
-        price: number;
-        adminFee: number;
-        totalPrice: number;
-    };
-}
-
-interface CheckoutPageClientProps {
-    listing: Listing;
-    isVehicle: boolean;
-    data: BookingData;
-    bedType: string;
-    guestsOrPassengers: number;
-    inclusions: string[];
-    roomSize: string;
-    cancellationPolicy: string;
-    cancellationDescription: string;
-    isLoading: boolean;
-}
+import { useCreateBooking } from "@/hooks/useBooking";
+import { BookingRequest } from "@/types/booking";
+import { getStripe } from "@/lib/stripe";
+import { capitalizeWords } from "@/utils/capitalizeWords";
 
 const CheckoutPage = () => {
-    // const params = useParams();
-    // const id = params?.id as string;
-    const id = "68db84453ea0f99bc8bcfdcb";
-    const { data = [], isLoading } = useGetBookingId(id);
+    const params = useParams();
+    const id = params?.id as string;
+    const { data: listing, isLoading } = useGetMarketplaceListing(id);
+    const { mutateAsync: createBooking, isPending } = useCreateBooking();
 
-    // if (data.length === 0) {
-    //     return <div>No Booking found</div>
-    // }
 
-    const listing = data?.marketplaceListingId;
-    const isVehicle = true;
-    const bedType = "1 Double Bed";
-    const guestsOrPassengers = 2;
-    const inclusions = ["Free WiFi", "Air Conditioning", "Parking"];
-    const roomSize = "Unknown";
-    const cancellationPolicy = "Non-refundable";
-    const cancellationDescription = data
-        ? "You can cancel this booking for free up to 48 hours before check-in."
-        : "This booking cannot be modified, and no refund will be given if you cancel it. If you fail to check in, a penalty equivalent to the cancellation fee will be charged.";
-
-    return <CheckoutPageClient
-        listing={listing}
-        data={data!} // non-null assertion since data is required
-        isVehicle={isVehicle}
-        bedType={bedType}
-        guestsOrPassengers={guestsOrPassengers}
-        inclusions={inclusions}
-        roomSize={roomSize}
-        cancellationPolicy={cancellationPolicy}
-        cancellationDescription={cancellationDescription}
-        isLoading={isLoading}
-    />;
-};
-
-const CheckoutPageClient = ({
-    listing,
-    isVehicle,
-    bedType,
-    inclusions,
-    roomSize,
-    data,
-    cancellationPolicy,
-    cancellationDescription,
-    isLoading
-}: CheckoutPageClientProps) => {
-    const {
-        register,
-        handleSubmit,
-        setValue,
-        formState: { errors },
-    } = useForm<CombinedFormData>({
-        resolver: zodResolver(combinedSchema),
-        defaultValues: {
-            firstName: "",
-            lastName: "",
-            email: "",
-            countryCode: "+92",
-            phoneNumber: "",
-            name: '',
-            expiryDate: '',
-            billingZip: '',
-            paymentOption: "full",
-            cardType: "VISA",
-        },
+    const [formData, setFormData] = useState({
+        startDate: '',
+        endDate: '',
+        specialRequest: '',
     });
 
-    const onSubmit = (formData: CombinedFormData) => {
-        console.log("Complete Booking Form Submitted:", formData);
+    const handleInputChange = (e: any) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
     };
 
-    if (isLoading) {
-        return <div className="flex items-center justify-center min-h-screen"><Loader /></div>
-    }
+    const handleSubmit = async (e: React.FormEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+
+        if (!listing?._id) return;
+
+        const bookingPayload: BookingRequest = {
+            marketplaceListingId: listing._id,
+            dates: {
+                checkIn: formData.startDate,
+                checkOut: formData.endDate,
+            },
+            specialRequest: formData.specialRequest,
+        };
+
+        createBooking({ booking: bookingPayload }, {
+            onSuccess: async (data) => {
+                const stripe = await getStripe();
+                if (!stripe) throw new Error("Stripe failed to initialize");
+
+                const redirectResult = await stripe.redirectToCheckout({
+                    sessionId: data.booking._id,
+                });
+
+                if (redirectResult?.error) {
+                    console.error(redirectResult.error);
+                    alert("Payment redirection failed. Try again.");
+                }
+            }
+        });
+    };
+
 
     return (
-        <div className="min-h-screen sm:px-12 mb-20">
+        <div className="min-h-screen bg-gray-50 sm:px-12 pb-20">
             <div className="max-w-7xl mx-auto">
+                {/* Header */}
                 <Header title="Checkout" />
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:gap-12">
-                        {/* Left Column - Form */}
-                        <div className="space-y-6">
-                            {/* Guest Information */}
-                            <div className="bg-white rounded-lg py-6">
-                                <h2 className="text-xl font-semibold text-gray-900 mb-2">
-                                    {"Who's checking in?"}
-                                </h2>
-                                <div className="mb-4">
-                                    <p className="text-sm text-gray-700 font-semibold mb-2">
-                                        <span className="text-red-800 mr-1">*</span>
-                                        Required
-                                    </p>
-                                    <button type="button" className="text-sm text-aqua hover:text-teal-700 font-medium">
-                                        Sign in for faster checkout
-                                    </button>
+
+                <div className="grid grid-cols-1 my-6 lg:grid-cols-2 gap-8 lg:gap-12">
+                    {/* Left Column - Booking Form */}
+                    <div className="space-y-6 px-4 sm:px-0 order-2 lg:order-1">
+                        {/* Date Section */}
+                        <div className="bg-white rounded-lg p-6 shadow-sm">
+                            <h2 className="text-xl font-semibold text-gray-900 mb-4">Date</h2>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                                        <Calendar className="w-4 h-4" />
+                                        Start
+                                    </label>
+                                    <input
+                                        type="date"
+                                        name="startDate"
+                                        value={formData.startDate}
+                                        onChange={handleInputChange}
+                                        className="w-full px-4 py-3 bg-gray-50 border-0 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none transition"
+                                        placeholder="Select date"
+                                    />
                                 </div>
-                                <GuestInformationFields
-                                    register={register}
-                                    setValue={setValue}
-                                    errors={errors}
-                                />
+                                <div>
+                                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                                        <Calendar className="w-4 h-4" />
+                                        End
+                                    </label>
+                                    <input
+                                        type="date"
+                                        name="endDate"
+                                        value={formData.endDate}
+                                        onChange={handleInputChange}
+                                        className="w-full px-4 py-3 bg-gray-50 border-0 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none transition"
+                                        placeholder="Select date"
+                                    />
+                                </div>
                             </div>
-                            <PaymentFields
-                                register={register}
-                                setValue={setValue}
-                                errors={errors}
-                            />
-                            <CancellationPolicy />
-                            <Button
-                                type="submit"
-                                variant="destructive"
-                                className="w-full sm:w-auto md:w-full lg:w-auto px-9">
-                                Complete Booking
-                            </Button>
                         </div>
-                        {/* Right Column - Booking Summary */}
-                        <div className="space-y-6 pl-2 lg:pl-12 mb-20">
-                            {/* Listing Information */}
-                            <div className="bg-white rounded-lg py-2">
-                                <div className="flex gap-4 mb-4">
-                                    <div className="w-24 h-24 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0 relative">
-                                        <Image
-                                            src={process.env.NEXT_PUBLIC_API_BASE_URL + listing?.rentalImages[0]}
-                                            alt={listing?.name || "listing-img"}
-                                            fill
-                                            className="object-cover"
-                                        />
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <h3 className="text-lg font-semibold text-gray-900 sm:mb-1">
-                                            {listing.name || "Untitled Listing"}
-                                        </h3>
-                                        <div className="flex items-center gap-1 mb-2">
-                                            {[...Array(5)].map((_, i) => (
-                                                <Star
-                                                    key={i}
-                                                    className={`w-4 h-4 ${i < Math.floor(listing.ratings.count || 0)
-                                                        ? "fill-yellow-400 text-yellow-400"
-                                                        : "text-gray-300"
-                                                        }`}
-                                                />
-                                            ))}
-                                        </div>
-                                        <div className="flex flex-wrap items-center gap-2">
-                                            <span className="bg-teal-500 text-white px-2.5 py-1 rounded text-sm font-medium rounded-l-full rounded-b-full">
-                                                {(listing.ratings.average || 0).toFixed(1)}/5
-                                            </span>
-                                            <span className="text-md font-medium text-teal-600">
-                                                {(listing.ratings.average || 0) >= 4.5
-                                                    ? "Excellent"
-                                                    : (listing.ratings.average || 0) >= 4.0
-                                                        ? "Good"
-                                                        : "Average"}
-                                            </span>
-                                            <span className="text-sm text-gray-500">
-                                                {listing.ratings.count || 0} reviews
-                                            </span>
-                                        </div>
-                                    </div>
+
+                        {/* Comment Section */}
+                        <div className="bg-white rounded-lg p-6 shadow-sm">
+                            <h2 className="text-xl font-semibold text-gray-900 mb-4">Comment</h2>
+                            <textarea
+                                name="specialRequest"
+                                value={formData.specialRequest}
+                                onChange={handleInputChange}
+                                rows={4}
+                                className="w-full px-4 py-3 bg-gray-50 border-0 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none transition resize-none"
+                                placeholder="Enter your comments"
+                            ></textarea>
+                        </div>
+                    </div>
+
+                    {/* Right Column - Booking Summary */}
+                    <div className="space-y-6 px-4 sm:px-0 order-1 lg:order-2">
+                        {/* Listing Information */}
+                        <div className="bg-white rounded-lg p-6 shadow-sm">
+                            <div className="flex gap-4 mb-4">
+                                <div className="w-24 h-24 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
+                                    <img
+                                        src={`${process.env.NEXT_PUBLIC_API_BASE_URL}${listing?.rentalImages[0]}`}
+                                        alt={listing?.name}
+                                        className="w-full h-full object-cover"
+                                    />
                                 </div>
-                                {/* Room/Vehicle Details */}
-                                <div className="pt-4">
-                                    <h4 className="font-semibold text-gray-900 mb-1 sm:mb-3">{listing.name}</h4>
-                                    <div className="space-y-2 text-sm">
-                                        <div className="flex flex-wrap items-center gap-2">
-                                            <Users className="w-4 h-4 text-gray-400" />
-                                            <span className="text-gray-600">x{data.noOfGuests}</span>
-                                            {!isVehicle && (
-                                                <>
-                                                    <span className="text-gray-400">•</span>
-                                                    <span className="text-gray-900 cursor-pointer">
-                                                        <u>{bedType}</u>
-                                                    </span>
-                                                </>
-                                            )}
-                                        </div>
-                                        <div className="flex flex-wrap items-center gap-2">
-                                            <span className="text-teal-600 font-medium">
-                                                {inclusions[0] || "N/A"}
-                                            </span>
-                                            <span className="text-gray-400">•</span>
-                                            <Wifi className="w-4 h-4 text-gray-400" />
-                                            <span className="text-gray-600">{inclusions[1] || "N/A"}</span>
-                                            <span className="text-gray-400">•</span>
-                                            <span className="text-gray-600">{inclusions[2] || "N/A"}</span>
-                                        </div>
-                                        <div className="text-gray-600">{roomSize}</div>
+                                <div className="flex-1 min-w-0">
+                                    <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                                        {capitalizeWords(listing?.name)}
+                                    </h3>
+                                    <div className="flex items-center gap-1 mb-2">
+                                        {[...Array(5)].map((_, i) => (
+                                            <Star
+                                                key={i}
+                                                className={`w-4 h-4 ${i < Math.floor(listing?.ratings?.average)
+                                                    ? "fill-yellow-400 text-yellow-400"
+                                                    : "text-gray-300"
+                                                    }`}
+                                            />
+                                        ))}
                                     </div>
-                                    <div className="flex items-center gap-1 mt-3 text-gray-900 cursor-pointer">
-                                        <Info className="w-4 h-4" />
-                                        <span className="text-sm">
-                                            <u>{cancellationPolicy}</u>
+                                    <div className="flex flex-wrap items-center gap-2">
+                                        <span className="bg-teal-500 text-white px-2.5 py-1 rounded-full text-sm font-medium">
+                                            {listing?.ratings?.average.toFixed(1)}/5
+                                        </span>
+                                        <span className="text-sm font-medium text-teal-600">
+                                            Excellent
+                                        </span>
+                                        <span className="text-sm text-gray-500">
+                                            {listing?.ratings?.count} reviews
                                         </span>
                                     </div>
                                 </div>
                             </div>
-                            {/* Check-in/Check-out Time */}
-                            <div className="bg-white rounded-lg">
-                                <div className="flex flex-wrap justify-between gap-4">
-                                    <CheckInOutTime
-                                        date={data.dates.checkIn}
-                                        icon={<Clock className="w-4 h-4 text-gray-400" />}
-                                        label={isVehicle ? "rental day" : "night"}
-                                        options={[
-                                            { value: 1, label: `1 ${isVehicle ? "day" : "night"}` },
-                                            { value: 2, label: `2 ${isVehicle ? "days" : "nights"}` },
-                                            { value: 3, label: `3 ${isVehicle ? "days" : "nights"}` },
-                                        ]}
-                                    />
-                                    <CheckInOutTime
-                                        date={data.dates.checkOut}
-                                        icon={<Bed className="w-4 h-4 text-gray-400" />}
-                                        label={isVehicle ? "vehicle" : "room"}
-                                        options={[
-                                            { value: 1, label: `1 ${isVehicle ? "vehicle" : "room"}` },
-                                            { value: 2, label: `2 ${isVehicle ? "vehicles" : "rooms"}` },
-                                            { value: 3, label: `3 ${isVehicle ? "vehicles" : "rooms"}` },
-                                        ]}
-                                    />
-                                </div>
-                            </div>
-                            <PriceDetails
-                                pricingDetails={data.priceDetails}
-                            />
-                            {/* Cancellation Policy */}
-                            <div className="bg-white rounded-lg sm:p-6">
-                                <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                                    Cancellation Policy
-                                </h4>
-                                <div className="mb-3">
-                                    <span className="text-sm font-semibold text-gray-900">
-                                        {cancellationPolicy}
+                        </div>
+
+                        {/* Payment Details */}
+                        <div className="bg-white rounded-lg p-6 shadow-sm">
+                            <h2 className="text-xl font-semibold text-gray-900 mb-4">Payment Details</h2>
+                            <div className="space-y-3">
+                                <div className="flex justify-between items-center py-2">
+                                    <span className="text-gray-600">Price</span>
+                                    <span className="text-lg font-semibold text-gray-900">
+                                        ${listing?.price.toFixed(2)}
                                     </span>
                                 </div>
-                                <p className="text-sm text-gray-600 leading-relaxed max-w-90">
-                                    {cancellationDescription}
-                                </p>
+                                <div className="border-t pt-3">
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-lg font-semibold text-gray-900">Total Cost</span>
+                                        <span className="text-2xl font-bold text-gray-900">
+                                            ${listing?.price.toFixed(2)}
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
+                        {/* Submit Button */}
+                        <button
+                            onClick={handleSubmit}
+                            className="w-full bg-header text-white py-3 rounded-full font-semibold text-base hover:from-teal-600 hover:to-blue-600 transition shadow-lg hover:shadow-xl"
+                        >
+                            {isPending ? "Loading..." : "Submit"}
+                        </button>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     );

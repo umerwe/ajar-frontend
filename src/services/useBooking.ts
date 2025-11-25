@@ -1,4 +1,5 @@
 import api from "@/lib/axios";
+import { BookingRequest } from "@/types/booking";
 import axios from "axios";
 
 export async function getBooking(status?: string) {
@@ -26,5 +27,10 @@ export async function getBooking(status?: string) {
 export async function getBookingId(id?: string) {
   const { data } = await api.get(`/api/bookings/${id}`);
   return data.data;
+}
+
+export async function createBooking({booking}: {booking: BookingRequest}) {
+  const { data } = await api.post(`/api/bookings`, booking);
+  return data;
 }
 

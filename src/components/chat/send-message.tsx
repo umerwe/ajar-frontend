@@ -8,11 +8,12 @@ import { useState } from "react";
 import api from "@/lib/axios";
 
 type SendMessageProps = {
-  onSend: (text: string) => void;
+  onSend: (args: { text?: string; fileUrl?: string }) => void;
   isSending?: boolean;
   chatId?: string;
   receiverId?: string;
 };
+
 
 const SendMessage = ({ onSend, isSending, chatId, receiverId }: SendMessageProps) => {
   const [isUploading, setIsUploading] = useState(false);
@@ -31,13 +32,13 @@ const SendMessage = ({ onSend, isSending, chatId, receiverId }: SendMessageProps
   // 📨 SEND MESSAGE
   const onSubmit = (values: MessageForm) => {
     if (fileUrl) {
-      onSend(fileUrl); // Send uploaded file URL instead of text
-      setFileUrl(null); // Reset file
+      onSend({ fileUrl });
+      setFileUrl(null);
     } else {
-      onSend(values.text);
+      onSend({ text: values.text });
     }
     reset();
-    setValue("text", ""); // Clear input
+    setValue("text", "");
   };
 
   // 📎 FILE UPLOAD
@@ -49,27 +50,21 @@ const SendMessage = ({ onSend, isSending, chatId, receiverId }: SendMessageProps
       setIsUploading(true);
 
       const formData = new FormData();
-      formData.append("chatId", chatId);
-      formData.append("receiver", receiverId);
       formData.append("attachments", file);
-      formData.append("text", "joker");
 
-      const response = await api.post(`/api/chats/send-message`, formData);
+      const response = await api.post(`/api/chats/upload-attachment`, formData);
 
       // 👇 Get uploaded file URL from API response
-      const url = response?.data?.data?.attachments?.[0];
-      console.log(response?.data)
+      const url = response?.data?.attachments?.[0];
       if (url) {
         setFileUrl(url);
         setValue("text", file.name);
       }
-
-      console.log("📢 FILE API Response:", response.data);
     } catch (error) {
       console.error("❌ File Upload Error:", error);
     } finally {
       setIsUploading(false);
-      e.target.value = ""; // Reset file input
+      e.target.value = "";
     }
   };
 

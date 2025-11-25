@@ -1,6 +1,7 @@
 "use client";
 
 import Header from "@/components/pages/listing-details/header";
+import Link from "next/link";
 import Image from "next/image";
 import { useUser } from "@/hooks/useAuth";
 import { ChevronRight, Pencil } from "lucide-react";
@@ -23,7 +24,6 @@ import { useGetUserDocument } from "@/hooks/useDocument";
 
 export default function SettingsPage() {
     const { data: user = [], isLoading, isError } = useUser();
-    console.log(user)
     const { data: documents = [], isLoading: documentsLoading } = useGetUserDocument();
     const [file, setFile] = React.useState<File | null>(null);
     const [open, setOpen] = React.useState(false);
@@ -167,7 +167,8 @@ export default function SettingsPage() {
                         }
 
                         return (
-                            <div
+                            <Link
+                                href={item.href!}
                                 key={index}
                                 className="flex items-center justify-between px-4 py-4 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 cursor-pointer transition-colors"
                             >
@@ -176,7 +177,7 @@ export default function SettingsPage() {
                                     <span className="text-gray-900 font-medium">{item.label}</span>
                                 </div>
                                 <ChevronRight className="h-6 w-6 text-aqua" />
-                            </div>
+                            </Link>
                         );
                     })}
                 </div>

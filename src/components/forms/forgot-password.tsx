@@ -21,7 +21,7 @@ const ForgotPasswordForm = () => {
 
     const onSubmit = (formData: ForgotPassword) => {
         mutateAsync(formData.email)
-        
+        localStorage.setItem("email", formData.email)
     }
     return (
         <div className="bg-white rounded-md shadow-2xl px-4 py-8 sm:px-6 w-full lg:w-[330px]">

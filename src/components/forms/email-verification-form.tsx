@@ -9,13 +9,15 @@ import Header from "../auth/header"
 import { useResendVerificationByEmail, useVerificationByEmail } from "@/hooks/useVerification"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import CongratulationsDialog from "../auth/congratulations" // adjust path if needed
+import CongratulationsDialog from "../auth/congratulations"
 import { toast } from "../ui/toast"
+import { useTwoFactorVerify } from "@/hooks/useTwoFactor"
 
-const EmailVerificationForm = ({ type }: { type?: string }) => {
+const EmailVerificationForm = ({ type, title, description, buttonText }: { type?: string, title?: string, description?: string, buttonText?: string }) => {
     const router = useRouter();
     const { mutateAsync: verifyUserByEmail, isPending } = useVerificationByEmail();
     const { mutateAsync: resendVerificationByEmail, isPending: isResending } = useResendVerificationByEmail();
+    const { mutateAsync: verifyTwoFactor, isPending: isVerifying } = useTwoFactorVerify();
 
     const [timer, setTimer] = useState(0);
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -27,28 +29,44 @@ const EmailVerificationForm = ({ type }: { type?: string }) => {
 
     // ✔ VERIFY OTP
     const onSubmit = (formData: any) => {
-        const email = 'glukik590@gmail.com';
-        verifyUserByEmail(
-            { ...formData, email },
-            {
-                onSuccess: () => {
-                    if (type === "password") {
-                        router.push("/auth/reset-password");
+        const email = localStorage.getItem("email");
+
+        if (title === "Two Factor Authentication") {
+            verifyTwoFactor({ token: formData.otp },
+                {
+                    onSuccess: () => {
                         toast({
-                            title: "Email Verified Successfully",
+                            title: "Two Factor Authentication Enabled",
                             variant: "default",
                         });
-                    } else {
-                        setDialogOpen(true);
-                    }
-                },
-            }
-        );
+                        router.push("/two-factor");
+                    },
+                }
+            )
+        }
+        else {
+            verifyUserByEmail(
+                { ...formData, email },
+                {
+                    onSuccess: () => {
+                        if (type === "password") {
+                            router.replace("/auth/reset-password");
+                            toast({
+                                title: "Email Verified Successfully",
+                                variant: "default",
+                            });
+                        } else {
+                            setDialogOpen(true);
+                        }
+                    },
+                }
+            );
+        }
     };
 
     // 🔁 RESEND OTP
     const handleResendOtp = async () => {
-        await resendVerificationByEmail({ email: 'tubey3976@gmail.com' });
+        await resendVerificationByEmail({ email: localStorage.getItem("email") });
         setTimer(60);
         localStorage.setItem("otpTimer", (Date.now() + 60000).toString());
     };
@@ -83,8 +101,8 @@ const EmailVerificationForm = ({ type }: { type?: string }) => {
                 open={dialogOpen}
             />
 
-            <div className="bg-white rounded-md shadow-2xl px-4 py-8 sm:py-10 sm:px-6 w-full lg:w-[330px]">
-                <Header title="Email Verification" description="Enter OTP to get your account verified" />
+            <div className={`bg-white rounded-md shadow-2xl px-4 py-8 sm:py-10 sm:px-6 w-full ${title ? "lg:w-[400px]" : "lg:w-[300px]"}`}>
+                <Header title={`${title ? title : "Email Verification"}`} description={`${description ? description : "Enter OTP to get your account verified"}`} />
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                     <Input
@@ -96,25 +114,29 @@ const EmailVerificationForm = ({ type }: { type?: string }) => {
                     />
 
                     {/* RESEND SECTION */}
-                    <p className="text-xs text-center text-gray-500">
-                        Didn’t receive the code?{" "}
-                        {timer > 0 ? (
-                            <span className="text-gray-400">
-                                Resend in <strong>{timer}s</strong>
-                            </span>
-                        ) : (
-                            <button
-                                type="button"
-                                onClick={handleResendOtp}
-                                disabled={isResending}
-                                className="text-aqua font-medium hover:underline disabled:opacity-60"
-                            >
-                                {isResending ? "Resending..." : "Resend"}
-                            </button>
-                        )}
-                    </p>
+                    {
+                        !title &&
+                        <p className="text-xs text-center text-gray-500">
+                            Didn’t receive the code?{" "}
+                            {timer > 0 ? (
+                                <span className="text-gray-400">
+                                    Resend in <strong>{timer}s</strong>
+                                </span>
+                            ) : (
+                                <button
+                                    type="button"
+                                    onClick={handleResendOtp}
+                                    disabled={isResending}
+                                    className="text-aqua font-medium hover:underline disabled:opacity-60"
+                                >
+                                    {isResending ? "Resending..." : "Resend"}
+                                </button>
+                            )}
+                        </p>
+                    }
 
-                    <Button text="Verify Account" isPending={isPending} />
+
+                    <Button text={`${buttonText ? buttonText : "Verify Account"}`} isPending={isPending} />
                 </form>
             </div>
         </>

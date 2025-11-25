@@ -22,6 +22,7 @@ export interface Message {
     name: string;
     profilePicture?: string;
   };
+  attachments?: string[];
   text: string;
   createdAt: string;
   updatedAt?: string;

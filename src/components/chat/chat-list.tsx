@@ -49,7 +49,7 @@ const ChatList = ({ id }: { id?: string }) => {
             {/* Chats List */}
             <div className="divide-y divide-gray-100">
                 {chatLoading || isLoading ? (
-                    <SkeletonLoader variant="chat" count={7} />
+                    <SkeletonLoader variant="chat" count={6} />
                 ) : chats?.length > 0 ? (
                     chats.map((chat: Chat) => {
                         const participant = chat?.participants[0];
@@ -69,10 +69,7 @@ const ChatList = ({ id }: { id?: string }) => {
                                 {/* Avatar */}
                                 {participant?.profilePicture ? (
                                     <Image
-                                        src={
-                                            "https://ajar-server.hostdonor.com" +
-                                            participant.profilePicture
-                                        }
+                                        src={participant?.profilePicture}
                                         alt={participant.name}
                                         width={256}
                                         height={256}

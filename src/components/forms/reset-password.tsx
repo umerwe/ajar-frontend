@@ -21,8 +21,9 @@ const ResetPasswordForm = () => {
     })
 
     const onSubmit = async (formData: ResetPassword) => {
+        const email = localStorage.getItem("email");
         mutateAsync(
-            { email: 'tubey3976@gmail.com', ...formData },
+            { email: email!, ...formData },
             {
                 onSuccess: () => setDialogOpen(true)
             }

@@ -22,6 +22,16 @@ const nextConfig: NextConfig = {
         hostname: 'sj61d7kn-5000.inc1.devtunnels.ms', // ✅ added devtunnel domain
         pathname: '/uploads/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'sj61d7kn-5000.inc1.devtunnels.ms', // ✅ added devtunnel domain
+        pathname: '/chat/**',
+      },
+        {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com', // Google profile images
+        pathname: '/**',
+      }
     ],
   },
 };

@@ -6,7 +6,7 @@ export function getActionDetails(status?: string) {
     case "Approved":
       return {
         label: "Proceed to pay",
-        link: "/listing/veh341/C6F0Y3/checkout",
+        link: "/checkout",
       };
 
     case "Completed":

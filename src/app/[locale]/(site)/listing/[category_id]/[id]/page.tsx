@@ -21,6 +21,7 @@ import { useUser } from "@/hooks/useAuth"
 
 const ListingItems = () => {
   const params = useParams()
+  const category_id = params?.category_id as string
   const id = params?.id as string
 
   const { data: listingData, isLoading, isError } = useGetMarketplaceListing(id);
@@ -86,6 +87,8 @@ const ListingItems = () => {
         <div className="w-full md:w-2/5 lg:w-1/3 space-y-3 md:space-y-4">
           <PricingActions
             property={listingData}
+            category_id={category_id}
+            id={id}
           />
 
           <ExploreArea

@@ -16,33 +16,41 @@ export const profileItems = [
     {
         icon: Pencil,
         label: "Edit Profile",
+
     },
     {
         icon: Heart,
         label: "Favorites",
+        href: "/favourites",
     },
     {
         icon: Globe,
         label: "Language",
+        href: "/language",
     },
     {
         icon: Lock,
         label: "Change Password",
+        href: "/change-password",
     },
     {
         icon: AlertTriangle,
         label: "Submit Dispute",
+        href: "/submit-dispute",
     },
     {
         icon: ShieldCheck,
         label: "Two-Factor Authentication",
+        href: "/two-factor",
     },
     {
         icon: Flag,
         label: "Report",
+        href: "/report",
     },
     {
         icon: PhoneCall,
         label: "Emergency Assistance",
+        href: "/emergency",
     },
 ];

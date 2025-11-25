@@ -24,7 +24,7 @@ export default function CongratulationsDialog({
     title = "Congratulations!",
     description = "Your Account has been successfully created.",
     redirectTo = "/auth/login",
-    seconds = 4,
+    seconds = 5,
 }: CongratulationsDialogProps) {
     const router = useRouter();
     const [timeLeft, setTimeLeft] = useState(seconds);
@@ -37,8 +37,10 @@ export default function CongratulationsDialog({
         }, 1000);
 
         const timeout = setTimeout(() => {
-            router.push(redirectTo);
+            router.replace(redirectTo);
         }, seconds * 1000);
+
+        localStorage.removeItem("email");
 
         return () => {
             clearInterval(interval);

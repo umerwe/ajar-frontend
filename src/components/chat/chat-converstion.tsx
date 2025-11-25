@@ -14,10 +14,8 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
   const { data: user } = useUser();
   const [messages, setMessages] = useState<Message[]>([]);
   const [isChatActive, setIsChatActive] = useState(false);
-
   const { data, isLoading } = useGetMessages(chatId as string);
   const scrollRef = useRef<HTMLDivElement>(null);
-
   // ✅ Load all messages from backend
   useEffect(() => {
     if (data?.messages?.length) {
@@ -93,25 +91,23 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
     };
   }, [chatId, isChatActive]);
 
-  // ✅ Send new message through socket only
-  const handleSend = (text: string, fileUrl?: string) => {
+  const handleSend = ({ text, fileUrl }: { text?: string; fileUrl?: string }) => {
     if (!user || !chatId || !data?.receiver?._id) return;
-    if (fileUrl) {
-      console.log("fileUrl", fileUrl);
-      // socket?.emit("message:send", {
-      //   chatId,
-      //   receiver: data.receiver._id,
-      //   attachments: [fileUrl],
-      // });
-    }
-    // socket?.emit("message:send", {
-    //   chatId,
-    //   receiver: data.receiver._id,
-    //   text,
-    // });
+
+    const payload: any = {
+      chatId,
+      receiver: data.receiver._id,
+    };
+
+    if (text) payload.text = text;
+    if (fileUrl) payload.attachments = [fileUrl];
+
+    console.log(text)
+
+    socket?.emit("message:send", payload);
   };
 
-  // ✅ Render UI
+
   return (
     <div className="flex flex-col h-full w-full bg-white border shadow">
       {/* ---------------- HEADER ---------------- */}
@@ -127,8 +123,8 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
           <>
             {data?.receiver?.profilePicture ? (
               <Image
-                src={"https://ajar-server.hostdonor.com" + data.receiver.profilePicture}
-                alt={data.receiver?.name || "User"}
+                src={data?.receiver?.profilePicture}
+                alt={data?.receiver?.name || "User"}
                 width={256}
                 height={256}
                 className="w-10 h-10 rounded-full object-cover"
@@ -146,7 +142,7 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
       </div>
 
       {/* ---------------- MESSAGES ---------------- */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-4">
         {isLoading && messages.length === 0 && (
           <SkeletonLoader variant="messages" count={6} />
         )}
@@ -156,7 +152,7 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
           const sender = msg.sender || {};
           const hasImage = sender.profilePicture;
           const avatarUrl = hasImage
-            ? "https://ajar-server.hostdonor.com" + sender.profilePicture
+            ? sender.profilePicture
             : "";
 
           return (
@@ -172,7 +168,7 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
                 <div className={`absolute ${isSent ? "right-0" : "left-0"} top-9`}>
                   {hasImage ? (
                     <Image
-                      src={avatarUrl}
+                      src={avatarUrl || ""}
                       alt={sender.name || "User"}
                       width={256}
                       height={256}
@@ -200,10 +196,25 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
                     : "bg-gray-100 text-gray-800 rounded-bl-none ml-10"
                     }`}
                 >
-                  <p>{msg.text}</p>
+                  {/* Attachments */}
+                  {msg.attachments?.map((fileUrl, idx) => (
+                    <div key={idx} className="mt-2">
+                      <Image
+                        src={`${process.env.NEXT_PUBLIC_API_BASE_URL}${fileUrl}`}
+                        alt="attachment"
+                        width={150}
+                        height={150}
+                        className="rounded-lg object-cover"
+                      />
+                    </div>
+                  ))}
+
+                  {/* Text */}
+                  {msg.text && <p>{msg.text}</p>}
+
+                  {/* Timestamp */}
                   <span
-                    className={`block text-[10px] mt-1 ${isSent ? "text-white" : "text-gray-400"
-                      }`}
+                    className={`block text-[10px] mt-1 ${isSent ? "text-white" : "text-gray-400"}`}
                   >
                     {new Date(msg.createdAt).toLocaleTimeString([], {
                       hour: "2-digit",
@@ -212,6 +223,7 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
                     })}
                   </span>
                 </div>
+
               </div>
             </div>
           );

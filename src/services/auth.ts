@@ -17,11 +17,12 @@ export const updateUser = async (formData: FormData) => {
 
 export const loginUser = async (credentials: Login) => {
   const { data } = await api.post("/api/users/login", credentials);
-  return data.data.token;
+  return data.data;
 };
 
 export const signUpUser = async (credentials: Register) => {
-  await api.post("/api/users/signup", credentials);
+  const { data } = await api.post("/api/users/signup", credentials);
+  return data.data.user;
 };
 
 export const forgotPassword = async (email: string) => {

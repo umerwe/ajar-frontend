@@ -27,11 +27,12 @@ export const useSignup = () => {
 
     const mutation = useMutation({
         mutationFn: signUpUser,
-        onSuccess: () => {
+        onSuccess: (data: any) => {
             toast({
                 title: "Success",
                 description: "Account created successfully! Please check your email for verification."
             });
+            localStorage.setItem("email", data.email);
             router.push("/auth/verification");
         },
         onError: (error) => {
@@ -51,13 +52,23 @@ export const useLogin = () => {
 
     const mutation = useMutation({
         mutationFn: loginUser,
-        onSuccess: (token: string) => {
-            localStorage.setItem("token", token);
-            toast({
-                title: "Login Successfully",
-                variant: "default",
-            });
-            router.push("/");
+        onSuccess: (data: any) => {
+            if (data.require2FA) {
+                toast({
+                    title: `${data.message}`,
+                    variant: "default",
+                })
+                localStorage.setItem("2FAtoken", data.tempToken);
+                router.push("/auth/verification/two-factor");
+            }
+            else {
+                localStorage.setItem("token", data.token);
+                toast({
+                    title: "Login Successfully",
+                    variant: "default",
+                });
+                router.push("/");
+            }
         },
         onError: (error) => {
             const err = error as AxiosError<ErrorResponse>;
