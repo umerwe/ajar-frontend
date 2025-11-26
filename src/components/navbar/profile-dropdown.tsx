@@ -10,6 +10,7 @@ import { Skeleton } from "../ui/skeleton";
 import { capitalizeWords } from "@/utils/capitalizeWords";
 import { timeAgo } from "@/utils/timeAgo";
 import { useNotification } from "@/hooks/useNotification";
+import { Notification } from "@/types/notification";
 
 const NotificationContent = () => {
   const { data: notifications, isLoading } = useNotification();
@@ -31,7 +32,7 @@ const NotificationContent = () => {
             <Skeleton className="h-4 w-3/4" />
           </div>
         ) : notifications && notifications.length > 0 ? (
-          notifications.map((item: any) => (
+          notifications.map((item: Notification) => (
             <Link
               key={item._id}
               href={`/dashboard/${item.data.type}/${item.data.listingId}`}
@@ -42,7 +43,7 @@ const NotificationContent = () => {
               <p className="text-xs text-gray-500 mt-1 line-clamp-2">{item.message}</p>
               <div className="flex items-center text-xs text-gray-400 mt-1">
                 <ClockIcon className="h-3 w-3 mr-1" />
-                {timeAgo(item.createdAt)}
+                {timeAgo(item?.createdAt?.toString() || "")}
               </div>
             </Link>
           ))

@@ -23,6 +23,7 @@ export const RegisterSchema = z.object({
 
 export const VerificationSchema = z.object({
   otp: z.string().min(1, "OTP is required"),
+  email: z.string().email("Invalid email address"),
 })
 
 export const ForgotPasswordSchema = z.object({

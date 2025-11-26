@@ -1,4 +1,3 @@
-import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { verifyUserByEmail, resendVerificationByEmail } from "@/services/verification";
 import { toast } from "@/components/ui/toast";

@@ -7,13 +7,14 @@ import { useGetMarketplaceListing } from "@/hooks/useListing";
 import Header from "@/components/pages/listing-details/header";
 import { useCreateBooking } from "@/hooks/useBooking";
 import { BookingRequest } from "@/types/booking";
-import { getStripe } from "@/lib/stripe";
 import { capitalizeWords } from "@/utils/capitalizeWords";
+import api from "@/lib/axios";
+import Image from "next/image";
 
 const CheckoutPage = () => {
     const params = useParams();
     const id = params?.id as string;
-    const { data: listing, isLoading } = useGetMarketplaceListing(id);
+    const { data: listing } = useGetMarketplaceListing(id);
     const { mutateAsync: createBooking, isPending } = useCreateBooking();
 
 
@@ -23,7 +24,7 @@ const CheckoutPage = () => {
         specialRequest: '',
     });
 
-    const handleInputChange = (e: any) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({
             ...prev,
@@ -47,16 +48,13 @@ const CheckoutPage = () => {
 
         createBooking({ booking: bookingPayload }, {
             onSuccess: async (data) => {
-                const stripe = await getStripe();
-                if (!stripe) throw new Error("Stripe failed to initialize");
-
-                const redirectResult = await stripe.redirectToCheckout({
-                    sessionId: data.booking._id,
-                });
-
-                if (redirectResult?.error) {
-                    console.error(redirectResult.error);
-                    alert("Payment redirection failed. Try again.");
+                try {
+                    const x = await api.post('/api/payments/stripe/intent', {
+                        bookingId: data.booking._id
+                    })
+                    console.log(x)
+                } catch (error) {
+                    console.log(error)
                 }
             }
         });
@@ -127,9 +125,11 @@ const CheckoutPage = () => {
                         <div className="bg-white rounded-lg p-6 shadow-sm">
                             <div className="flex gap-4 mb-4">
                                 <div className="w-24 h-24 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
-                                    <img
+                                    <Image
                                         src={`${process.env.NEXT_PUBLIC_API_BASE_URL}${listing?.rentalImages[0]}`}
                                         alt={listing?.name}
+                                        width={100}
+                                        height={100}
                                         className="w-full h-full object-cover"
                                     />
                                 </div>

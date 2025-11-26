@@ -3,6 +3,8 @@ import { useRouter } from "next/navigation";
 import { forgotPassword, getUser, loginUser, resetPassword, signUpUser, updateUser } from "@/services/auth";
 import { toast } from "@/components/ui/toast";
 import { AxiosError } from "axios";
+import { Register } from "@/validations/auth";
+import { LoginSuccessResponse } from "@/types/auth";
 
 export const useUser = () => {
     return useQuery({
@@ -27,7 +29,7 @@ export const useSignup = () => {
 
     const mutation = useMutation({
         mutationFn: signUpUser,
-        onSuccess: (data: any) => {
+        onSuccess: (data: Register) => {
             toast({
                 title: "Success",
                 description: "Account created successfully! Please check your email for verification."
@@ -52,17 +54,17 @@ export const useLogin = () => {
 
     const mutation = useMutation({
         mutationFn: loginUser,
-        onSuccess: (data: any) => {
+        onSuccess: (data: LoginSuccessResponse) => {
             if (data.require2FA) {
                 toast({
                     title: `${data.message}`,
                     variant: "default",
                 })
-                localStorage.setItem("2FAtoken", data.tempToken);
+                localStorage.setItem("2FAtoken", data.tempToken!);
                 router.push("/auth/verification/two-factor");
             }
             else {
-                localStorage.setItem("token", data.token);
+                localStorage.setItem("token", data.token!);
                 toast({
                     title: "Login Successfully",
                     variant: "default",

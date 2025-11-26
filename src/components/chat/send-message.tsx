@@ -1,116 +1,178 @@
 "use client";
 
-import { Send, Paperclip, Mic } from "lucide-react";
+import { Send, Paperclip, X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MessageForm, messageSchema } from "@/validations/chat";
 import { useState } from "react";
 import api from "@/lib/axios";
+import Image from "next/image";
 
 type SendMessageProps = {
-  onSend: (args: { text?: string; fileUrl?: string }) => void;
+  onSend: (args: { text?: string; fileUrls?: string[] }) => void;
   isSending?: boolean;
   chatId?: string;
   receiverId?: string;
 };
 
+type FileItem = {
+  url: string | null;
+  name: string;
+  isUploading: boolean;
+};
 
 const SendMessage = ({ onSend, isSending, chatId, receiverId }: SendMessageProps) => {
-  const [isUploading, setIsUploading] = useState(false);
-  const [fileUrl, setFileUrl] = useState<string | null>(null);
+  const [files, setFiles] = useState<FileItem[]>([]);
 
   const {
     register,
     handleSubmit,
     reset,
     setValue,
-    formState: { errors },
+    watch,
   } = useForm<MessageForm>({
     resolver: zodResolver(messageSchema),
   });
 
+  const textValue = watch("text");
+
   // 📨 SEND MESSAGE
   const onSubmit = (values: MessageForm) => {
-    if (fileUrl) {
-      onSend({ fileUrl });
-      setFileUrl(null);
-    } else {
-      onSend({ text: values.text });
+    const fileUrls = files.map(f => f.url!).filter(Boolean);
+
+    if (fileUrls.length > 0 || values.text) {
+      onSend({
+        text: values.text,
+        fileUrls: fileUrls.length > 0 ? fileUrls : undefined
+      });
     }
+
+    setFiles([]);
     reset();
     setValue("text", "");
   };
 
   // 📎 FILE UPLOAD
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !chatId || !receiverId) return;
+    const selectedFiles = e.target.files;
+    if (!selectedFiles || !chatId || !receiverId) return;
 
-    try {
-      setIsUploading(true);
+    const newFiles: FileItem[] = Array.from(selectedFiles).map(file => ({
+      url: null,
+      name: file.name,
+      isUploading: true,
+    }));
 
+    setFiles(prev => [...prev, ...newFiles]);
+
+    Array.from(selectedFiles).forEach(async (file) => {
       const formData = new FormData();
       formData.append("attachments", file);
 
-      const response = await api.post(`/api/chats/upload-attachment`, formData);
+      try {
+        const response = await api.post(`/api/chats/upload-attachment`, formData);
+        const url = response?.data?.attachments?.[0];
 
-      // 👇 Get uploaded file URL from API response
-      const url = response?.data?.attachments?.[0];
-      if (url) {
-        setFileUrl(url);
-        setValue("text", file.name);
+        setFiles(prev =>
+          prev.map(f =>
+            f.name === file.name
+              ? { ...f, url: url || null, isUploading: false }
+              : f
+          )
+        );
+      } catch (error) {
+        console.error("❌ File Upload Error:", error);
+        setFiles(prev =>
+          prev.map(f =>
+            f.name === file.name
+              ? { ...f, isUploading: false }
+              : f
+          )
+        );
       }
-    } catch (error) {
-      console.error("❌ File Upload Error:", error);
-    } finally {
-      setIsUploading(false);
-      e.target.value = "";
-    }
+    });
+
+    e.target.value = "";
+  };
+
+  // ❌ REMOVE FILE
+  const removeFile = (name: string) => {
+    setFiles(prev => prev.filter(f => f.name !== name));
   };
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex items-center gap-2 p-3 border-t relative"
+      className="flex flex-col gap-2 p-3 border-t relative"
     >
-      <div className="flex-1 relative">
-        {fileUrl ? (
-          // 🖼 IMAGE PREVIEW
-          <div className="flex items-center gap-2 border rounded-lg p-2 bg-gray-50">
-            <img src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${fileUrl}`} alt="attachment" className="w-10 h-10 rounded-md object-cover" />
-          </div>
-        ) : (
+      {/* FILE PREVIEW SECTION */}
+      {files.length > 0 && (
+        <div className="flex gap-2 overflow-x-auto pb-2">
+          {files.map((file, idx) => (
+            <div key={idx} className="relative w-16 h-16 flex-shrink-0">
+              {file.isUploading ? (
+                <div className="w-16 h-16 bg-gray-200 animate-pulse rounded-md" />
+              ) : (
+                <Image
+                  src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${file.url}`}
+                  alt={file.name}
+                  width={64}
+                  height={64}
+                  className="w-16 h-16 object-cover rounded-md"
+                />
+              )}
+              {/* Remove button - fixed positioning */}
+              <button
+                type="button"
+                onClick={() => removeFile(file.name)}
+                className="absolute -top-2 -right-2 bg-white z-10 rounded-full p-1 shadow hover:bg-gray-200 border"
+              >
+                <X className="w-3 h-3 text-gray-600" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* INPUT AND BUTTONS SECTION */}
+      <div className="flex gap-2 items-center">
+        <div className="flex-1 relative">
           <input
             type="text"
             placeholder="Type message..."
             {...register("text")}
-            className="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-aqua"
+            className="w-full px-3 py-2 text-sm border rounded-lg"
           />
-        )}
+        </div>
 
-        {errors.text && !fileUrl && (
-          <p className="text-red-500 text-xs absolute -top-5 left-3">
-            {errors.text.message}
-          </p>
-        )}
+        <div className="flex items-center gap-2">
+          {/* HIDDEN FILE INPUT */}
+          <input
+            type="file"
+            className="hidden"
+            id="fileUpload"
+            onChange={handleFileUpload}
+            multiple
+          />
+
+          <label htmlFor="fileUpload" className="cursor-pointer">
+            <Paperclip className="text-gray-500" />
+          </label>
+
+          <button
+            type="submit"
+            disabled={
+              isSending ||
+              files.some(f => f.isUploading) ||
+              (!textValue?.trim() && files.length === 0)  // 🚀 no text & no file → disable
+            }
+            className="bg-aqua text-white p-2 rounded-lg disabled:opacity-60 disabled:cursor-no-drop"
+          >
+            <Send className="w-5 h-5" />
+          </button>
+
+        </div>
       </div>
-
-      {/* HIDDEN FILE INPUT */}
-      <input type="file" className="hidden" id="fileUpload" onChange={handleFileUpload} />
-
-      <label htmlFor="fileUpload" className="cursor-pointer">
-        <Paperclip className="text-gray-500" />
-      </label>
-
-      <Mic className="text-gray-500 cursor-pointer" />
-
-      <button
-        type="submit"
-        disabled={isSending || isUploading}
-        className="bg-aqua text-white p-2 rounded-lg disabled:opacity-60"
-      >
-        <Send className="w-5 h-5" />
-      </button>
     </form>
   );
 };

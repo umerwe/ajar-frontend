@@ -20,13 +20,12 @@ const TwoFactorVerificationForm = () => {
     });
 
     // ✔ VERIFY OTP
-    const onSubmit = (formData: any) => {
+    const onSubmit = (formData: Verification) => {
         const authToken = localStorage.getItem("2FAtoken");
 
         verifyTwoFactor({ token: formData.otp, authToken: authToken! },
             {
-                onSuccess: (data: any) => {
-                    console.log(data)
+                onSuccess: (data) => {
                     localStorage.removeItem("2FAtoken")
                     localStorage.setItem("token", data.data.token)
                     toast({

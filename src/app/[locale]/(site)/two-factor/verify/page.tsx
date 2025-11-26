@@ -5,7 +5,7 @@ import { useEnableTwoFactor } from "@/hooks/useTwoFactor";
 import { useEffect } from "react";
 
 const Verification = () => {
-    const { mutateAsync: enableTwoFactor, isPending: isEnabling } = useEnableTwoFactor();
+    const { mutateAsync: enableTwoFactor } = useEnableTwoFactor();
 
     useEffect(() => {
         enableTwoFactor();

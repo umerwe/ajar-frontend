@@ -1,9 +1,9 @@
 export interface MessagePayload {
   chatId: string;
   receiver: string;
-  text: string;
+  text?: string;
+  attachments?: string[];
 }
-
 export interface SendMessageProps {
     chatId: string;
     receiverId: string;

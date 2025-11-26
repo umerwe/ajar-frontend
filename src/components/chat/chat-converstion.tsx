@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { capitalizeWords } from "@/utils/capitalizeWords";
 import SendMessage from "./send-message";
 import SkeletonLoader from "../common/skeleton-loader";
-import { Message } from "@/types/chat";
+import { Message, MessagePayload } from "@/types/chat";
 
 const ChatConversation = ({ id: chatId }: { id?: string }) => {
   const { data: user } = useUser();
@@ -16,6 +16,7 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
   const [isChatActive, setIsChatActive] = useState(false);
   const { data, isLoading } = useGetMessages(chatId as string);
   const scrollRef = useRef<HTMLDivElement>(null);
+
   // ✅ Load all messages from backend
   useEffect(() => {
     if (data?.messages?.length) {
@@ -71,7 +72,7 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
     const handleMessageRead = (data: { messageId: string; readAt: Date }) => {
       setMessages((prev) =>
         prev.map((msg) =>
-          msg._id === data.messageId ? { ...msg, readAt: new Date(data.readAt) } : msg
+          msg._id === data.messageId ? { ...msg, readAt: new Date(data.readAt),seen : true } : msg
         )
       );
     };
@@ -91,22 +92,29 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
     };
   }, [chatId, isChatActive]);
 
-  const handleSend = ({ text, fileUrl }: { text?: string; fileUrl?: string }) => {
+  const handleSend = ({ text, fileUrls }: { text?: string; fileUrls?: string[] }) => {
     if (!user || !chatId || !data?.receiver?._id) return;
 
-    const payload: any = {
+    const payload: MessagePayload = {
       chatId,
       receiver: data.receiver._id,
     };
 
     if (text) payload.text = text;
-    if (fileUrl) payload.attachments = [fileUrl];
-
-    console.log(text)
+    if (fileUrls && fileUrls.length > 0) payload.attachments = fileUrls;
 
     socket?.emit("message:send", payload);
   };
 
+  // Helper to determine message type
+  const getMessageType = (msg: Message) => {
+    const hasText = !!msg.text?.trim();
+    const hasAttachments = msg.attachments && msg.attachments.length > 0;
+
+    if (hasText && hasAttachments) return "mixed";
+    if (hasAttachments) return "media";
+    return "text";
+  };
 
   return (
     <div className="flex flex-col h-full w-full bg-white border shadow">
@@ -142,7 +150,7 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
       </div>
 
       {/* ---------------- MESSAGES ---------------- */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-4">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-3">
         {isLoading && messages.length === 0 && (
           <SkeletonLoader variant="messages" count={6} />
         )}
@@ -151,24 +159,19 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
           const isSent = msg.sender?._id === user?._id;
           const sender = msg.sender || {};
           const hasImage = sender.profilePicture;
-          const avatarUrl = hasImage
-            ? sender.profilePicture
-            : "";
+          const messageType = getMessageType(msg);
 
           return (
             <div
               key={msg._id}
-              className={`flex ${isSent ? "justify-end" : "justify-start"} mb-5`}
+              className={`flex ${isSent ? "justify-end" : "justify-start"} group`}
             >
-              <div
-                className={`flex flex-col relative ${isSent ? "items-end text-right" : "items-start text-left"
-                  }`}
-              >
+              <div className={`flex gap-2 max-w-[70%] ${isSent ? "flex-row-reverse" : "flex-row"}`}>
                 {/* Avatar */}
-                <div className={`absolute ${isSent ? "right-0" : "left-0"} top-9`}>
+                <div className="flex-shrink-0">
                   {hasImage ? (
                     <Image
-                      src={avatarUrl || ""}
+                      src={sender.profilePicture || ""}
                       alt={sender.name || "User"}
                       width={256}
                       height={256}
@@ -176,61 +179,74 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
                     />
                   ) : (
                     <div className="w-8 h-8 rounded-full bg-aqua flex items-center justify-center text-white text-sm font-semibold">
-                      {sender.name?.charAt(0)?.toUpperCase()}
+                      {sender.name?.charAt(0)?.toUpperCase() || "U"}
                     </div>
                   )}
                 </div>
 
-                {/* Name */}
-                <div
-                  className={`mt-9 text-xs font-medium text-gray-500 ${isSent ? "pr-10" : "pl-10"
-                    }`}
-                >
-                  {isSent ? "You" : capitalizeWords(sender.name)}
-                </div>
-
-                {/* Message Bubble */}
-                <div
-                  className={`mt-1 px-3 py-2 rounded-lg text-sm max-w-xs ${isSent
-                    ? "bg-aqua text-white rounded-br-none mr-10"
-                    : "bg-gray-100 text-gray-800 rounded-bl-none ml-10"
-                    }`}
-                >
-                  {/* Attachments */}
-                  {msg.attachments?.map((fileUrl, idx) => (
-                    <div key={idx} className="mt-2">
-                      <Image
-                        src={`${process.env.NEXT_PUBLIC_API_BASE_URL}${fileUrl}`}
-                        alt="attachment"
-                        width={150}
-                        height={150}
-                        className="rounded-lg object-cover"
-                      />
+                {/* Message Content */}
+                <div className={`flex flex-col ${isSent ? "items-end" : "items-start"}`}>
+                  {/* Sender Name */}
+                  {!isSent && (
+                    <div className="text-xs font-medium text-gray-500 mb-1 px-2">
+                      {capitalizeWords(sender.name)}
                     </div>
-                  ))}
+                  )}
 
-                  {/* Text */}
-                  {msg.text && <p>{msg.text}</p>}
+                  {/* Message Bubble */}
+                  <div
+                    className={`rounded-2xl px-4 py-2 ${isSent
+                      ? "bg-aqua text-white rounded-br-md"
+                      : "bg-gray-100 text-gray-800 rounded-bl-md"
+                      } ${messageType === "mixed" ? "space-y-3" : ""}`}
+                  >
+                    {/* Attachments */}
+                    {msg.attachments && msg.attachments.length > 0 && (
+                      <div className={`grid gap-2 ${msg.attachments.length > 1 ? "grid-cols-2" : ""}`}>
+                        {msg.attachments.map((fileUrl, idx) => (
+                          <div key={idx} className="relative">
+                            <Image
+                              src={`${process.env.NEXT_PUBLIC_API_BASE_URL}${fileUrl}`}
+                              alt="attachment"
+                              width={200}
+                              height={200}
+                              className="rounded-lg object-cover w-full h-auto max-w-[150px]"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Text Content */}
+                    {msg.text && (
+                      <div className={`${messageType === "media" ? "mt-2" : ""}`}>
+                        <p className="text-sm leading-relaxed break-words">{msg.text}</p>
+                      </div>
+                    )}
+                  </div>
 
                   {/* Timestamp */}
-                  <span
-                    className={`block text-[10px] mt-1 ${isSent ? "text-white" : "text-gray-400"}`}
-                  >
+                  <div className={`text-[10px] text-gray-400 mt-1 px-2 ${isSent ? "text-right" : "text-left"}`}>
                     {new Date(msg.createdAt).toLocaleTimeString([], {
                       hour: "2-digit",
                       minute: "2-digit",
                       hour12: true,
                     })}
-                  </span>
+                  </div>
                 </div>
-
               </div>
             </div>
           );
         })}
 
         {!isLoading && messages.length === 0 && (
-          <p className="text-center text-gray-500 text-sm">No messages yet</p>
+          <div className="flex flex-col items-center justify-center h-full text-gray-500">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-3">
+              <span className="text-2xl">💬</span>
+            </div>
+            <p className="text-sm">No messages yet</p>
+            <p className="text-xs text-gray-400 mt-1">Start a conversation</p>
+          </div>
         )}
       </div>
 

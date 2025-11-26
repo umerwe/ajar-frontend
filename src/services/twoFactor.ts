@@ -1,4 +1,5 @@
 import api from "@/lib/axios";
+import { TwoFactorParams } from "@/types/auth";
 
 export const enableTwoFactor = async () => {
     const response = await api.post("/api/2fa/enable");
@@ -10,7 +11,7 @@ export const startTwoFactor = async () => {
     return response.data;
 };
 
-export const verifyTwoFactor = async ({ token ,authToken}: { token: string ,authToken?: string }) => {
+export const verifyTwoFactor = async ({ token ,authToken}: TwoFactorParams) => {
     const response = await api.post("/api/2fa/verify", { token }, {
         headers: {
             "Content-Type": "application/json",

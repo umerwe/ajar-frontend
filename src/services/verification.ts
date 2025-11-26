@@ -6,7 +6,7 @@ export const verifyUserByEmail = async (credentials: Verification) => {
   return data.data;
 };
 
-export const resendVerificationByEmail = async (credentials: any) => {
-  const { data } = await api.post("/api/users/resend-otp", credentials);
+export const resendVerificationByEmail = async (email: {email: string}) => {
+  const { data } = await api.post("/api/users/resend-otp", {email});
   return data.data;
 };

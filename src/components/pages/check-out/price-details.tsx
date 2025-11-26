@@ -1,9 +1,3 @@
-interface PricingDetails {
-  price: number;
-  adminFee: number;
-  totalPrice: number;
-}
-
 const PriceDetails = ({ price }: { price: number }) => {
 
   return (

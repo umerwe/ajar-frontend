@@ -11,3 +11,16 @@ export type EditProfile = {
   dob: string;
   nationality: string;
 };
+
+export interface LoginSuccessResponse {
+  require2FA?: boolean;
+  message?: string;
+  tempToken?: string;
+  token?: string;
+}
+
+// Define the input type
+export interface TwoFactorParams {
+  token: string;
+  authToken?: string;
+}

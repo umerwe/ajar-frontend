@@ -17,7 +17,7 @@ const EmailVerificationForm = ({ type, title, description, buttonText }: { type?
     const router = useRouter();
     const { mutateAsync: verifyUserByEmail, isPending } = useVerificationByEmail();
     const { mutateAsync: resendVerificationByEmail, isPending: isResending } = useResendVerificationByEmail();
-    const { mutateAsync: verifyTwoFactor, isPending: isVerifying } = useTwoFactorVerify();
+    const { mutateAsync: verifyTwoFactor } = useTwoFactorVerify();
 
     const [timer, setTimer] = useState(0);
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -28,7 +28,7 @@ const EmailVerificationForm = ({ type, title, description, buttonText }: { type?
     });
 
     // ✔ VERIFY OTP
-    const onSubmit = (formData: any) => {
+    const onSubmit = (formData: Verification) => {
         const email = localStorage.getItem("email");
 
         if (title === "Two Factor Authentication") {
@@ -46,7 +46,7 @@ const EmailVerificationForm = ({ type, title, description, buttonText }: { type?
         }
         else {
             verifyUserByEmail(
-                { ...formData, email },
+                { ...formData, email: email! },
                 {
                     onSuccess: () => {
                         if (type === "password") {
@@ -66,7 +66,7 @@ const EmailVerificationForm = ({ type, title, description, buttonText }: { type?
 
     // 🔁 RESEND OTP
     const handleResendOtp = async () => {
-        await resendVerificationByEmail({ email: localStorage.getItem("email") });
+        await resendVerificationByEmail({ email: localStorage.getItem("email")! });
         setTimer(60);
         localStorage.setItem("otpTimer", (Date.now() + 60000).toString());
     };
