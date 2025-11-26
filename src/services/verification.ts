@@ -1,13 +1,11 @@
-import { Verification } from "@/validations/auth";
 import api from "@/lib/axios";
 
-export const verifyUserByEmail = async (credentials: Verification) => {
+export const verifyUserByEmail = async (credentials: { email: string, otp: string }) => {
   const { data } = await api.post("/api/users/verify-otp", credentials);
-  console.log(data)
   return data.data;
 };
 
-export const resendVerificationByEmail = async (email: {email: string}) => {
-  const { data } = await api.post("/api/users/resend-otp", {email});
+export const resendVerificationByEmail = async (email: string) => {
+  const { data } = await api.post("/api/users/resend-otp", { email: email });
   return data.data;
 };

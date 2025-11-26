@@ -1,12 +1,12 @@
 "use client"
 import Image from "next/image"
 import { useState, useEffect } from "react"
-import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel"
+import { Carousel, CarouselContent, CarouselItem, CarouselApi } from "@/components/ui/carousel"
 import Autoplay from "embla-carousel-autoplay"
 import { testimonialsData } from "@/data/testimonials"
 
 export default function AboutUsSection() {
-    const [api, setApi] = useState<any>()
+    const [api, setApi] = useState<CarouselApi>()
     const [current, setCurrent] = useState(0)
 
     useEffect(() => {
@@ -14,7 +14,9 @@ export default function AboutUsSection() {
         setCurrent(api.selectedScrollSnap())
         const handleSelect = () => setCurrent(api.selectedScrollSnap())
         api.on("select", handleSelect)
-        return () => api.off("select", handleSelect)
+        return () => {
+            api.off("select", handleSelect)
+        }
     }, [api])
 
     const handleDotClick = (index: number) => {
@@ -26,9 +28,8 @@ export default function AboutUsSection() {
     const currentTestimonial = testimonialsData[current]
 
     return (
-        <section className={`py-16`}>
+        <section className={`py-8 md:py-16`}>
             <div>
-                {/* === ALL PREVIOUS SECTIONS UNCHANGED (About Us, Company, Stats, etc.) === */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-7xl mx-auto px-6 md:px-12">
                     {/* Left Content */}
                     <div className="space-y-4">
@@ -54,6 +55,7 @@ export default function AboutUsSection() {
                                 fill
                                 className="object-cover"
                                 sizes="(max-width: 768px) 100vw, 50vw"
+                                priority
                             />
                         </div>
                         <div className="absolute top-[27%] right-0 w-[85%] h-[32%] rounded-t-xl overflow-hidden shadow-xl z-20">
@@ -78,7 +80,7 @@ export default function AboutUsSection() {
                                 </div>
                             </div>
                         </div>
-                        <div className="absolute bottom-[35%] left-[36%] bg-[#309EC4] text-white rounded-lg px-5 py-3 z-100">
+                        <div className="absolute bottom-[35%] left-[36%] bg-[#309EC4] text-white rounded-lg px-5 py-3 z-50">
                             <div className="text-2xl font-bold leading-tight">100k+</div>
                             <div className="text-base font-medium">Hotels</div>
                         </div>
@@ -258,6 +260,7 @@ export default function AboutUsSection() {
                             width={700}
                             height={100}
                             className="w-full h-auto object-contain"
+                            priority
                         />
                     </div>
                 </div>
@@ -288,7 +291,7 @@ export default function AboutUsSection() {
                                         {currentTestimonial.name}
                                     </h3>
                                     <p className="text-gray-600 leading-relaxed text-lg animate-in fade-in duration-500">
-                                        "{currentTestimonial.testimonial}"
+                                        &quot;{currentTestimonial.testimonial}&quot;
                                     </p>
 
                                     {/* Dots - sync with carousel index */}

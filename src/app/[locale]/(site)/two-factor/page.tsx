@@ -76,6 +76,7 @@ export default function TwoFactorAuthPage() {
                                     <Button
                                         onClick={handleContinue}
                                         className="w-full"
+                                        variant="destructive"
                                         disabled={isEnableTwoFactorPending || isStartTwoFactorPending}
                                     >
                                         {isEnableTwoFactorPending || isStartTwoFactorPending

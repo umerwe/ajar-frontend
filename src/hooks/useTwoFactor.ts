@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { disableTwoFactor, enableTwoFactor, startTwoFactor, verifyTwoFactor } from "@/services/twoFactor";
 import { toast } from "@/components/ui/toast";
@@ -40,8 +40,12 @@ export const useTwoFactorStart = () => {
 };
 
 export const useTwoFactorVerify = () => {
+    const queryClient = useQueryClient();
     const mutation = useMutation({
         mutationFn: verifyTwoFactor,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["user"] });
+        },
         onError: (error) => {
             const err = error as AxiosError<ErrorResponse>;
             toast({
@@ -55,9 +59,11 @@ export const useTwoFactorVerify = () => {
 };
 
 export const useDisableTwoFactor = () => {
+    const queryClient = useQueryClient();
     const mutation = useMutation({
         mutationFn: disableTwoFactor,
         onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["user"] });
             toast({
                 title: "Two Factor Authentication Disabled",
                 variant: "default",

@@ -46,7 +46,7 @@ const EmailVerificationForm = ({ type, title, description, buttonText }: { type?
         }
         else {
             verifyUserByEmail(
-                { ...formData, email: email as string },
+                { otp: formData.otp, email: email as string },
                 {
                     onSuccess: () => {
                         if (type === "password") {
@@ -66,7 +66,8 @@ const EmailVerificationForm = ({ type, title, description, buttonText }: { type?
 
     // 🔁 RESEND OTP
     const handleResendOtp = async () => {
-        await resendVerificationByEmail({ email: localStorage.getItem("email")! });
+        const email = localStorage.getItem("email");
+        resendVerificationByEmail(email as string);
         setTimer(60);
         localStorage.setItem("otpTimer", (Date.now() + 60000).toString());
     };
@@ -108,7 +109,7 @@ const EmailVerificationForm = ({ type, title, description, buttonText }: { type?
                     <Input
                         label="Enter OTP"
                         type="number"
-                        placeholder="6435"
+                        placeholder={title ? "123456" : "1234"}
                         register={register("otp")}
                         error={errors.otp?.message}
                     />
@@ -136,7 +137,7 @@ const EmailVerificationForm = ({ type, title, description, buttonText }: { type?
                     }
 
 
-                    <Button text={`${buttonText ? buttonText : "Verify Account"}`} isPending={isPending || isResending ||isVerifying } />
+                    <Button text={`${buttonText ? buttonText : "Verify Account"}`} isPending={isPending || isVerifying} />
                 </form>
             </div>
         </>
