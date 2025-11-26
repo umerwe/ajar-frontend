@@ -63,7 +63,7 @@ export default function ProfileDropdown() {
 
   const getInitial = (name = "") => name.charAt(0).toUpperCase();
 
-  const ProfileImage = ({ size = 40 }) => {
+  const ProfileImage = ({ size = 30 }) => {
     if (isLoading) {
       return <Skeleton className="rounded-full" style={{ width: size, height: size }} />;
     }

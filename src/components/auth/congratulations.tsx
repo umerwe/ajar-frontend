@@ -22,7 +22,7 @@ interface CongratulationsDialogProps {
 export default function CongratulationsDialog({
     open,
     title = "Congratulations!",
-    description = "Your Account has been successfully created.",
+    description = "Your Account has been verified successfully.",
     redirectTo = "/auth/login",
     seconds = 5,
 }: CongratulationsDialogProps) {
