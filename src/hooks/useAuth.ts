@@ -31,7 +31,6 @@ export const useSignup = () => {
         mutationFn: signUpUser,
         onSuccess: (data: Register) => {
             toast({
-                title: "Success",
                 description: "Account created successfully! Please check your email for verification."
             });
             localStorage.setItem("email", data.email);
@@ -57,7 +56,7 @@ export const useLogin = () => {
         onSuccess: (data: LoginSuccessResponse) => {
             if (data.require2FA) {
                 toast({
-                    title: `${data.message}`,
+                    title: `6 Digit Code Sent to Email`,
                     variant: "default",
                 })
                 localStorage.setItem("2FAtoken", data.tempToken!);

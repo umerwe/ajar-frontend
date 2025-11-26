@@ -15,9 +15,9 @@ import { useTwoFactorVerify } from "@/hooks/useTwoFactor"
 
 const EmailVerificationForm = ({ type, title, description, buttonText }: { type?: string, title?: string, description?: string, buttonText?: string }) => {
     const router = useRouter();
-    const { mutateAsync: verifyUserByEmail, isPending } = useVerificationByEmail();
-    const { mutateAsync: resendVerificationByEmail, isPending: isResending } = useResendVerificationByEmail();
-    const { mutateAsync: verifyTwoFactor } = useTwoFactorVerify();
+    const { mutate: verifyUserByEmail, isPending } = useVerificationByEmail();
+    const { mutate: resendVerificationByEmail, isPending: isResending } = useResendVerificationByEmail();
+    const { mutate: verifyTwoFactor, isPending: isVerifying } = useTwoFactorVerify();
 
     const [timer, setTimer] = useState(0);
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -31,7 +31,7 @@ const EmailVerificationForm = ({ type, title, description, buttonText }: { type?
     const onSubmit = (formData: Verification) => {
         const email = localStorage.getItem("email");
 
-        if (title === "Two Factor Authentication") {
+        if (title) {
             verifyTwoFactor({ token: formData.otp },
                 {
                     onSuccess: () => {
@@ -46,7 +46,7 @@ const EmailVerificationForm = ({ type, title, description, buttonText }: { type?
         }
         else {
             verifyUserByEmail(
-                { ...formData, email: email! },
+                { ...formData, email: email as string },
                 {
                     onSuccess: () => {
                         if (type === "password") {
@@ -136,7 +136,7 @@ const EmailVerificationForm = ({ type, title, description, buttonText }: { type?
                     }
 
 
-                    <Button text={`${buttonText ? buttonText : "Verify Account"}`} isPending={isPending} />
+                    <Button text={`${buttonText ? buttonText : "Verify Account"}`} isPending={isPending || isResending ||isVerifying } />
                 </form>
             </div>
         </>

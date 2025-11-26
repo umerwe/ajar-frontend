@@ -3,6 +3,7 @@ import api from "@/lib/axios";
 
 export const verifyUserByEmail = async (credentials: Verification) => {
   const { data } = await api.post("/api/users/verify-otp", credentials);
+  console.log(data)
   return data.data;
 };
 
