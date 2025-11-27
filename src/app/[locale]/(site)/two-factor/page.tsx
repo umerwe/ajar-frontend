@@ -7,6 +7,7 @@ import { useUser } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useDisableTwoFactor, useEnableTwoFactor, useTwoFactorStart } from "@/hooks/useTwoFactor";
+import Loader from "@/components/common/loader";
 
 export default function TwoFactorAuthPage() {
     const { data: user, isLoading } = useUser();
@@ -80,7 +81,7 @@ export default function TwoFactorAuthPage() {
                                         disabled={isEnableTwoFactorPending || isStartTwoFactorPending}
                                     >
                                         {isEnableTwoFactorPending || isStartTwoFactorPending
-                                            ? "Loading..."
+                                            ? <Loader />
                                             : "Enable 2FA"}
                                     </Button>
                                 </div>

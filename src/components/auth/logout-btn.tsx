@@ -7,9 +7,10 @@ import { Button } from "@/components/ui/button";
 
 interface LogoutButtonProps {
   variant?: "menu" | "full";
+  isPending?: boolean;
 }
 
-const LogoutButton = ({ variant = "menu" }: LogoutButtonProps) => {
+const LogoutButton = ({ variant = "menu", isPending }: LogoutButtonProps) => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
@@ -27,6 +28,7 @@ const LogoutButton = ({ variant = "menu" }: LogoutButtonProps) => {
         variant="destructive"
         className="w-full sm:text-base py-5.5 flex items-center gap-2"
         onClick={handleClick}
+        disabled={isPending}
       >
         <LogOut className="h-4 w-4" /> Log Out
       </Button>

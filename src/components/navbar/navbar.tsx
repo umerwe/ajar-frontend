@@ -25,7 +25,7 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-white hover:underline transition-colors duration-200"
+                className="text-white hover:text-gray-200  transition-colors duration-200"
               >
                 {link.label}
               </Link>
@@ -49,21 +49,25 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile Navigation Menu */}
-      {mobileOpen && (
-        <div className="md:hidden px-4 pb-4 space-y-4 border-t border-white/10">
+      {/* Enhanced Mobile Navigation Menu */}
+      <div 
+        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+          mobileOpen ? "max-h-96 opacity-100 border-t border-white/10" : "max-h-0 opacity-0 border-t-0"
+        }`}
+      >
+        <div className="px-4 pb-4 text-center space-y-4">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="block text-white hover:underline py-2 transition-colors duration-200"
+              className="block text-white hover:text-gray-200 py-2 transition-colors duration-200"
               onClick={() => setMobileOpen(false)}
             >
               {link.label}
             </Link>
           ))}
         </div>
-      )}
+      </div>
 
       {/* Search Bar */}
       {showSearchBar && <SearchBar />}

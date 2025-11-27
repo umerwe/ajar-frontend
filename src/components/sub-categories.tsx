@@ -2,7 +2,6 @@
 import { AdjustmentsHorizontalIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 import { useSearchParams, useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { useSubCategories } from "@/hooks/useSubCategory";
 import Dropdown from "@/components/ui/dropdown";
 import SkeletonLoader from "./common/skeleton-loader";
@@ -14,6 +13,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { capitalizeWords } from "@/utils/capitalizeWords";
 
 const statusOptions = ["Pending", "Approved", "Rejected", "Completed", "Cancelled"];
 
@@ -58,13 +58,6 @@ const SubCategories = () => {
           border-l-blue"
     >
       <div className="flex items-center gap-3">
-        <Image
-          width={20}
-          height={20}
-          src={activeSubCategory.icon || "/ai-logo.png"}
-          alt={`${activeSubCategory.name} icon`}
-          className="w-5 h-5"
-        />
         <span className="text-sm font-semibold text-[#01c89b]">
           {activeSubCategory.name}
         </span>
@@ -85,18 +78,11 @@ const SubCategories = () => {
               className={`flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors duration-150 ${active && "bg-blue-50 border-r-4 border-aqua text-aqua"
                 }`}
             >
-              <Image
-                width={20}
-                height={20}
-                src={cat?.icon || "/ai-logo.png"}
-                alt={`${cat.name} icon`}
-                className="w-5 h-5"
-              />
               <span
                 className={`text-sm font-medium text-gray-500 ${active && "text-aqua"
                   } `}
               >
-                {cat.name}
+                {capitalizeWords(cat.name)}
               </span>
               {active && <div className="ml-auto w-2 h-2 rounded-full bg-aqua"></div>}
             </Link>
@@ -142,19 +128,12 @@ const SubCategories = () => {
             <Link
               key={i}
               href={getHref(cat)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-full transition-colors duration-200 ${active
+              className={`flex items-center gap-2 px-8 rounded-full transition-colors duration-200 ${active
                 ? "text-aqua border-2 border-t-aqua border-r-aqua border-b-blue border-l-blue bg-transparent"
                 : "bg-gray-100 text-gray-400 border border-transparent hover:border-aqua hover:text-aqua"
                 }`}
             >
-              <Image
-                width={20}
-                height={20}
-                src={cat?.icon || "/ai-logo.png"}
-                alt={`${cat.name} icon`}
-                className="w-5 h-5"
-              />
-              <span className="text-sm font-semibold">{cat.name}</span>
+              <span className="text-sm font-semibold">{capitalizeWords(cat.name)}</span>
             </Link>
           );
         })}
@@ -165,7 +144,7 @@ const SubCategories = () => {
             <DialogTrigger asChild>
               <Button
                 variant="secondary"
-                className="rounded-full pl-8 py-5 flex items-center gap-2"
+                className="rounded-full pl-8 py-5 bg-aqua/10 flex items-center gap-2"
               >
                 Show all
                 <ChevronDownIcon className="w-4 h-4" />
@@ -182,19 +161,12 @@ const SubCategories = () => {
                     <DialogTrigger asChild key={i}>
                       <Link
                         href={getHref(cat)}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-full transition-colors duration-200 ${active
+                        className={`flex items-center gap-2 px-8 py-2 rounded-full transition-colors duration-200 ${active
                           ? "text-aqua border-2 border-t-aqua border-r-aqua border-b-blue border-l-blue bg-transparent"
                           : "bg-gray-100 text-gray-400 border border-transparent hover:border-aqua hover:text-aqua"
                           }`}
                       >
-                        <Image
-                          width={20}
-                          height={20}
-                          src={cat?.icon || "/ai-logo.png"}
-                          alt={`${cat.name} icon`}
-                          className="w-5 h-5"
-                        />
-                        <span className="text-sm font-semibold">{cat.name}</span>
+                        <span className="text-sm font-semibold">{capitalizeWords(cat.name)}</span>
                       </Link>
                     </DialogTrigger>
                   );

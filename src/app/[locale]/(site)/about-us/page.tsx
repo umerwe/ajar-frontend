@@ -2,18 +2,25 @@
 import Image from "next/image"
 import { useState, useEffect } from "react"
 import { Carousel, CarouselContent, CarouselItem, CarouselApi } from "@/components/ui/carousel"
-import Autoplay from "embla-carousel-autoplay"
+// import Autoplay from "embla-carousel-autoplay"
 import { testimonialsData } from "@/data/testimonials"
+import { ChevronLeft, ChevronRight } from "lucide-react" // Import icons for arrows
 
 export default function AboutUsSection() {
     const [api, setApi] = useState<CarouselApi>()
     const [current, setCurrent] = useState(0)
+    // Add state for button visibility to ensure we don't try to scroll if the API is not ready
+    const [isApiReady, setIsApiReady] = useState(false) 
 
     useEffect(() => {
         if (!api) return
+
+        setIsApiReady(true) // Set API ready state
         setCurrent(api.selectedScrollSnap())
+        
         const handleSelect = () => setCurrent(api.selectedScrollSnap())
         api.on("select", handleSelect)
+        
         return () => {
             api.off("select", handleSelect)
         }
@@ -22,6 +29,19 @@ export default function AboutUsSection() {
     const handleDotClick = (index: number) => {
         if (api) {
             api.scrollTo(index)
+        }
+    }
+
+    // Handlers for arrow clicks
+    const handlePrev = () => {
+        if (api) {
+            api.scrollPrev()
+        }
+    }
+
+    const handleNext = () => {
+        if (api) {
+            api.scrollNext()
         }
     }
 
@@ -271,8 +291,29 @@ export default function AboutUsSection() {
                         <p className="text-gray-600 text-lg max-w-3xl mx-auto leading-relaxed">Several selected clients, who already believe in our service.</p>
                     </div>
 
-                    {/* Static card wrapper - stays in place */}
-                    <div className="w-full max-w-4xl mx-auto px-4 pb-12">
+                    {/* Static card wrapper - NOW RELATIVE for arrow positioning */}
+                    <div className="w-full max-w-4xl mx-auto px-4 pb-12 relative">
+                        
+                        {/* LEFT ARROW BUTTON */}
+                        <button
+                            onClick={handlePrev}
+                            disabled={!isApiReady}
+                            className="absolute z-50 top-1/2 left-0 -translate-y-1/2 bg-white p-3 rounded-full shadow-lg border border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 transition-colors"
+                            aria-label="Previous Testimonial"
+                        >
+                            <ChevronLeft className="h-5 w-5 text-[#1a2b3c]" />
+                        </button>
+                        
+                        {/* RIGHT ARROW BUTTON */}
+                        <button
+                            onClick={handleNext}
+                            disabled={!isApiReady}
+                            className="absolute z-50 top-1/2 right-0 -translate-y-1/2 bg-white p-3 rounded-full shadow-lg border border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 transition-colors"
+                            aria-label="Next Testimonial"
+                        >
+                            <ChevronRight className="h-5 w-5 text-[#1a2b3c]" />
+                        </button>
+
                         <div className="bg-gradient-to-br from-gray-50 to-white rounded-3xl p-12 shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-100">
                             <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
                                 <div className="relative w-32 h-32 rounded-full overflow-hidden flex-shrink-0 ring-8 ring-white shadow-2xl">
@@ -314,13 +355,6 @@ export default function AboutUsSection() {
                     <div className="hidden">
                         <Carousel
                             setApi={setApi}
-                            plugins={[
-                                Autoplay({
-                                    delay: 3000,
-                                    stopOnInteraction: false,
-                                    stopOnMouseEnter: true,
-                                }),
-                            ]}
                             opts={{
                                 align: "center",
                                 loop: true,

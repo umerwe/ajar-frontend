@@ -82,5 +82,11 @@ type User = {
   nationality: string
   createdAt: string
   updatedAt: string
+  documents?: Array<{
+    _id: string;
+    name: string;
+    filesUrl?: string[];
+    status?: string;
+  }>;
 }
 

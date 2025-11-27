@@ -25,7 +25,7 @@ const FavouritesPage = () => {
           title="My Favourites"
         />
       </div>
-      <div className="py-8">
+      <div className="pt-1 pb-8">
         <MainCard listings={listings} showRemoveButton={true} />
       </div>
     </div>

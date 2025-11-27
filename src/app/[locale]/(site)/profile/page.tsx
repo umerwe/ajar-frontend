@@ -24,7 +24,8 @@ import { useGetUserDocument } from "@/hooks/useDocument";
 
 export default function SettingsPage() {
     const { data: user = [], isLoading, isError } = useUser();
-    const { data: documents = [], isLoading: documentsLoading } = useGetUserDocument();
+    const { data: documents = [] } = useGetUserDocument();
+
     const [file, setFile] = React.useState<File | null>(null);
     const [open, setOpen] = React.useState(false);
 
@@ -35,7 +36,7 @@ export default function SettingsPage() {
     return (
         <div className="min-h-screen bg-gray-50">
             <div className="px-3 sm:px-7">
-                <Header title="Settings" />
+                <Header title="Profile" />
             </div>
 
             <div className="mx-auto max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl">
@@ -154,11 +155,12 @@ export default function SettingsPage() {
                                             </div>
 
                                             {/* Edit Profile Form */}
-                                            <EditProfileForm 
-                                                file={file} 
-                                                setOpen={setOpen} 
+                                            <EditProfileForm
+                                                file={file}
+                                                setOpen={setOpen}
                                                 documents={documents}
-                                                documentsLoading={documentsLoading}
+                                                user={user}
+                                                isLoading={isLoading}
                                             />
                                         </div>
                                     </DialogContent>
@@ -184,7 +186,10 @@ export default function SettingsPage() {
 
                 {/* Bottom Button */}
                 <div className="p-4 bg-white mt-2">
-                    <LogoutButton variant="full" />
+                    <LogoutButton
+                        variant="full"
+
+                    />
                 </div>
 
                 <div className="h-8"></div>

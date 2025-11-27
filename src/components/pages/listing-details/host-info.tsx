@@ -1,6 +1,6 @@
 import { Listing } from '@/types/listing'
 import { capitalizeWords } from '@/utils/capitalizeWords'
-import { MessageCircleMore, Star } from 'lucide-react'
+import {  Star } from 'lucide-react'
 import Image from 'next/image'
 
 const HostInfo = ({ property }: {property : Listing}) => {
@@ -28,9 +28,9 @@ const HostInfo = ({ property }: {property : Listing}) => {
                         </p>
                     </div>
                 </div>
-                <div className="border-2 border-t-aqua border-r-aqua border-b-blue border-l-blue flex items-center justify-center mb-2 w-10 h-10 rounded-md cursor-pointer">
+                {/* <div className="border-2 border-t-aqua border-r-aqua border-b-blue border-l-blue flex items-center justify-center mb-2 w-10 h-10 rounded-md cursor-pointer">
                     <MessageCircleMore className="w-5.5 h-5.5 text-aqua" />
-                </div>
+                </div> */}
             </div>
         </div>
     )

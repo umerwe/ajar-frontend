@@ -20,9 +20,6 @@ const NotificationContent = () => {
     <div className="absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50 md:w-80">
       <div className="px-4 py-3 border-b border-gray-100 flex justify-between items-center">
         <p className="text-base font-semibold text-gray-900">Notifications</p>
-        <Link href="/notifications" className="text-xs text-aqua hover:text-green-600 font-medium">
-          View All
-        </Link>
       </div>
 
       <div className="max-h-80 overflow-y-auto">
@@ -36,7 +33,7 @@ const NotificationContent = () => {
             <Link
               key={item._id}
               href={`/dashboard/${item.data.type}/${item.data.listingId}`}
-              className={`block px-4 py-3 transition-colors duration-150 ${item.isRead ? "text-gray-700 hover:bg-gray-50" : "bg-green-50/50 text-gray-900 hover:bg-green-100"
+              className={`block px-4 py-3 transition-colors duration-150 ${item.isRead ? "text-gray-700 hover:bg-gray-50" : "bg-green-50/50 text-gray-900 hover:bg-aqua/10"
                 }`}
             >
               <p className="text-sm font-medium leading-snug">{item.title}</p>
@@ -64,28 +61,37 @@ export default function ProfileDropdown() {
   const getInitial = (name = "") => name.charAt(0).toUpperCase();
 
   const ProfileImage = ({ size = 30 }) => {
+    const imageWrapperStyle = { width: size, height: size };
+
     if (isLoading) {
-      return <Skeleton className="rounded-full" style={{ width: size, height: size }} />;
+      return (
+        <Skeleton
+          className="rounded-full"
+          style={imageWrapperStyle} // ⬅ Same width & height
+        />
+      );
     }
 
     if (user?.profilePicture) {
       return (
-        <div style={{ width: size, height: size }} className="relative rounded-full overflow-hidden flex-shrink-0">
+        <div
+          style={imageWrapperStyle} // ⬅ Same size
+          className="relative rounded-full overflow-hidden flex-shrink-0"
+        >
           <Image
             src={process.env.NEXT_PUBLIC_API_BASE_URL + user.profilePicture}
             alt={user?.name || "User Avatar"}
-            width={256}
-            height={256}
-            className={`object-cover rounded-full w-full h-full`}
+            width={size}
+            height={size}
+            className="object-cover rounded-full w-full h-full"
           />
         </div>
       );
     }
 
-    // 🔹 If no image available, show initial
     return (
       <div
-        style={{ width: size, height: size }}
+        style={imageWrapperStyle} // ⬅ Same size
         className="flex items-center justify-center rounded-full bg-aqua text-white text-sm font-semibold flex-shrink-0"
       >
         {getInitial(user?.name)}
@@ -163,7 +169,7 @@ export default function ProfileDropdown() {
 
   return (
     // This wrapper mimics the visual grouping of the original single button.
-    <div className="flex items-center space-x-1.5 bg-white rounded-full pl-2 pr-1 py-0.5 w-fit hover:shadow-md transition-shadow duration-200">
+    <div className="flex items-center space-x-1 bg-white rounded-full pl-2 pr-1 pt-0.5 w-fit hover:shadow-md transition-shadow duration-200">
       {/* Dropdown 1: Notifications (Bell) */}
       <Dropdown button={notificationButton}>
         <NotificationContent />
