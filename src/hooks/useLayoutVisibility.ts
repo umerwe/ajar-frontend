@@ -39,7 +39,8 @@ export function useLayoutVisibility() {
       !hasSearchParams &&
       (isHomePage || isCategoryPage || segments[0] === "listing") &&
       !isDetailPage,
-      hasSearchParams:
-      hasSearchParams
+    hasSearchParams:
+      !searchParams.get("zone") && !searchParams.get("minPrice") && !searchParams.get("maxPrice") && !searchParams.get("category") &&
+      hasSearchParams,
   };
 }

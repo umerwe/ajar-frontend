@@ -10,7 +10,6 @@ import Rating from "@/components/pages/listing-details/rating"
 import HostInfo from "@/components/pages/listing-details/host-info"
 import ServicesAmenities from "@/components/pages/listing-details/services-amenities"
 import { useParams } from "next/navigation"
-import Tabs from "@/components/ui/tabs"
 import { useGetMarketplaceListing } from "@/hooks/useListing"
 import ExploreArea from "@/components/pages/listing-details/explore-area"
 import AboutListing from "@/components/pages/listing-details/about-listing"
@@ -46,12 +45,12 @@ const ListingItems = () => {
         property={listingData}
       />
 
-      <Tabs
+      {/* <Tabs
         id={id}
         defaultActive="Overview"
         activeClass="border-b-2 border-aqua text-aqua font-semibold"
         inactiveClass="hover:text-aqua"
-      />
+      /> */}
 
       <div className="flex flex-col md:flex-row gap-6 md:gap-8 lg:gap-10 px-3 md:px-6">
         {/* LEFT COLUMN */}
@@ -102,10 +101,10 @@ const ListingItems = () => {
           property={listingData}
         />
 
-        <Tabs
+        {/* <Tabs
           id={id}
           defaultActive="Rooms"
-        />
+        /> */}
 
         <div className="mt-8">
           {/* <GuestReview property={property} /> */}

@@ -3,7 +3,7 @@ import { Button } from "../ui/button"
 import Link from "next/link"
 import { Listing } from "@/types/listing"
 
-const CardBottom = ({ property, type }: { property: Listing, type?: "booking" | "listing" }) => {
+const CardBottom = ({ property, type }: { property: Listing, type?: "booking" | "listing" | "filter" }) => {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" })
   }

@@ -25,11 +25,10 @@ export default function NotFound() {
 
       {/* Actions */}
       <div className="flex gap-3">
-        <Button asChild>
+        <Button
+        variant="destructive"
+         asChild>
           <Link href="/">Go Home</Link>
-        </Button>
-        <Button variant="outline" asChild>
-          <Link href="/contact">Contact Support</Link>
         </Button>
       </div>
     </div>

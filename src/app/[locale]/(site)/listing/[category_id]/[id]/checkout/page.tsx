@@ -76,7 +76,7 @@ const CheckoutPage = () => {
                                     <div className="flex items-center gap-2 mb-2">
                                         <Calendar className="w-4 h-4 text-gray-600" />
                                         <label className="text-sm font-medium text-gray-900">
-                                            Check-In
+                                            Lease Start
                                         </label>
                                     </div>
                                     <input
@@ -91,7 +91,7 @@ const CheckoutPage = () => {
                                     <div className="flex items-center gap-2 mb-2">
                                         <Calendar className="w-4 h-4 text-gray-600" />
                                         <label className="text-sm font-medium text-gray-900">
-                                            Check-Out
+                                            Lease End
                                         </label>
                                     </div>
                                     <input

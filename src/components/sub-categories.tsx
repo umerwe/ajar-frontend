@@ -15,13 +15,6 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
-interface SubCategoryProps {
-  _id?: string;
-  name: string;
-  slug?: string;
-  icon?: string | { src: string };
-}
-
 const statusOptions = ["Pending", "Approved", "Rejected", "Completed", "Cancelled"];
 
 const SubCategories = () => {
@@ -45,10 +38,10 @@ const SubCategories = () => {
       ? subCategories.find((c) => c._id === subCategoryParam)!
       : allSubCategory;
 
-  const getHref = (subCategory: SubCategoryProps) =>
+  const getHref = (subCategory: SubCategory) =>
     subCategory.slug === "all" ? "/listing" : `/listing/${subCategory._id}`;
 
-  const isActive = (subCategory: SubCategoryProps) =>
+  const isActive = (subCategory: SubCategory) =>
     subCategory.slug === "all"
       ? !subCategoryParam || subCategoryParam === "all"
       : subCategoryParam === subCategory._id;

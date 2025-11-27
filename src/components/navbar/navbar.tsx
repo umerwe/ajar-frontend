@@ -22,9 +22,9 @@ export default function Navbar() {
           {/* Desktop Navigation Links */}
           <div className="hidden md:flex items-center space-x-10 mr-10">
             {navLinks.map((link) => (
-              <Link 
-                key={link.href} 
-                href={link.href} 
+              <Link
+                key={link.href}
+                href={link.href}
                 className="text-white hover:underline transition-colors duration-200"
               >
                 {link.label}
@@ -35,8 +35,8 @@ export default function Navbar() {
           <ProfileDropdown />
 
           {/* Mobile Menu Toggle */}
-          <button 
-            onClick={() => setMobileOpen(!mobileOpen)} 
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
             className="md:hidden text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-header rounded-md p-1"
             aria-label="Toggle mobile menu"
           >

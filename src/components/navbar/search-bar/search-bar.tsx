@@ -1,38 +1,109 @@
-"use client"
+"use client";
 
-import { HomeIcon as House } from "lucide-react"
-import StartEndDates from "./start-end-dates"
-import PassengerDropdown from "./passenger-dropdown"
-import SearchBarDialog from "./dialog"
+import { useState } from "react";
+import { House, ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useRouter } from "next/navigation";
+import { useGetZones } from "@/hooks/useZone";
+import { capitalizeWords } from "@/utils/capitalizeWords";
+import Loader from "@/components/common/loader";
 
 export default function SearchBar() {
-  return (
-    <div className="text-white px-7 min-[400px]:px-24 min-[1024px]:px-10 min-[1090px]:px-22 xl:px-16 py-6 sm:py-8 md:py-10 lg:py-12 xl:py-16 flex items-center justify-center flex-col lg:flex-row gap-6 lg:gap-8 max-w-7xl mx-auto">
-      <div className="bg-white text-gray-700 rounded-lg w-full lg:flex-1 overflow-hidden">
-        <div className="flex flex-col lg:flex-row pl-4 pr-6 lg:pr-0 sm:pl-8 lg:pl-0 pt-4 pb-6 lg:py-0 lg:items-stretch gap-4 min-[1024px]:gap-9 min-[1140px]:gap-17 xl:gap-14 lg:divide-x lg:divide-gray-300">
-          {/* Location */}
-          <div className="flex items-center gap-3 lg:pl-6 lg:pr-6 xl:pr-8 min-w-0 py-0 lg:py-3">
-            <House className="text-gray-400 flex-shrink-0 w-5 h-5" />
-            <div className="min-w-0 flex-1 mr-3 xl:mr-9">
-              <p className="text-xs lg:text-sm text-gray-500">Location</p>
-              <p className="font-bold text-xs lg:text-sm text-gray-900 truncate">6730 Luna Land North</p>
+  const { data, isLoading } = useGetZones();
+  const zones = data?.zones;
+
+  const [zoneId, setZoneId] = useState("");
+  const router = useRouter();
+
+  const handleSearch = () => {
+    router.push(`/?zone=${zoneId}`);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="text-white px-4 sm:px-6 md:px-11 py-4 sm:py-6 flex items-center justify-center">
+        <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl">
+          <div className="flex flex-col lg:flex-row divide-y lg:divide-y-0 lg:divide-x divide-gray-200">
+
+            {/* Location Skeleton */}
+            <div className="relative flex-1 px-4 sm:px-6 md:px-8 py-3 min-w-0 flex items-center gap-2 sm:gap-3">
+              <div className="bg-gray-200 rounded-full w-5 h-5 sm:w-6 sm:h-6 animate-pulse" />
+
+              <div className="flex-1 space-y-1">
+                {/* Match final text sizes */}
+                <div className="bg-gray-200 rounded h-3 sm:h-4 w-16 animate-pulse" />
+                <div className="bg-gray-300 rounded h-4 sm:h-5 w-32 animate-pulse" />
+              </div>
+
+              <div className="bg-gray-200 rounded w-4 h-4 sm:w-5 sm:h-5 animate-pulse" />
+            </div>
+
+            {/* Search Button Skeleton */}
+            <div className="p-3 sm:p-4 lg:p-0 flex items-center justify-center rounded-b-xl lg:rounded-r-xl">
+              <div className="bg-gray-200 rounded-xl h-10 sm:h-12 w-full lg:w-32 lg:min-w-32 lg:px-8 mx-3 sm:mx-4 lg:mx-6 animate-pulse" />
             </div>
           </div>
-
-          {/* Start/End Dates */}
-          <div className="flex flex-col sm:flex-row gap-4 min-[1024px]:gap-8 min-[1090px]:gap-15 xl:gap-17 pl-0 pr-12 xl:pr-15 pt-3.5 lg:pt-0 border-t lg:border-t-0 border-gray-200">
-            <StartEndDates title="Start Date" description="24.06.2019" />
-            <StartEndDates title="End Date" description="13.08.2019" />
-          </div>
-
-          <PassengerDropdown />
         </div>
       </div>
+    );
+  }
 
-      {/* Search Dialog Button */}
-      <div className="flex-shrink-0 w-full lg:w-auto flex justify-center lg:justify-start">
-        <SearchBarDialog />
+
+  return (
+    <div className="text-white px-4 sm:px-6 md:px-11 py-4 sm:py-6 flex items-center justify-center">
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl">
+        <div className="flex flex-col lg:flex-row divide-y lg:divide-y-0 lg:divide-x divide-gray-200">
+          {/* Location Dropdown Group */}
+          <div className="relative flex-1 px-4 sm:px-6 md:px-8 py-3 sm:py-2.5 min-w-0">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <div className="flex items-center gap-2 sm:gap-3 cursor-pointer w-full">
+                  <House className="text-gray-500 flex-shrink-0 w-5 h-5 sm:w-6 sm:h-6" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs sm:text-sm text-gray-500 font-medium">Location</p>
+                    <p className="font-bold text-sm sm:text-base text-gray-800 truncate">
+                      {zones?.find((z: Zone) => z._id === zoneId)?.name || "Select a location"}
+                    </p>
+                  </div>
+                  <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500" />
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="start"
+                className="w-[var(--radix-dropdown-menu-trigger-width)] max-h-60 overflow-y-auto"
+              >
+                {zones?.map((loc: Zone, index: number) => (
+                  <DropdownMenuItem
+                    key={index}
+                    className="p-2 sm:p-3 cursor-pointer text-gray-800 text-sm font-medium"
+                    onClick={() => setZoneId(loc._id)}
+                  >
+                    {capitalizeWords(loc.name)}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
+          {/* Search Button */}
+          <div className="p-3 sm:p-4 lg:p-0 flex items-center hover:bg-gray-100 justify-center rounded-b-xl lg:rounded-r-xl">
+            <Button
+              variant="secondary"
+              onClick={handleSearch}
+              className="font-semibold text-sm sm:text-base lg:text-lg bg-transparent text-aqua rounded-xl h-10 sm:h-12 w-full lg:w-32 lg:min-w-32 lg:px-8 mx-3 sm:mx-4 lg:mx-6 disabled:cursor-no-drop"
+              disabled={zoneId === "" || isLoading}
+            >
+              {isLoading ? <Loader /> : "Search"}
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
-  )
+  );
 }

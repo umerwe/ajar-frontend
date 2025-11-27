@@ -7,7 +7,6 @@ export interface AuthLayoutProps {
 
 export type EditProfile = {
   name: string;
-  email: string;
   dob: string;
   nationality: string;
 };

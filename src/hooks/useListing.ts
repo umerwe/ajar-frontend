@@ -3,10 +3,20 @@ import { getList, getListing } from "@/services/listing"
 
 export function useGetMarketplaceListings(params: MarketplaceListingsProps) {
   return useQuery({
-    queryKey: ["marketplaceListings", params],
+    queryKey: [
+      "marketplaceListings",
+      params.page,
+      params.limit,
+      params.subCategory,
+      params.category,
+      params.currentPage,
+      params.zone,
+      params.minPrice,
+      params.maxPrice,
+    ],
     queryFn: () => getListing(params),
     placeholderData: (prevData) => prevData,
-  })
+  });
 }
 
 

@@ -7,14 +7,20 @@ import { Listing } from "@/types/listing";
 interface MainCardProps {
   listings: Listing[];
   showRemoveButton?: boolean;
-  type?: "booking" | "listing";
+  type?: "booking" | "listing" | "filter";
 }
 
 const MainCard = ({ listings, showRemoveButton = false, type }: MainCardProps) => {
   return (
     <div className="min-h-[400px]">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 3xl:grid-cols-6 gap-4 p-4 w-full">
-        {listings.map((property, index) => (
+      <div
+        className={`grid grid-cols-1 gap-4 w-full
+    ${type === "filter"
+            ? "sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4" // Filter mode
+            : "sm:grid-cols-2 md:grid-cols-3 p-4 lg:grid-cols-4 xl:grid-cols-5 3xl:grid-cols-6" // Default mode
+          }
+  `}      >
+        {listings?.map((property, index) => (
           <Card
             key={index}
             className="w-full sm:max-w-[320px] mx-auto border-0 bg-white shadow-sm hover:shadow-md transition-shadow duration-200 pb-0"

@@ -9,6 +9,14 @@ type ProviderProps = {
   dehydratedState: DehydratedState
 }
 
+interface SubCategory {
+  _id?: string;
+  name: string;
+  slug?: string;
+  icon?: string | { src: string };
+}
+
+
 interface Document {
   value: string;
   name: string;
@@ -19,13 +27,23 @@ interface SkeletonLoaderProps {
   count?: number;
   variant?: string;
   isFav?: boolean;
+  type ?: string
 }
 
 interface MarketplaceListingsProps {
   page?: number
   limit?: number
   subCategory?: string
+  category ?: string
   currentPage?: number
+  zone?: string
+  minPrice ?: string
+  maxPrice ?: string
+}
+
+interface Zone {
+  _id : string
+  name : string
 }
 
 interface ListingProps {
@@ -52,3 +70,17 @@ interface Favourite {
   updatedAt: string;
   __v: number;
 }
+
+type User = {
+  _id: string
+  name: string
+  email: string
+  role: "user" | "admin" | "superadmin"
+  status: "active" | "inactive" | "banned"
+  profilePicture: string
+  phone: string
+  nationality: string
+  createdAt: string
+  updatedAt: string
+}
+

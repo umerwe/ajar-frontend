@@ -59,7 +59,6 @@ const ListingContent = ({ isHome, initialCategory }: ListingContentProps) => {
     <div className="mb-20">
       <MainCard
         listings={filteredListings}
-
       />
 
       {!isHome && totalPages > 1 && (

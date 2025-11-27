@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "../ui/skeleton";
 
-const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false }: SkeletonLoaderProps) => {
+const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: SkeletonLoaderProps) => {
   switch (variant) {
     case "subcategories":
       return (
@@ -39,7 +39,13 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false }: Skelet
             <div className="px-3 py-1 w-24 h-6 bg-gray-200 rounded" />
           </div>
           <div className="min-h-[400px]">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 3xl:grid-cols-6 gap-4 p-4 w-full">
+            <div
+              className={`grid grid-cols-1 gap-4 w-full
+    ${type === "filter"
+                  ? "sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-2" // Filter mode
+                  : "sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-4 xl:grid-cols-5 3xl:grid-cols-6" // Default mode
+                }
+  `}              >
               {Array.from({ length: count }).map((_, index) => (
                 <Card
                   key={index}
@@ -314,7 +320,7 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false }: Skelet
           })}
         </div>
       )
-      
+
     default: <div></div>;
 
   }

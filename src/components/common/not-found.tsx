@@ -4,9 +4,9 @@ import Link from "next/link";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const NotFound = () => {
+const NotFound = ({ type }: { type?: string }) => {
   return (
-    <div className="flex items-center justify-center min-h-screen">
+    <div className="flex items-center justify-center min-h-[calc(100vh-70px)]">
       <div className="text-center max-w-md mx-auto">
         <div className="bg-gray-50 rounded-2xl shadow-sm border py-6 px-12">
           <div className="mb-4">
@@ -19,9 +19,12 @@ const NotFound = () => {
             No listings available at the moment. Check back later for new
             properties.
           </p>
-          <Button asChild variant="destructive">
-            <Link href="/">Home</Link>
-          </Button>
+          {
+            type !== "filter" &&
+            <Button asChild variant="destructive">
+              <Link href="/">Home</Link>
+            </Button>
+          }
         </div>
       </div>
     </div>
