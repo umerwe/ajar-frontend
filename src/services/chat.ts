@@ -15,3 +15,8 @@ export async function getMessages(id: string, page?: number) {
   const { data } = await api.get(`/api/chats/${id}/messages?page=${page}`);
   return data.data;
 }
+
+export async function messageSeen(chatId : string) {
+  const { data } = await api.patch(`/api/messages/${chatId}/seen`);
+  return data.data;
+}

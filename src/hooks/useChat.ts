@@ -1,4 +1,4 @@
-import { getChatList, getMessages, sendMessage } from "@/services/chat";
+import { getChatList, getMessages, messageSeen, sendMessage } from "@/services/chat";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 export function useGetChatList() {
@@ -20,3 +20,10 @@ export function useGetMessages(id: string, page?: number) {
     queryFn: () => getMessages(id, page),
   });
 }
+
+export function useMessageSeen() {
+  return useMutation({
+    mutationFn: messageSeen,
+  });
+}
+

@@ -13,11 +13,11 @@ import { Message, MessagePayload } from "@/types/chat";
 const ChatConversation = ({ id: chatId }: { id?: string }) => {
   const { data: user } = useUser();
   const [messages, setMessages] = useState<Message[]>([]);
+
   const [isChatActive, setIsChatActive] = useState(false);
   const { data, isLoading } = useGetMessages(chatId as string);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // ✅ Load all messages from backend
   useEffect(() => {
     if (data?.messages?.length) {
       setMessages(data.messages.reverse());
@@ -72,7 +72,7 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
     const handleMessageRead = (data: { messageId: string; readAt: Date }) => {
       setMessages((prev) =>
         prev.map((msg) =>
-          msg._id === data.messageId ? { ...msg, readAt: new Date(data.readAt),seen : true } : msg
+          msg._id === data.messageId ? { ...msg, readAt: new Date(data.readAt), seen: true } : msg
         )
       );
     };
@@ -131,7 +131,7 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
           <>
             {data?.receiver?.profilePicture ? (
               <Image
-                src={data?.receiver?.profilePicture}
+                src={process.env.NEXT_PUBLIC_API_BASE_URL + data?.receiver?.profilePicture}
                 alt={data?.receiver?.name || "User"}
                 width={256}
                 height={256}
@@ -155,7 +155,7 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
           <SkeletonLoader variant="messages" count={6} />
         )}
 
-        {messages.map((msg) => {
+        {messages?.filter(msg => msg.chatId === chatId)?.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())?.map((msg) => {
           const isSent = msg.sender?._id === user?._id;
           const sender = msg.sender || {};
           const hasImage = sender.profilePicture;
@@ -171,8 +171,8 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
                 <div className="flex-shrink-0">
                   {hasImage ? (
                     <Image
-                      src={sender.profilePicture || ""}
-                      alt={sender.name || "User"}
+                      src={(process.env.NEXT_PUBLIC_API_BASE_URL || "") + (sender?.profilePicture || "")}
+                      alt={sender?.name || "User"}
                       width={256}
                       height={256}
                       className="w-8 h-8 rounded-full object-cover"

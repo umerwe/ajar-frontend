@@ -114,7 +114,7 @@ const SendMessage = ({ onSend, isSending, chatId, receiverId }: SendMessageProps
                 <div className="w-16 h-16 bg-gray-200 animate-pulse rounded-md" />
               ) : (
                 <Image
-                  src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${file.url}`}
+                  src={`${process.env.NEXT_PUBLIC_API_BASE_URL}${file.url}`}
                   alt={file.name}
                   width={64}
                   height={64}

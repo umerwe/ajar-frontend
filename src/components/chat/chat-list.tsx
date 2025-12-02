@@ -4,7 +4,7 @@ import Header from "@/components/pages/listing-details/header";
 import { Search } from "lucide-react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useGetChatList } from "@/hooks/useChat";
+import { useGetChatList, useMessageSeen } from "@/hooks/useChat";
 import Image from "next/image";
 import { useUser } from "@/hooks/useAuth";
 import { capitalizeWords } from "@/utils/capitalizeWords";
@@ -12,16 +12,32 @@ import Link from "next/link";
 import SkeletonLoader from "../common/skeleton-loader";
 import clsx from "clsx";
 import { Chat, Participant } from "@/types/chat";
+import { useEffect } from "react";
 
 const ChatList = ({ id }: { id?: string }) => {
     const { data: user, isLoading } = useUser();
-    
-    const { data, isLoading: chatLoading } = useGetChatList();
+    const { mutate } = useMessageSeen();
+
+
+    const { data, isLoading: chatLoading, refetch } = useGetChatList();
 
     const chats = data?.chats?.map((chat: Chat) => ({
         ...chat,
+        unreadCount: chat._id === id ? 0 : chat.unreadCount,
         participants: chat.participants.filter((p: Participant) => p?._id !== user?._id),
     }));
+
+
+    useEffect(() => {
+        try {
+            mutate(id as string);
+            refetch()
+        }
+        catch {
+            console.log("Error")
+        }
+
+    }, [id]);
 
     return (
         <div className="bg-white shadow-lg overflow-hidden border border-gray-200 px-2">
@@ -49,7 +65,7 @@ const ChatList = ({ id }: { id?: string }) => {
             {/* Chats List */}
             <div className="divide-y divide-gray-100">
                 {chatLoading || isLoading ? (
-                    <SkeletonLoader variant="chat" count={6} />
+                    <SkeletonLoader variant="chat" count={8} />
                 ) : chats?.length > 0 ? (
                     chats.map((chat: Chat) => {
                         const participant = chat?.participants[0];
@@ -69,7 +85,7 @@ const ChatList = ({ id }: { id?: string }) => {
                                 {/* Avatar */}
                                 {participant?.profilePicture ? (
                                     <Image
-                                        src={participant?.profilePicture}
+                                        src={process.env.NEXT_PUBLIC_API_BASE_URL + participant?.profilePicture}
                                         alt={participant.name}
                                         width={256}
                                         height={256}
