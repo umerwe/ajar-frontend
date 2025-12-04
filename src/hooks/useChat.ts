@@ -1,5 +1,11 @@
-import { getChatList, getMessages, messageSeen, sendMessage } from "@/services/chat";
+import { createChat, getChatList, getMessages, messageSeen, sendMessage } from "@/services/chat";
 import { useMutation, useQuery } from "@tanstack/react-query";
+
+export function useCreateChat() {
+  return useMutation({
+    mutationFn: createChat,
+  });
+}
 
 export function useGetChatList() {
   return useQuery({

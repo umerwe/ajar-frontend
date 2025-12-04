@@ -19,7 +19,6 @@ import LogoutButton from "@/components/auth/logout-btn";
 import Error from "@/components/common/error";
 import SkeletonLoader from "@/components/common/skeleton-loader";
 import { capitalizeWords } from "@/utils/capitalizeWords";
-import { Progress } from "@/components/ui/progress";
 import { useGetUserDocument } from "@/hooks/useDocument";
 
 export default function SettingsPage() {
@@ -69,7 +68,7 @@ export default function SettingsPage() {
                             </div>
 
                             {/* Progress Section */}
-                            <div className="w-full mt-4">
+                            {/* <div className="w-full mt-4">
                                 <div className="flex items-center justify-between mb-2">
                                     <div className="flex items-center space-x-2">
                                         <div className="w-1 h-4 bg-teal-500 rounded-full"></div>
@@ -81,7 +80,7 @@ export default function SettingsPage() {
                                 <p className="text-xs text-gray-500">
                                     You are 50% steps away to complete your profile
                                 </p>
-                            </div>
+                            </div> */}
                         </div>
                     )}
                 </div>

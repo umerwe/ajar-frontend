@@ -12,7 +12,7 @@ const MainLayout = () => {
     <div>
       <Navbar />
       {showCategories && <SubCategories />}
-      {hasSearchParams && <StatusOptions /> }
+      {hasSearchParams && <StatusOptions />}
     </div>
   );
 };

@@ -1,28 +1,55 @@
 "use client";
-import React from "react";
+import React, { useState, useCallback } from "react";
 import MainCard from "@/components/cards/main-card";
-import { BookingData } from "@/data/booking-data";
-import { useBooking } from "@/hooks/useBooking";
-import { Booking } from "@/types/booking";
 import NotFound from "@/components/common/not-found";
 import SkeletonLoader from "@/components/common/skeleton-loader";
+import Pagination from "@/components/ui/pagination";
+import { useBooking } from "@/hooks/useBooking";
+import { Booking } from "@/types/booking";
+
+const ITEMS_PER_PAGE = 10;
 
 const Status = ({ status }: { status: string }) => {
-  const { data = [], isLoading } = useBooking(status);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  if (isLoading) return <SkeletonLoader />;
+  const { data, isLoading } = useBooking(status, currentPage);
 
-  const bookings = data?.data?.bookings.filter((x: Booking) => x.marketplaceListingId !== null) || [];
+  const bookings = data?.data?.bookings || [];
+  const totalItems = data?.data?.total || 0;
+  const limit = data?.data?.limit || ITEMS_PER_PAGE;
 
-  if (!bookings.length && !isLoading) return <NotFound />;
+  const totalPages = Math.ceil(totalItems / limit);
 
-  const completedListings = bookings
-    .filter((x: BookingData) => x.status === status)
-    .map((x: { marketplaceListingId: number }) => x?.marketplaceListingId);
+  const listings = bookings.map(
+    (x: Booking) => x.marketplaceListingId
+  );
+
+  const handlePageChange = useCallback((page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
+  if (isLoading) {
+    return <SkeletonLoader />;
+  }
+
+  if (totalItems === 0) {
+    return <NotFound type="listing" />;
+  }
 
   return (
     <div className="my-4">
-      <MainCard listings={completedListings} type="booking" />
+      <div className="flex flex-col">
+        <MainCard listings={listings} type="booking" />
+
+        {totalPages > 1 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        )}
+      </div>
     </div>
   );
 };

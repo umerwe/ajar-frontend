@@ -1,5 +1,6 @@
 "use client"
 import { Button } from "@/components/ui/button"
+import { capitalizeWords } from "@/utils/capitalizeWords";
 import { ArrowLeft } from "lucide-react"
 import { useRouter } from "next/navigation";
 
@@ -21,7 +22,7 @@ const Header = ({ status, title }: HeaderProps) => {
             {
                 status &&
                 <div className={` ${status === "Completed" ? "bg-green-200 text-green-700" : 'bg-orange-100 text-orange-600'} px-3 py-1 text-xs sm:text-sm font-semibold`}>
-                    {status}
+                    {capitalizeWords(status)}
                 </div>
             }
         </div>

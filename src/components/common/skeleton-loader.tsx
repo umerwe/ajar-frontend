@@ -42,7 +42,7 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: 
             <div
               className={`grid grid-cols-1 gap-4 w-full
     ${type === "filter"
-                  ? "sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-2" // Filter mode
+                  ? "sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4" // Filter mode
                   : "sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-4 xl:grid-cols-5 3xl:grid-cols-6" // Default mode
                 }
   `}              >

@@ -3,10 +3,10 @@ import { createBooking, getBooking, getBookingId } from "@/services/useBooking";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 
-export function useBooking(status?: string) {
+export function useBooking(status?: string,currentPage?: number) {
   return useQuery({
-    queryKey: ["bookings", status],
-    queryFn: () => getBooking(status),
+    queryKey: ["bookings", status,currentPage],
+    queryFn: () => getBooking(status,currentPage),
   });
 }
 

@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import Dropdown from "@/components/ui/dropdown";
@@ -38,13 +37,6 @@ const StatusOptions = () => {
                             href={getHref(status)}
                             className={`flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors duration-150 ${active && "bg-blue-50 border-r-4 border-aqua text-aqua"}`}
                         >
-                            <Image
-                                width={20}
-                                height={20}
-                                src="/ai-logo.png"
-                                alt={`${status} icon`}
-                                className="w-5 h-5"
-                            />
                             <span className={`text-sm font-medium ${active ? "text-aqua" : "text-gray-500"}`}>
                                 {status}
                             </span>
@@ -65,18 +57,11 @@ const StatusOptions = () => {
                         <Link
                             key={i}
                             href={getHref(status)}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-full transition-colors duration-200 ${active
+                            className={`flex items-center gap-2 px-5 py-2 rounded-full transition-colors duration-200 ${active
                                 ? "text-aqua border-2 border-t-aqua border-r-aqua border-b-blue border-l-blue bg-transparent"
                                 : "bg-gray-100 text-gray-400 border border-transparent hover:border-aqua hover:text-aqua"
                                 }`}
                         >
-                            <Image
-                                width={20}
-                                height={20}
-                                src="/ai-logo.png"
-                                alt={`${status} icon`}
-                                className="w-5 h-5"
-                            />
                             <span className="text-sm font-semibold">{status}</span>
                         </Link>
                     );

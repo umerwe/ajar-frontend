@@ -13,6 +13,18 @@ const nextConfig: NextConfig = {
         pathname: '/uploads/**',
       },
       {
+        protocol: 'http',
+        hostname: '104.128.190.131',  // ✅ NEW HOST
+        port: '5000',
+        pathname: '/uploads/**',
+      },
+      {
+        protocol: 'http',
+        hostname: '104.128.190.131',
+        port: '5000',
+        pathname: '/chat/**',
+      },
+      {
         protocol: 'https',
         hostname: 'ajar-server.hostdonor.com', // ✅ add this for production
         pathname: '/uploads/**',
@@ -27,7 +39,7 @@ const nextConfig: NextConfig = {
         hostname: 'sj61d7kn-5000.inc1.devtunnels.ms', // ✅ added devtunnel domain
         pathname: '/chat/**',
       },
-        {
+      {
         protocol: 'https',
         hostname: 'lh3.googleusercontent.com', // Google profile images
         pathname: '/**',

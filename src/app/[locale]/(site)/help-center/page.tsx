@@ -1,4 +1,4 @@
-import { Search, Bell, User, ArrowRight, ChevronRight } from 'lucide-react';
+import { Search, ArrowRight, ChevronRight } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -8,43 +8,8 @@ import { helpCategories } from '@/data/helpCategories';
 const HelpCenter = () => {
     return (
         <div className="min-h-screen">
-            <header className="bg-white mx-4 md:mx-15">
-                <div className="py-8">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 relative">
-
-                        {/* Left Side: Welcome Text */}
-                        <div className="flex flex-col">
-                            <h1 className="text-lg sm:text-xl xl:text-2xl font-semibold text-gray-900">Welcome, Amanda</h1>
-                            <p className="text-sm xl:text-lg text-gray-500">Tue, 07 June 2022</p>
-                        </div>
-
-                        {/* Right Side: Search & Icons */}
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
-                            <div className="relative w-full sm:w-64 xl:w-74">
-                                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                                <Input
-                                    placeholder="Search"
-                                    className="pl-9 pb-1 w-full h-10 bg-gray-100 text-sm xl:text-md"
-                                />
-                            </div>
-
-                            {/* Notification & Profile Icons */}
-                            <div className="flex items-center gap-2 sm:gap-3 justify-end max-[768px]:absolute top-2 right-0">
-                                <Button variant="ghost" size="icon" className="hover:bg-gray-100">
-                                    <Bell className="w-5 h-5" />
-                                </Button>
-                                <Button variant="ghost" size="icon" className="bg-gray-200 hover:bg-gray-300">
-                                    <User className="w-5 h-5" />
-                                </Button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </header>
-
-
             {/* Hero Section with Background */}
-            <div className="relative bg-gradient-to-r from-emerald-400 to-blue-500 overflow-hidden flex justify-between rounded-md mx-4 md:mx-15">
+            <div className="relative mt-12 bg-header overflow-hidden flex justify-between rounded-md mx-4 md:mx-15">
                 <div className="relative max-w-7xl flex items-center mx-5 md:mx-10 py-6 lg:py-6 xl:py-8">
                     <div className="max-w-2xl">
                         <h2 className="text-xl md:text-2xl font-bold text-white">Help Center</h2>
@@ -72,14 +37,14 @@ const HelpCenter = () => {
                     />
                 </div>
             </div>
-            <div className="mx-4 md:mx-15 py-18">
+            <div className="mx-4 md:mx-15 py-15">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {helpCategories.map((category, index) => {
                         const Icon = category.icon;
                         return (
                             <Card
                                 key={index}
-                                className="hover:shadow-lg transition-shadow duration-300 border-0 shadow-sm"
+                                className="hover:shadow-lg transition-shadow duration-300 border-1 border-gray-200 shadow-sm"
                             >
                                 <CardContent className="px-4 py-3">
                                     <div className="flex items-center mb-4">
@@ -149,3 +114,38 @@ const HelpCenter = () => {
 };
 
 export default HelpCenter;
+
+
+//   <header className="bg-white mx-4 md:mx-15">
+//                 <div className="py-8">
+//                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 relative">
+
+//                         {/* Left Side: Welcome Text */}
+//                         <div className="flex flex-col">
+//                             <h1 className="text-lg sm:text-xl xl:text-2xl font-semibold text-gray-900">Welcome, Amanda</h1>
+//                             <p className="text-sm xl:text-lg text-gray-500">Tue, 07 June 2022</p>
+//                         </div>
+
+//                         {/* Right Side: Search & Icons */}
+//                         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
+//                             <div className="relative w-full sm:w-64 xl:w-74">
+//                                 <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+//                                 <Input
+//                                     placeholder="Search"
+//                                     className="pl-9 pb-1 w-full h-10 bg-gray-100 text-sm xl:text-md"
+//                                 />
+//                             </div>
+
+//                             {/* Notification & Profile Icons */}
+//                             <div className="flex items-center gap-2 sm:gap-3 justify-end max-[768px]:absolute top-2 right-0">
+//                                 <Button variant="ghost" size="icon" className="hover:bg-gray-100">
+//                                     <Bell className="w-5 h-5" />
+//                                 </Button>
+//                                 <Button variant="ghost" size="icon" className="bg-gray-200 hover:bg-gray-300">
+//                                     <User className="w-5 h-5" />
+//                                 </Button>
+//                             </div>
+//                         </div>
+//                     </div>
+//                 </div>
+//             </header>

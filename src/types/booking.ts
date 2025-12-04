@@ -17,7 +17,11 @@ export type Booking = {
   _id: string;
   status: "completed" | "pending" | "cancelled" | string; // extend as needed
   renter: string;
-  marketplaceListingId: string | null;
+  marketplaceListingId : {
+    name: string;
+    _id: string;
+    
+  }
   noOfGuests: number;
   roomType: string;
   phone: string;

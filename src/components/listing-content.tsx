@@ -24,7 +24,7 @@ const ListingContent = ({ isHome, initialCategory }: ListingContentProps) => {
     page: currentPage,
     limit,
     ...(initialCategory ? { subCategory: initialCategory } : {}),
-  })
+  });
 
   const listings = data?.listings ?? []
   const totalCount = data?.total ?? 0

@@ -26,6 +26,8 @@ const ListingItems = () => {
   const { data: listingData, isLoading, isError } = useGetMarketplaceListing(id);
   const { data: user } = useUser();
 
+  console.log(listingData)
+
   if (isLoading) {
     return <SkeletonLoader variant="listing" />
   }
@@ -37,7 +39,7 @@ const ListingItems = () => {
   return (
     <div className="mx-3 sm:mx-7">
       <Header
-        status={listingData?.currentBookingId?.status}
+        status={listingData?.status}
         title="Rental Details"
       />
 

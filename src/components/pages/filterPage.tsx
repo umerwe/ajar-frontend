@@ -1,195 +1,51 @@
 "use client"
 import { useState, useEffect, useCallback } from "react"
-import { MapPin, RotateCcw, Filter, Grid } from "lucide-react"
+import { Filter } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { Slider } from "@/components/ui/slider"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { useGetZones } from "@/hooks/useZone"
 import { useGetMarketplaceListings } from "@/hooks/useListing"
 import { useRouter } from "next/navigation"
 import MainCard from "../cards/main-card"
+import Pagination from "@/components/ui/pagination"
 import SkeletonLoader from "../common/skeleton-loader"
 import NotFound from "../common/not-found"
 import { useSubCategories } from "@/hooks/useSubCategory"
-import { capitalizeWords } from "@/utils/capitalizeWords"
+import type { FilterContentProps, FilterPageProps, FilterState } from "@/types/filter"
+import { FilterContent } from "./filter/filterContent"
 
-interface FilterState {
-  category: string
-  location: string
-  priceRange: number[]
-}
-
-interface PropertyFilterProps {
-  location?: string
-  minPrice?: string
-  maxPrice?: string
-  category?: string
-}
-
-interface PriceRangeSliderProps {
-  priceRange: number[]
-  onValueChange: (values: number[]) => void
-}
-
-const PriceRangeSlider = ({ priceRange, onValueChange }: PriceRangeSliderProps) => (
-  <div className="space-y-4">
-    <Label className="text-sm font-medium text-gray-700">Price Range</Label>
-
-    <div className="text-sm text-gray-600 font-semibold text-center py-2">
-      ${priceRange[0].toLocaleString()} - ${priceRange[1].toLocaleString()}
-    </div>
-
-    <Slider
-      value={priceRange}
-      onValueChange={onValueChange}
-      max={10000}
-      min={0}
-      step={100}
-      className="w-full"
-    />
-
-    <div className="flex justify-between text-xs text-gray-500">
-      <span>$0</span>
-      <span>$10,000</span>
-    </div>
-  </div>
-)
-
-interface FilterContentProps {
-  filters: FilterState
-  zones: Zone[]
-  subCategories: SubCategory[]
-  isLoadingZones: boolean
-  isLoadingSubCategories: boolean
-  isListing: boolean
-  isRefetching: boolean
-  handleCategoriesChange: (value: string) => void
-  handleLocationChange: (value: string) => void
-  handlePriceRangeChange: (values: number[]) => void
-  handleReset: () => void
-  handleApply: () => void
-}
-
-const FilterContent = ({
-  filters,
-  zones,
-  subCategories,
-  isLoadingZones,
-  isLoadingSubCategories,
-  isListing,
-  isRefetching,
-  handleCategoriesChange,
-  handleLocationChange,
-  handlePriceRangeChange,
-  handleReset,
-  handleApply,
-}: FilterContentProps) => (
-  <div className="space-y-6">
-    {/* Categories */}
-    <div className="space-y-3">
-      <Label className="text-sm font-medium text-gray-700">Category</Label>
-      <div className="relative">
-        <Grid className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-aqua z-10 pointer-events-none" />
-        <Select value={filters.category} onValueChange={handleCategoriesChange}>
-          <SelectTrigger className="w-full pl-10 border-gray-300 focus:border-cyan-500 focus:ring-cyan-500">
-            <SelectValue placeholder="Select Category" />
-          </SelectTrigger>
-          <SelectContent>
-            {isLoadingSubCategories ? (
-              <SelectItem value="loading" disabled>Loading categories...</SelectItem>
-            ) : subCategories?.length === 0 ? (
-              <SelectItem value="no-categories" disabled>No categories available</SelectItem>
-            ) : (
-              subCategories?.map((subCategory) => (
-                <SelectItem key={subCategory._id} value={subCategory._id as string}>
-                  {capitalizeWords(subCategory.name)}
-                </SelectItem>
-              ))
-            )}
-          </SelectContent>
-        </Select>
-      </div>
-    </div>
-
-    {/* Location */}
-    <div className="space-y-3">
-      <Label htmlFor="location" className="text-sm font-medium text-gray-700">
-        Location
-      </Label>
-      <div className="relative">
-        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-aqua z-10 pointer-events-none" />
-        <Select value={filters.location} onValueChange={handleLocationChange}>
-          <SelectTrigger className="w-full pl-10 border-gray-300 focus:border-cyan-500 focus:ring-cyan-500">
-            <SelectValue placeholder="Select Location" />
-          </SelectTrigger>
-          <SelectContent>
-            {isLoadingZones ? (
-              <SelectItem value="loading" disabled>Loading zones...</SelectItem>
-            ) : zones?.length === 0 ? (
-              <SelectItem value="no-zones" disabled>No zones available</SelectItem>
-            ) : (
-              zones.map((zone) => (
-                <SelectItem key={zone._id} value={zone._id as string}>
-                  {capitalizeWords(zone.name)}
-                </SelectItem>
-              ))
-            )}
-          </SelectContent>
-        </Select>
-      </div>
-    </div>
-
-    {/* Price Range */}
-    <PriceRangeSlider
-      priceRange={filters.priceRange}
-      onValueChange={handlePriceRangeChange}
-    />
-
-    {/* Actions */}
-    <div className="flex items-center gap-3 pt-2 flex-wrap">
-      <Button
-        variant="ghost"
-        onClick={handleReset}
-        className="flex-1 min-w-32 items-center gap-2 text-gray-400 hover:text-aqua/80 hover:rounded-full hover:bg-aqua/10"
-      >
-        <RotateCcw className="h-4 w-4 text-aqua" />
-        Reset all
-      </Button>
-     <Button
-  onClick={handleApply}
-  disabled={isListing || isRefetching}
-  variant="destructive"
-  className="flex-1 min-w-32 disabled:cursor-not-allowed"
->
-  Apply
-</Button>
-
-    </div>
-  </div>
-)
-
-// 3. MAIN COMPONENT: PropertyFilter
-const PropertyFilter = ({ location, minPrice, maxPrice, category }: PropertyFilterProps) => {
+const FilterPage = ({ location, minPrice, maxPrice, category }: FilterPageProps) => {
   const router = useRouter()
-  const { data, isLoading } = useGetZones();
-  const { data: subCategories, isLoading: isSubCategoriesLoading } = useSubCategories();
+  const { data, isLoading } = useGetZones()
+  const { data: subCategories, isLoading: isSubCategoriesLoading } = useSubCategories()
   const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const ITEMS_PER_PAGE = 9
 
-  const { data: listingData, isLoading: isListing, isRefetching } = useGetMarketplaceListings({
+  const {
+    data: listingData,
+    isLoading: isListing,
+    isRefetching,
+  } = useGetMarketplaceListings({
     zone: location,
     minPrice: minPrice,
     maxPrice: maxPrice,
     category: category,
+    page: currentPage,
+    limit: ITEMS_PER_PAGE,
   })
-  const listings = listingData?.listings
+  console.log(listingData)
+
+  const listings = listingData?.listings || []
+  const total = listingData?.total || 0
   const zones = data?.zones || []
+
+  const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
 
   const [filters, setFilters] = useState<FilterState>({
     category: category || "",
     location: location || "",
-    priceRange: [minPrice ? Number.parseInt(minPrice) : 0, maxPrice ? Number.parseInt(maxPrice) : 10000],
+    priceRange: [minPrice ? Number.parseInt(minPrice) : 0, maxPrice ? Number.parseInt(maxPrice) : 100000],
   })
 
   useEffect(() => {
@@ -197,11 +53,11 @@ const PropertyFilter = ({ location, minPrice, maxPrice, category }: PropertyFilt
       ...prev,
       category: category || "",
       location: location || "",
-      priceRange: [minPrice ? Number.parseInt(minPrice) : 0, maxPrice ? Number.parseInt(maxPrice) : 10000],
+      priceRange: [minPrice ? Number.parseInt(minPrice) : 0, maxPrice ? Number.parseInt(maxPrice) : 100000],
     }))
+    setCurrentPage(1)
   }, [location, minPrice, maxPrice, category])
-  
-  // Use useCallback to ensure handler functions are stable references
+
   const handleCategoriesChange = useCallback((value: string) => {
     setFilters((prev) => ({ ...prev, category: value }))
   }, [])
@@ -218,9 +74,10 @@ const PropertyFilter = ({ location, minPrice, maxPrice, category }: PropertyFilt
     setFilters({
       category: "",
       location: "",
-      priceRange: [0, 10000],
+      priceRange: [0, 100000],
     })
-    router.push("/?minPrice=0&maxPrice=10000")
+    setCurrentPage(1)
+    router.push("/?minPrice=0&maxPrice=100000")
   }, [router])
 
   const handleApply = useCallback(() => {
@@ -233,12 +90,16 @@ const PropertyFilter = ({ location, minPrice, maxPrice, category }: PropertyFilt
     }
     if (filters.category) params.append("category", filters.category)
 
+    setCurrentPage(1)
     router.push(`/?${params.toString()}`)
     setIsFilterDialogOpen(false)
   }, [filters, router])
 
+  const handlePageChange = useCallback((page: number) => {
+    setCurrentPage(page)
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }, [])
 
-  // Props object to pass to the hoisted FilterContent
   const filterContentProps: FilterContentProps = {
     filters,
     zones,
@@ -255,7 +116,7 @@ const PropertyFilter = ({ location, minPrice, maxPrice, category }: PropertyFilt
   }
 
   return (
-    <>
+    <div className="max-w-[1400px] mx-auto">
       <div className="md:hidden absolute top-24 right-4 mb-4 flex">
         <Button
           onClick={() => setIsFilterDialogOpen(true)}
@@ -279,7 +140,7 @@ const PropertyFilter = ({ location, minPrice, maxPrice, category }: PropertyFilt
       </Dialog>
 
       {/* Main layout */}
-      <div className="flex flex-col mx-4 md:mx-8 md:flex-row gap-4 md:gap-6 my-16 md:my-8">
+      <div className="flex flex-col mx-4 md:mx-8 md:flex-row gap-4 md:gap-6 my-20 md:my-8">
         <div className="hidden md:block w-full md:w-80 bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden h-fit md:sticky md:top-6">
           <h2 className="text-xl font-semibold px-6 pt-6">Filter</h2>
           <div className="p-6">
@@ -293,12 +154,17 @@ const PropertyFilter = ({ location, minPrice, maxPrice, category }: PropertyFilt
           ) : listings?.length === 0 && !isListing ? (
             <NotFound type="filter" />
           ) : (
-            <MainCard listings={listings} type="filter" />
+            <div className="flex flex-col gap-6">
+              <MainCard listings={listings} type="filter" />
+              {totalPages > 1 && (
+                <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+              )}
+            </div>
           )}
         </div>
       </div>
-    </>
+    </div>
   )
 }
 
-export default PropertyFilter
+export default FilterPage
