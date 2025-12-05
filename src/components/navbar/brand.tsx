@@ -1,8 +1,11 @@
 import Image from "next/image"
+import Link from "next/link"
 
 const Brand = () => {
     return (
-        <div className="flex items-center space-x-2">
+        <Link
+            href="/"
+            className="flex items-center space-x-2">
             <Image
                 src="/ajar-logo.png"
                 alt="Logo"
@@ -10,7 +13,7 @@ const Brand = () => {
                 height={40}
                 priority
             />
-        </div>
+        </Link>
     )
 }
 

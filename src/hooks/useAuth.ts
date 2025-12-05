@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { forgotPassword, getUser, loginUser, resetPassword, signUpUser, updateUser } from "@/services/auth";
+import { changePassword, forgotPassword, getUser, loginUser, resetPassword, signUpUser, updateUser } from "@/services/auth";
 import { toast } from "@/components/ui/toast";
 import { AxiosError } from "axios";
 import { Register } from "@/validations/auth";
@@ -115,6 +115,26 @@ export const useResetPassword = () => {
             const err = error as AxiosError<ErrorResponse>;
             toast({
                 title: "Registration Failed",
+                description: err.response?.data?.message || "Something went wrong.",
+                variant: "destructive",
+            });
+        },
+    });
+    return mutation;
+};
+
+export const useChangePassword = () => {
+    const mutation = useMutation({
+        mutationFn: changePassword,
+        onSuccess: () => {
+            toast({
+                title: "Password Changed Successfully"
+            });
+        },
+        onError: (error) => {
+            const err = error as AxiosError<ErrorResponse>;
+            toast({
+                title: "Password Change Failed",
                 description: err.response?.data?.message || "Something went wrong.",
                 variant: "destructive",
             });

@@ -92,7 +92,7 @@ const LoginForm = () => {
         {/* 👇 Google login button */}
         <button
           type="button"
-          onClick={() => signIn("google")}
+          onClick={() => signIn("google", { callbackUrl: "/" })}
           className="w-full flex items-center justify-center gap-3 border border-gray-300 rounded-full py-2 hover:bg-gray-100 transition-all"
         >
           <FcGoogle className="text-2xl" />

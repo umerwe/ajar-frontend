@@ -245,20 +245,6 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: 
             <Skeleton className="h-5 w-28 mx-auto rounded" />
             <Skeleton className="h-4 w-40 mx-auto rounded" />
           </div>
-
-          {/* Progress Section */}
-          <div className="w-full mt-4">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center space-x-2">
-                <Skeleton className="h-4 w-1 rounded-full" />
-                <Skeleton className="h-5 w-10 rounded" />
-              </div>
-              <Skeleton className="h-5 w-5 rounded-full" />
-            </div>
-
-            <Skeleton className="h-2 w-full mb-2 rounded" />
-            <Skeleton className="h-3 w-52 rounded mx-auto" />
-          </div>
         </div>
       )
 

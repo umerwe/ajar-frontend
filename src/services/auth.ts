@@ -33,4 +33,8 @@ export const resetPassword = async ({ email, password }: { email: string, passwo
   await api.post("/api/users/reset-password", { email, password });
 };
 
+export const changePassword = async ({ oldPassword, newPassword, confirmPassword }: { oldPassword: string, newPassword: string, confirmPassword: string }) => {
+  await api.post("/api/users/change-password", { oldPassword, newPassword, confirmPassword });
+};
+
 

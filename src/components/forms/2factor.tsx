@@ -40,8 +40,7 @@ const TwoFactorVerificationForm = () => {
 
     return (
         <>
-
-            <div className={`bg-white rounded-md shadow-2xl px-4 py-8 sm:py-10 sm:px-6 w-full`}>
+            <div className={`bg-white rounded-md shadow-2xl px-4 py-8 sm:py-10 sm:px-6 w-full lg:w-[300px]`}>
                 <Header title="2FA Verification" description="Enter OTP to verify your account" />
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">

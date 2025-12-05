@@ -1,16 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import SearchBar from "./search-bar/search-bar";
 import ProfileDropdown from "./profile-dropdown";
-import { navLinks } from "@/data/navlinks";
 import Brand from "./brand";
 import { useLayoutVisibility } from "@/hooks/useLayoutVisibility";
 
 export default function Navbar() {
-  const [mobileOpen, setMobileOpen] = useState(false);
+  // const [mobileOpen, setMobileOpen] = useState(false);
   const { showSearchBar } = useLayoutVisibility();
 
   return (
@@ -20,7 +16,7 @@ export default function Navbar() {
 
         <div className="flex items-center space-x-4">
           {/* Desktop Navigation Links */}
-          <div className="hidden md:flex items-center space-x-10 mr-10">
+          {/* <div className="hidden md:flex items-center space-x-10 mr-10">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -30,12 +26,12 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
-          </div>
+          </div> */}
 
           <ProfileDropdown />
 
           {/* Mobile Menu Toggle */}
-          <button
+          {/* <button
             onClick={() => setMobileOpen(!mobileOpen)}
             className="md:hidden text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-header rounded-md p-1"
             aria-label="Toggle mobile menu"
@@ -45,12 +41,12 @@ export default function Navbar() {
             ) : (
               <Bars3Icon className="w-7 h-7" />
             )}
-          </button>
+          </button> */}
         </div>
       </nav>
 
       {/* Enhanced Mobile Navigation Menu */}
-      <div 
+      {/* <div 
         className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
           mobileOpen ? "max-h-96 opacity-100 border-t border-white/10" : "max-h-0 opacity-0 border-t-0"
         }`}
@@ -67,7 +63,7 @@ export default function Navbar() {
             </Link>
           ))}
         </div>
-      </div>
+      </div> */}
 
       {/* Search Bar */}
       {showSearchBar && <SearchBar />}

@@ -39,7 +39,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ clientSecret, bookingId, onPa
         e.preventDefault()
         setIsLoading(true)
 
-        // 🔑 FIX 1: Call elements.submit() to validate and collect payment details
         const { error: submitError } = await elements.submit()
 
         if (submitError) {
@@ -51,7 +50,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ clientSecret, bookingId, onPa
             return
         }
 
-        // 🔑 FIX 2: Now that elements.submit() has been called, proceed with confirmation
         const { error } = await stripe.confirmPayment({
             elements,
             clientSecret,
@@ -67,8 +65,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ clientSecret, bookingId, onPa
             })
             setIsLoading(false)
         } else {
-            // Note: For asynchronous payments, Stripe handles redirection via return_url.
-            // This line may be redundant but keeps the original success flow.
             onPaymentSuccess(bookingId)
         }
     }
@@ -198,7 +194,6 @@ const CheckoutPage = () => {
             <div className="max-w-7xl mx-auto px-4 md:px-8">
                 <Header title="Booking Submission" />
 
-                {/* Conditionally render the outer wrapper as a <form> OR a <div> to prevent nesting conflicts. */}
                 {clientSecret && currentBookingId ? (
                     <div className="pt-6">
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

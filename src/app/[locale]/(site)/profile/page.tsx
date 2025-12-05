@@ -3,7 +3,7 @@
 import Header from "@/components/pages/listing-details/header";
 import Link from "next/link";
 import Image from "next/image";
-import { useUser } from "@/hooks/useAuth";
+import { useChangePassword, useUser } from "@/hooks/useAuth";
 import { ChevronRight, Pencil } from "lucide-react";
 import {
     Dialog,
@@ -11,6 +11,7 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
+    DialogFooter,
 } from "@/components/ui/dialog";
 import EditProfileForm from "@/components/forms/edit-profile";
 import React from "react";
@@ -20,13 +21,80 @@ import Error from "@/components/common/error";
 import SkeletonLoader from "@/components/common/skeleton-loader";
 import { capitalizeWords } from "@/utils/capitalizeWords";
 import { useGetUserDocument } from "@/hooks/useDocument";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import Loader from "@/components/common/loader";
+import Input from "@/components/fields/auth-input";
+
+const ChangePasswordForm = ({ setOpen }: { setOpen: React.Dispatch<React.SetStateAction<boolean>> }) => {
+    const { mutate, isPending } = useChangePassword();
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        const form = e.currentTarget;
+
+        const formData = {
+            oldPassword: (form.oldPassword as HTMLInputElement).value,
+            newPassword: (form.newPassword as HTMLInputElement).value,
+            confirmPassword: (form.confirmPassword as HTMLInputElement).value,
+        };
+
+        mutate(formData, {
+            onSuccess: () => {
+                setOpen(false);
+            },
+        });
+    };
+
+
+    return (
+        <form onSubmit={handleSubmit} className="space-y-4 pt-4">
+            <div className="space-y-2">
+                <Label htmlFor="oldPassword">Old Password</Label>
+                <Input
+                    id="oldPassword"
+                    name="oldPassword"
+                    type="password"
+                    placeholder="Enter Old Password"
+                    required
+                />
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="newPassword">New Password</Label>
+                <Input
+                    id="newPassword"
+                    name="newPassword"
+                    type="password"
+                    placeholder="Enter New Password"
+                    required
+                />
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                <Input
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    type="password"
+                    placeholder="Confirm Password"
+                    required
+                />
+            </div>
+            <DialogFooter className="pt-4">
+                <Button type="submit" variant="destructive" className="w-full" disabled={isPending}>
+                    {isPending ? <Loader /> : "Change Password"}
+                </Button>
+            </DialogFooter>
+        </form>
+    );
+};
 
 export default function SettingsPage() {
     const { data: user = [], isLoading, isError } = useUser();
     const { data: documents = [] } = useGetUserDocument();
 
     const [file, setFile] = React.useState<File | null>(null);
-    const [open, setOpen] = React.useState(false);
+    const [openEditProfile, setOpenEditProfile] = React.useState(false);
+    const [openChangePassword, setOpenChangePassword] = React.useState(false);
 
     if (isError) {
         return <Error />;
@@ -92,7 +160,7 @@ export default function SettingsPage() {
 
                         if (item.label === "Edit Profile") {
                             return (
-                                <Dialog key={index} open={open} onOpenChange={setOpen}>
+                                <Dialog key={index} open={openEditProfile} onOpenChange={setOpenEditProfile}>
                                     <DialogTrigger asChild>
                                         <div className="flex items-center justify-between px-4 py-4 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 cursor-pointer transition-colors">
                                             <div className="flex items-center space-x-3">
@@ -156,7 +224,7 @@ export default function SettingsPage() {
                                             {/* Edit Profile Form */}
                                             <EditProfileForm
                                                 file={file}
-                                                setOpen={setOpen}
+                                                setOpen={setOpenEditProfile}
                                                 documents={documents}
                                                 user={user}
                                                 isLoading={isLoading}
@@ -166,6 +234,31 @@ export default function SettingsPage() {
                                 </Dialog>
                             );
                         }
+
+                        // New Logic for Change Password Dialog
+                        if (item.label === "Change Password") {
+                            return (
+                                <Dialog key={index} open={openChangePassword} onOpenChange={setOpenChangePassword}>
+                                    <DialogTrigger asChild>
+                                        <div className="flex items-center justify-between px-4 py-4 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 cursor-pointer transition-colors">
+                                            <div className="flex items-center space-x-3">
+                                                <Icon className="h-5 w-5 text-aqua" />
+                                                <span className="text-gray-900 font-medium">{item.label}</span>
+                                            </div>
+                                            <ChevronRight className="h-6 w-6 text-aqua" />
+                                        </div>
+                                    </DialogTrigger>
+
+                                    <DialogContent className="sm:max-w-md">
+                                        <DialogHeader>
+                                            <DialogTitle>Change Password</DialogTitle>
+                                        </DialogHeader>
+                                        <ChangePasswordForm setOpen={setOpenChangePassword} />
+                                    </DialogContent>
+                                </Dialog>
+                            );
+                        }
+
 
                         return (
                             <Link
