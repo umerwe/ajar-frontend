@@ -100,7 +100,6 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
         if (prev.some((msg) => msg._id === message._id)) return prev
         return [...prev, message]
       })
-      // Don't interfere with pagination flags
     }
 
     const handleMessageReceived = (message: Message) => {
