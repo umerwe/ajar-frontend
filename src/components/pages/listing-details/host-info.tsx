@@ -40,9 +40,9 @@ const HostInfo = ({ property }: { property: Listing }) => {
     }
 
     return (
-        <div className="my-10 (mt-2) (md:-mt-12)">
-            <div className="flex items-center mb-4">
-                <h3 className="text-lg font-bold text-gray-800">Hosted by</h3>
+        <div className="mt-4">
+            <div className="flex items-center mb-2">
+                <h3 className="text-lg md:text-xl font-bold text-gray-800">Hosted by</h3>
             </div>
             <div className="flex items-center justify-between max-w-100 space-x-3">
                 <div className="flex gap-3">
@@ -56,12 +56,11 @@ const HostInfo = ({ property }: { property: Listing }) => {
                         />
                     </div>
                     <div>
-                        <p className="font-bold text-gray-800 text-base xl:text-lg">
+                        <p className="font-semibold text-gray-800 text-base xl:text-lg">
                             {capitalizeWords(property.leaser.name)}
                         </p>
-                        <p className="text-gray-500 text-sm flex items-center">
-                            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1" />
-                            {4.8} ({200} reviews)
+                        <p className="text-gray-500 text-sm flex items-center -mt-1">
+                            {property?.leaser?.email}
                         </p>
                     </div>
                 </div>

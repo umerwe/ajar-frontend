@@ -6,7 +6,7 @@ import { MapPin, Star } from "lucide-react"
 const CoreDetails = ({ property }: { property: Listing }) => {
     return (
         <div>
-            <h1 className="text-xl sm:text-2xl md:text-2xl 2xl:text-3xl font-semibold text-gray-800 mb-2 md:mb-1 flex flex-col sm:flex-row sm:items-center gap-2">
+            <h1 className="text-xl sm:text-2xl md:text-2xl 2xl:text-3xl font-bold text-gray-800 mb-2 md:mb-1 flex flex-col sm:flex-row sm:items-center gap-2">
                 <span>{capitalizeWords(property.name)}</span>
                 <div className="flex pt-0 sm:pt-1.5 gap-0.5">
                     {[...Array(5)].map((_, i) => (

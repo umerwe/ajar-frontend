@@ -8,7 +8,7 @@ import ImageGalleryLayout from "@/components/pages/listing-details/image-gallery
 import PricingActions from "@/components/pages/listing-details/pricing-actions"
 import Rating from "@/components/pages/listing-details/rating"
 import HostInfo from "@/components/pages/listing-details/host-info"
-import ServicesAmenities from "@/components/pages/listing-details/services-amenities"
+// import ServicesAmenities from "@/components/pages/listing-details/services-amenities"
 import { useParams } from "next/navigation"
 import ExploreArea from "@/components/pages/listing-details/explore-area"
 import AboutListing from "@/components/pages/listing-details/about-listing"
@@ -24,7 +24,6 @@ const BookingDetails = () => {
   const id = params?.id as string
 
   const { data, isLoading, isError } = useGetBookingId(id);
-  console.log(data)
 
   const listingData = data?.marketplaceListingId;
   const { data: user } = useUser();
@@ -38,7 +37,7 @@ const BookingDetails = () => {
   }
 
   return (
-    <div className="mx-3 sm:mx-7">
+    <div className="mx-3 sm:mx-7 mb-9">
       <Header
         status={data?.status}
         title="Booking Details"
@@ -83,6 +82,9 @@ const BookingDetails = () => {
           <AboutListing
             property={listingData}
           />
+           <HostInfo
+          property={listingData}
+        />
         </div>
 
         {/* RIGHT COLUMN */}
@@ -98,29 +100,28 @@ const BookingDetails = () => {
           />
         </div>
       </div>
-
-      <div className="sm:px-3">
-        <HostInfo
-          property={listingData}
-        />
-
-        {/* <Tabs
-          id={id}
-          defaultActive="Rooms"
-        /> */}
-
-        <div className="mt-8">
-          {/* <GuestReview property={property} /> */}
-
-          {/* <MostMentionedTabs property={property} /> */}
-
-          {/* <GuestImpressions property={property} /> */}
-        </div>
-      </div>
-
-      <ServicesAmenities />
     </div>
   )
 }
 
 export default BookingDetails
+
+
+  // <div className="sm:px-3">
+       
+
+  //       {/* <Tabs
+  //         id={id}
+  //         defaultActive="Rooms"
+  //       /> */}
+
+  //       <div className="mt-8">
+  //         {/* <GuestReview property={property} /> */}
+
+  //         {/* <MostMentionedTabs property={property} /> */}
+
+  //         {/* <GuestImpressions property={property} /> */}
+  //       </div>
+  //     </div>
+
+  //     {/* <ServicesAmenities /> */}

@@ -33,7 +33,7 @@ const ExploreArea = ({ property }: { property: Listing }) => {
                 </div>
             </div>
 
-            <div className="p-3 md:p-4 pt-0 rounded-lg space-y-3">
+            {/* <div className="p-3 md:p-4 pt-0 rounded-lg space-y-3">
                 <a
                     href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(property.address)}`}
                     target="_blank"
@@ -43,7 +43,7 @@ const ExploreArea = ({ property }: { property: Listing }) => {
                         See all about this area
                     </Button>
                 </a>
-            </div>
+            </div> */}
         </div>
     )
 }
