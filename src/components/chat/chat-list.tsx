@@ -3,7 +3,6 @@
 import Header from "@/components/pages/listing-details/header";
 import { Search } from "lucide-react";
 import { Input } from "../ui/input";
-import { Button } from "../ui/button";
 import { useGetChatList, useMessageSeen } from "@/hooks/useChat";
 import Image from "next/image";
 import { useUser } from "@/hooks/useAuth";
@@ -12,57 +11,55 @@ import Link from "next/link";
 import SkeletonLoader from "../common/skeleton-loader";
 import clsx from "clsx";
 import { Chat, Participant } from "@/types/chat";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const ChatList = ({ id }: { id?: string }) => {
     const { data: user, isLoading } = useUser();
     const { mutate } = useMessageSeen();
-
+    const [searchQuery, setSearchQuery] = useState("");
 
     const { data, isLoading: chatLoading, refetch } = useGetChatList();
 
-    const chats = data?.chats?.map((chat: Chat) => ({
-        ...chat,
-        unreadCount: chat._id === id ? 0 : chat.unreadCount,
-        participants: chat.participants.filter((p: Participant) => p?._id !== user?._id),
-    }));
-
+    const chats = data?.chats
+        ?.map((chat: Chat) => ({
+            ...chat,
+            unreadCount: chat._id === id ? 0 : chat.unreadCount,
+            participants: chat.participants.filter((p: Participant) => p?._id !== user?._id),
+        }))
+        .filter((chat: Chat) => {
+            if (!searchQuery) return true;
+            const participantName = chat.participants[0]?.name?.toLowerCase() || "";
+            return participantName.includes(searchQuery.toLowerCase());
+        });
 
     useEffect(() => {
         try {
-            mutate(id as string);
-            refetch()
+            if (id) {
+                mutate(id as string);
+                refetch();
+            }
+        } catch {
+            console.log("Error");
         }
-        catch {
-            console.log("Error")
-        }
-
     }, [id]);
 
     return (
         <div className="bg-white shadow-lg overflow-hidden border border-gray-200 px-2">
-            {/* Header */}
             <Header title="Chat" />
 
-            {/* Search */}
-            <div className="p-3 border-b border-gray-200 flex items-center gap-3">
+            <div className="p-4 border-b border-gray-200 flex items-center gap-3">
                 <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                     <Input
                         type="text"
                         placeholder="Search messages, people"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
                         className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-black"
                     />
                 </div>
-                <Button
-                    variant="destructive"
-                    className="w-9 h-9 rounded-lg text-xl leading-none"
-                >
-                    +
-                </Button>
             </div>
 
-            {/* Chats List */}
             <div className="divide-y divide-gray-100">
                 {chatLoading || isLoading ? (
                     <SkeletonLoader variant="chat" count={8} />

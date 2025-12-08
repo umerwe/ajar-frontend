@@ -2,7 +2,7 @@ import { Heart, Flag, ShieldCheck, Pencil, CalendarCheck, Lock } from "lucide-re
 
 export const profileMenuItems = [
     { label: "View Profile", href: "/profile" },
-    { label: "Bookings", href: "/listing?status=pending" },
+    { label: "Bookings", href: "/booking/pending" },
     { label: "Favourites", href: "/favourites" },
     { label: "Chat", href: "/chat" },
     { label: "Reports", href: "/reports/report-issue" },
@@ -17,7 +17,7 @@ export const profileItems = [
      {
         icon: CalendarCheck,
         label: "Bookings",
-        href: "/listing?status=pending",
+        href: "/booking/pending",
     },
     {
         icon: Heart,
@@ -47,7 +47,7 @@ export const profileItems = [
     {
         icon: Flag,
         label: "Report",
-        href: "/report",
+        href: "/reports/report-issue",
     },
     // {
     //     icon: PhoneCall,

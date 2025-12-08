@@ -2,15 +2,11 @@ import api from "@/lib/axios";
 import { BookingRequest } from "@/types/booking";
 
 export async function getBooking(status?: string, currentPage?: number) {
-  const endpoint = `/api/bookings/user/bookings?zone=68ee3c38c81f0e5497c2ab0d${status ? `&status=${status}` : ""
-    }${currentPage ? `&page=${currentPage}` : ""}`;
+  const endpoint = `/api/bookings?${status ? `status=${status}` : ""}${currentPage ? `&page=${currentPage}` : ""}`;
 
   const { data } = await api.get(endpoint);
-
   return data.data;
 }
-
-
 
 export async function getBookingId(id?: string) {
   const { data } = await api.get(`/api/bookings/${id}`);

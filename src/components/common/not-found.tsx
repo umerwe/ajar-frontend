@@ -5,7 +5,7 @@ import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface NotFoundProps {
-  type?: "favourite" | "filter" | "listing" | "chat" | string;
+  type?: "favourite" | "filter" | "listing" | "chat" | "booking" | string;
 }
 
 const NotFound = ({ type = "listing" }: NotFoundProps) => {
@@ -14,6 +14,7 @@ const NotFound = ({ type = "listing" }: NotFoundProps) => {
     favourite: "No Favourites Found",
     filter: "No Results Match Your Filters",
     listing: "No Listings Found",
+    booking: "No Booking Found",
     chat: "No Chats Found",
   };
 
@@ -22,6 +23,7 @@ const NotFound = ({ type = "listing" }: NotFoundProps) => {
     favourite: "You haven't added any listings to your favourites yet.",
     filter: "Try adjusting your filters to find better results.",
     listing: "There are no listings available right now. Please check again later.",
+    booking: "There are no bookings available right now. Please check again later.",
     chat: "You have no conversations yet.",
   };
 

@@ -1,15 +1,14 @@
 export function getActionDetails(status?: string) {
   switch (status) {
-    case "Pending":
+    case "pending":
       return { label: "Cancel Request", link: "/" };
 
-    case "Approved":
+    case "approved":
       return {
         label: "Proceed to pay",
-        link: "/checkout",
       };
 
-    case "Completed":
+    case "completed":
       return { label: "Rate Owner", link: "#" };
 
     default:

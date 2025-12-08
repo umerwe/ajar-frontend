@@ -10,23 +10,24 @@ import Rating from "@/components/pages/listing-details/rating"
 import HostInfo from "@/components/pages/listing-details/host-info"
 import ServicesAmenities from "@/components/pages/listing-details/services-amenities"
 import { useParams } from "next/navigation"
-import { useGetMarketplaceListing } from "@/hooks/useListing"
 import ExploreArea from "@/components/pages/listing-details/explore-area"
 import AboutListing from "@/components/pages/listing-details/about-listing"
 import SkeletonLoader from "@/components/common/skeleton-loader"
 import Error from "@/components/common/error"
 import Document from "@/components/pages/listing-details/document"
 import { useUser } from "@/hooks/useAuth"
+import { useGetBookingId } from "@/hooks/useBooking"
 
-const ListingItems = () => {
+const BookingDetails = () => {
   const params = useParams()
   const category_id = params?.category_id as string
   const id = params?.id as string
 
-  const { data: listingData, isLoading, isError } = useGetMarketplaceListing(id);
-  const { data: user } = useUser();
+  const { data, isLoading, isError } = useGetBookingId(id);
+  console.log(data)
 
-  console.log(listingData)
+  const listingData = data?.marketplaceListingId;
+  const { data: user } = useUser();
 
   if (isLoading) {
     return <SkeletonLoader variant="listing" />
@@ -39,7 +40,8 @@ const ListingItems = () => {
   return (
     <div className="mx-3 sm:mx-7">
       <Header
-        title="Rental Details"
+        status={data?.status}
+        title="Booking Details"
       />
 
       <ImageGalleryLayout
@@ -86,7 +88,7 @@ const ListingItems = () => {
         {/* RIGHT COLUMN */}
         <div className="w-full md:w-2/5 lg:w-1/3 space-y-3 md:space-y-4">
           <PricingActions
-            property={listingData}
+            bookingData={data}
             category_id={category_id}
             id={id}
           />
@@ -121,4 +123,4 @@ const ListingItems = () => {
   )
 }
 
-export default ListingItems
+export default BookingDetails

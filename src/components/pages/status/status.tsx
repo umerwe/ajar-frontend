@@ -6,6 +6,7 @@ import SkeletonLoader from "@/components/common/skeleton-loader";
 import Pagination from "@/components/ui/pagination";
 import { useBooking } from "@/hooks/useBooking";
 import { Booking } from "@/types/booking";
+import { Listing } from "@/types/listing";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -20,9 +21,11 @@ const Status = ({ status }: { status: string }) => {
 
   const totalPages = Math.ceil(totalItems / limit);
 
-  const listings = bookings.map(
-    (x: Booking) => x.marketplaceListingId
-  );
+  const listings = bookings.map((x: Booking) => ({
+    ...(x.marketplaceListingId as Listing),
+    bookingId: x._id,
+    totalPrice: x.priceDetails.totalPrice
+  }));
 
   const handlePageChange = useCallback((page: number) => {
     setCurrentPage(page);
@@ -34,13 +37,16 @@ const Status = ({ status }: { status: string }) => {
   }
 
   if (totalItems === 0) {
-    return <NotFound type="listing" />;
+    return <NotFound type="booking" />;
   }
 
   return (
     <div className="my-4">
       <div className="flex flex-col">
-        <MainCard listings={listings} type="booking" />
+        <MainCard
+          listings={listings}
+          type="booking"
+        />
 
         {totalPages > 1 && (
           <Pagination

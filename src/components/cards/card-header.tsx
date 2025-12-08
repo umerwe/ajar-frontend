@@ -56,7 +56,6 @@ const CardTop = ({ property, showRemoveButton = false }: CardTopProps) => {
         )}
       </div>
 
-      {/* If more than 1 image → show carousel, else just single image */}
       {images.length > 1 ? (
         <>
           {/* Carousel */}
@@ -65,7 +64,7 @@ const CardTop = ({ property, showRemoveButton = false }: CardTopProps) => {
               {images.map((imgUrl, index) => (
                 <div
                   key={index}
-                  className="relative flex-[0_0_100%] h-40 min-[500px]:h-50 sm:h-64"
+                  className="relative flex-[0_0_100%] h-38 sm:h-54"
                 >
                   <Image
                     src={process.env.NEXT_PUBLIC_API_BASE_URL + imgUrl}
@@ -94,7 +93,7 @@ const CardTop = ({ property, showRemoveButton = false }: CardTopProps) => {
         </>
       ) : (
         images[0] && (
-          <div className="relative h-40 min-[500px]:h-50 sm:h-64 mb-3 rounded-2xl overflow-hidden">
+          <div className="relative h-38 sm:h-54 mb-3 rounded-2xl overflow-hidden">
             <Image
               src={process.env.NEXT_PUBLIC_API_BASE_URL + images[0]}
               alt="single-img"

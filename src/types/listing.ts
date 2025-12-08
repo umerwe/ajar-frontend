@@ -1,4 +1,5 @@
 export interface Listing  {
+  bookingId : string;
     ratings: {
       count: number;
       average: number;

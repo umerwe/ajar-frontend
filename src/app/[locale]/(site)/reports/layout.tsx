@@ -1,4 +1,3 @@
-import ReportDropdown from "@/components/reports-dropdown";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -14,9 +13,9 @@ export default async function ReportLayout({
 
     return (
         <div className="relative">
-            <div className="absolute right-3 sm:right-10 top-6 lg:top-7">
+            {/* <div className="absolute right-3 sm:right-10 top-6 lg:top-7">
                 <ReportDropdown />
-            </div>
+            </div> */}
             <div className="px-4 sm:px-10">
                 {children}
             </div>

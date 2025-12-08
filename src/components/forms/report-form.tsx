@@ -15,8 +15,8 @@ import Header from "@/components/pages/listing-details/header";
 import { useBooking } from "@/hooks/useBooking";
 import { capitalizeWords } from "@/utils/capitalizeWords";
 import { useSendReport } from "@/hooks/useReport";
-import { Booking } from "@/types/booking";
 import Image from "next/image";
+import { Listing } from "@/types/listing";
 
 export interface ReportFormProps {
     formTitle: string;
@@ -100,11 +100,14 @@ export default function ReportForm({
                                 <option value="">Select Booking</option>
 
                                 {/* Map all bookings */}
-                                {bookings?.map((b: Booking) => (
+                                {bookings?.map((b: { _id: string; marketplaceListingId: Listing }) => (
                                     <option key={b._id} value={b._id}>
-                                        {capitalizeWords(b?.marketplaceListingId?.name)}
+                                        {typeof b.marketplaceListingId === "object"
+                                            ? capitalizeWords(b.marketplaceListingId.name)
+                                            : ""}
                                     </option>
                                 ))}
+
                             </select>
 
                         </div>

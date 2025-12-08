@@ -1,17 +1,17 @@
 "use client";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import Dropdown from "@/components/ui/dropdown";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 
 const statusOptions = ["Pending", "Approved", "Rejected", "Completed", "Cancelled"];
 
 const StatusOptions = () => {
-    const searchParams = useSearchParams();
-    const statusParam = searchParams.get("status") || "";
+    const params = useParams();
+    const statusParam = params.status as string;
 
-    const getHref = (status: string) => `/listing?status=${status.toLowerCase()}`;
-    const isActive = (status: string) => statusParam.toLowerCase() === status.toLowerCase();
+    const getHref = (status: string) => `/booking/${status.toLowerCase()}`;
+    const isActive = (status: string) => statusParam?.toLowerCase() === status?.toLowerCase();
 
     const mobileButton = (
         <button
@@ -29,7 +29,7 @@ const StatusOptions = () => {
     const mobileContent = (
         <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-50 overflow-hidden">
             <div className="py-2">
-                {statusOptions.map((status, i) => {
+                {statusOptions?.map((status, i) => {
                     const active = isActive(status);
                     return (
                         <Link
@@ -51,7 +51,7 @@ const StatusOptions = () => {
         <div className="flex justify-between px-4 sm:px-6 md:px-9 my-4">
             {/* Desktop */}
             <div className="hidden md:flex flex-wrap gap-3 flex-grow">
-                {statusOptions.map((status, i) => {
+                {statusOptions?.map((status, i) => {
                     const active = isActive(status);
                     return (
                         <Link

@@ -30,7 +30,7 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: 
 
     case "cards":
       return (
-        <div className="mb-15">
+        <div className="mb-15 mt-4">
           <div className={`flex items-center justify-between px-6 pt-6 bg-white ${isFav ? "block" : "hidden"}`}>
             <div className="flex items-center gap-2 sm:gap-3">
               <div className="w-10 h-10 rounded-lg bg-gray-200" />
@@ -53,9 +53,9 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: 
                 >
                   <div className="flex sm:block items-center min-[500px]:gap-2">
                     {/* Top / Image carousel placeholder */}
-                    <div className="w-[40%] min-[500px]:w-[35%] sm:w-full">
+                    <div className="w-[35%] sm:w-full">
                       <div className="relative w-full">
-                        <div className="w-full h-40 min-[500px]:h-50 sm:h-64 bg-gray-200 rounded-2xl" />
+                        <div className="w-full h-38 sm:h-54 bg-gray-200 rounded-2xl" />
                       </div>
                     </div>
 

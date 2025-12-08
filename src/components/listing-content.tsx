@@ -10,7 +10,7 @@ import { Listing } from "@/types/listing"
 import SkeletonLoader from "./common/skeleton-loader"
 import NotFound from "./common/not-found"
 import Error from "./common/error"
-import { useSession } from "next-auth/react"
+// import { useSession } from "next-auth/react"
 
 interface ListingContentProps {
   isHome?: boolean
@@ -18,8 +18,7 @@ interface ListingContentProps {
 }
 
 const ListingContent = ({ isHome, initialCategory }: ListingContentProps) => {
-  const { data: session } = useSession();
-  console.log(session)
+  // const { data: session } = useSession();
   const [currentPage, setCurrentPage] = useState(1)
   const limit = isHome ? 5 : 10
 
@@ -59,7 +58,7 @@ const ListingContent = ({ isHome, initialCategory }: ListingContentProps) => {
   }
 
   return (
-    <div className="mb-20">
+    <div className="mt-4 mb-20">
       <MainCard
         listings={filteredListings}
       />

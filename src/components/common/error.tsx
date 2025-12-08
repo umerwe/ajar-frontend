@@ -1,8 +1,6 @@
 "use client";
 
-import Link from "next/link";
 import { AlertCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 const Error = () => {
   return (
@@ -17,11 +15,11 @@ const Error = () => {
         <p className="text-gray-600 mb-4">Please check your connection and
           try again.
         </p>
-        <div className="flex gap-3 justify-center">
-        <Button asChild variant="destructive" className="w-25">
+        {/* <div className="flex gap-3 justify-center">
+          <Button asChild variant="destructive" className="w-25">
             <Link href="/">Home</Link>
           </Button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

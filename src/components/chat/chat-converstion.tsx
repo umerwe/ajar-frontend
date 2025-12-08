@@ -200,8 +200,10 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
       <div ref={scrollRef} className="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-3" onScroll={handleScroll}>
         {/* Show loader only when loading more messages AND there are more messages to load */}
         {isLoadingMore && hasMore && currentPage > 1 && (
-          <div className="flex justify-center py-2">
-            <div className="h-6 w-6 animate-spin rounded-full border-2 border-aqua border-t-transparent" />
+          <div className="flex justify-center items-center gap-1 py-4">
+            <div className="h-2 w-2 bg-aqua rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+            <div className="h-2 w-2 bg-aqua rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+            <div className="h-2 w-2 bg-aqua rounded-full animate-bounce"></div>
           </div>
         )}
 

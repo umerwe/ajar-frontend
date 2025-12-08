@@ -42,6 +42,7 @@ export function useLayoutVisibility() {
     hasSearchParams:
       !searchParams.get("zone") && !searchParams.get("minPrice") && !searchParams.get("maxPrice") && !searchParams.get("category") &&
       !searchParams.get("payment_intent") &&
+      !searchParams.get("bookingId") &&
       !searchParams.get("payment_intent_client_secret") &&
       hasSearchParams,
   };

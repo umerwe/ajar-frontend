@@ -90,4 +90,10 @@ type User = {
   }>;
 }
 
-
+interface Article {
+  _id: string;
+  title: string;
+  description: string;
+  createdAt: string; // or Date if already parsed
+  images?: string[]; // optional array of image URLs
+}

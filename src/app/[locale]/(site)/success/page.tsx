@@ -29,7 +29,7 @@ const SuccessPage = () => {
 
                 {/* CTA Button */}
                 <Link
-                    href="/listing?status=pending"
+                    href="/booking/completed"
                     className="inline-flex items-center justify-center w-full px-8 py-4 text-white bg-header rounded-full hover:bg-aqua transition-all duration-200 font-semibold text-base shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                 >
                     View Booking

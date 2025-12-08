@@ -47,7 +47,7 @@ const SubCategories = () => {
       : subCategoryParam === subCategory._id;
 
   const handleStatusSelect = (status: string) => {
-    router.push(`/listing?status=${status.toLowerCase()}`);
+    router.push(`/booking/${status.toLowerCase()}`);
   };
 
   const mobileButton = (
@@ -119,7 +119,7 @@ const SubCategories = () => {
   );
 
   return (
-    <div className="flex justify-between px-4 sm:px-6 md:px-9 my-4">
+    <div className="flex justify-between px-4 sm:px-6 md:px-9 mt-6 mb-4">
       {/* Desktop */}
       <div className="hidden md:flex flex-wrap gap-3 flex-grow">
         {subCategories.slice(0, 6).map((cat, i) => {

@@ -1,100 +1,27 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
-import { Star, Calendar } from "lucide-react"
-import { useParams, useRouter } from "next/navigation"
+import { Calendar, Star } from "lucide-react"
+import { useParams } from "next/navigation"
+import Image from "next/image"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+
 import { useGetMarketplaceListing } from "@/hooks/useListing"
 import { useCreateBooking } from "@/hooks/useBooking"
-import type { BookingRequest } from "@/types/booking"
 import { capitalizeWords } from "@/utils/capitalizeWords"
-import api from "@/lib/axios"
-import Image from "next/image"
 import Header from "@/components/pages/listing-details/header"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+
+// Types & Validation
+import type { BookingRequest } from "@/types/booking"
 import { type BookingFormData, bookingSchema } from "@/validations/booking"
-import { loadStripe, type StripeElementsOptions } from "@stripe/stripe-js"
-import { Elements, useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js"
-import { toast } from "@/components/ui/toast"
-
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!)
-
-interface PaymentFormProps {
-    clientSecret: string
-    bookingId: string
-    onPaymentSuccess: (bookingId: string) => void
-}
-
-const PaymentForm: React.FC<PaymentFormProps> = ({ clientSecret, bookingId, onPaymentSuccess }) => {
-    const stripe = useStripe()
-    const elements = useElements()
-    const [isLoading, setIsLoading] = useState(false)
-
-    if (!stripe || !elements) {
-        return <div className="text-center py-4">Loading payment gateway...</div>
-    }
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
-        setIsLoading(true)
-
-        const { error: submitError } = await elements.submit()
-
-        if (submitError) {
-            toast({
-                description: submitError.message || "Please check your payment details.",
-                variant: "destructive",
-            })
-            setIsLoading(false)
-            return
-        }
-
-        const { error } = await stripe.confirmPayment({
-            elements,
-            clientSecret,
-            confirmParams: {
-                return_url: `${window.location.origin}/success`,
-            },
-        })
-
-        if (error) {
-            toast({
-                description: error.message || "Payment confirmation failed. Please try again.",
-                variant: "destructive",
-            })
-            setIsLoading(false)
-        } else {
-            onPaymentSuccess(bookingId)
-        }
-    }
-
-    return (
-        <form onSubmit={handleSubmit} className="space-y-4">
-            <PaymentElement
-                options={{ layout: "tabs" }}
-
-            />
-            <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full bg-header text-white py-3 rounded-full font-semibold text-base hover:bg-teal-600 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-                {isLoading ? "Processing Payment..." : "Confirm & Pay"}
-            </button>
-        </form>
-    )
-}
 
 const CheckoutPage = () => {
-    const router = useRouter()
     const params = useParams()
     const id = params?.id as string
+
     const { data: listing } = useGetMarketplaceListing(id)
     const { mutateAsync: createBooking, isPending } = useCreateBooking()
-
-    const [clientSecret, setClientSecret] = useState<string | null>(null)
-    const [currentBookingId, setCurrentBookingId] = useState<string | null>(null)
 
     const {
         register,
@@ -123,16 +50,6 @@ const CheckoutPage = () => {
     const onSubmit = async (data: BookingFormData) => {
         if (!listing?._id) return
 
-        if (isPending || clientSecret) {
-            toast({
-                description: clientSecret
-                    ? 'Please use the "Confirm & Pay" button below the payment form.'
-                    : "Booking creation is already processing.",
-                variant: "destructive",
-            })
-            return
-        }
-
         const bookingPayload: BookingRequest = {
             marketplaceListingId: listing._id,
             dates: {
@@ -142,31 +59,8 @@ const CheckoutPage = () => {
             specialRequest: data.specialRequest!,
         }
 
-        createBooking(
-            { booking: bookingPayload },
-            {
-                onSuccess: async (bookingData) => {
-                    try {
-                        setCurrentBookingId(bookingData.booking._id)
-
-                        const paymentResponse = await api.post("/api/payments/stripe/intent", {
-                            bookingId: bookingData.booking._id,
-                        })
-
-                        const secret = paymentResponse.data?.clientSecret
-
-                        if (secret) {
-                            setClientSecret(secret)
-                            toast({ description: "Booking created successfully. Proceed to payment." })
-                        }
-                    } catch {
-                        toast({ description: "Failed to initiate payment intent.", variant: "destructive" })
-                    }
-                },
-                onError: () => {
-                    toast({ description: "Failed to create booking.", variant: "destructive" })
-                },
-            },
+        await createBooking(
+            { booking: bookingPayload }
         )
     }
 
@@ -178,314 +72,158 @@ const CheckoutPage = () => {
         return formData.startDate || getTodayDate()
     }
 
-    const options: StripeElementsOptions = {
-        clientSecret: clientSecret || undefined,
-        appearance: {
-            theme: "stripe",
-        },
-    }
-
-    const handlePaymentSuccess = () => {
-        router.replace("/success")
-    }
-
     return (
         <div className="min-h-screen bg-gray-50 mb-12">
             <div className="max-w-7xl mx-auto px-4 md:px-8">
                 <Header title="Booking Submission" />
 
-                {clientSecret && currentBookingId ? (
-                    <div className="pt-6">
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-6">
 
-                            {/* LEFT COLUMN: Booking Details/Payment */}
-                            <div className="space-y-6">
-                                {/* Date Input Fields */}
-                                <div>
-                                    <h2 className="text-base font-semibold text-gray-900 mb-4">Date</h2>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <div className={`bg-gray-100 rounded-lg p-4 ${errors.startDate ? "border border-red-500" : ""}`}>
-                                                <div className="flex items-center gap-2 mb-2">
-                                                    <Calendar className="w-4 h-4 text-gray-600" />
-                                                    <label className="text-sm font-medium text-gray-900">Lease Start</label>
-                                                </div>
-                                                <input
-                                                    type="date"
-                                                    min={getTodayDate()}
-                                                    {...register("startDate")}
-                                                    onChange={handleInputChange}
-                                                    className="w-full bg-transparent border-0 p-0 focus:ring-0 outline-none text-sm text-gray-500"
-                                                />
-                                            </div>
-                                            {errors.startDate && (
-                                                <p className="text-red-500 text-sm font-medium px-2">{errors.startDate.message}</p>
-                                            )}
-                                        </div>
-                                        <div className="space-y-2">
-                                            <div className={`bg-gray-100 rounded-lg p-4 ${errors.endDate ? "border border-red-500" : ""}`}>
-                                                <div className="flex items-center gap-2 mb-2">
-                                                    <Calendar className="w-4 h-4 text-gray-600" />
-                                                    <label className="text-sm font-medium text-gray-900">Lease End</label>
-                                                </div>
-                                                <input
-                                                    type="date"
-                                                    min={getMinEndDate()}
-                                                    {...register("endDate")}
-                                                    onChange={handleInputChange}
-                                                    className="w-full bg-transparent border-0 p-0 focus:ring-0 outline-none text-sm text-gray-500"
-                                                />
-                                            </div>
-                                            {errors.endDate && (
-                                                <p className="text-red-500 text-sm font-medium px-2">{errors.endDate.message}</p>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Comments Input Field */}
-                                <div>
-                                    <h2 className="text-base font-semibold text-gray-900 mb-4">Comments</h2>
+                        {/* LEFT COLUMN: Booking Details/Submit Button */}
+                        <div className="space-y-6">
+                            {/* Date Input Fields */}
+                            <div>
+                                <h2 className="text-base font-semibold text-gray-900 mb-4">Date</h2>
+                                <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <textarea
-                                            {...register("specialRequest")}
-                                            onChange={handleInputChange}
-                                            rows={6}
-                                            className="w-full px-4 py-4 bg-gray-100 border-0 rounded-lg focus:ring-1 focus:ring-aqua outline-none transition resize-none text-sm text-gray-500 placeholder:text-gray-500"
-                                            placeholder="Enter comments"
-                                        ></textarea>
-                                        {errors.specialRequest && (
-                                            <p className="text-red-500 text-sm font-medium px-2">{errors.specialRequest.message}</p>
+                                        <div className={`bg-gray-100 rounded-lg p-4 ${errors.startDate ? "border border-red-500" : ""}`}>
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <Calendar className="w-4 h-4 text-gray-600" />
+                                                <label className="text-sm font-medium text-gray-900">Lease Start</label>
+                                            </div>
+                                            <input
+                                                type="date"
+                                                min={getTodayDate()}
+                                                {...register("startDate")}
+                                                onChange={handleInputChange}
+                                                className="w-full bg-transparent border-0 p-0 focus:ring-0 outline-none text-sm text-gray-500"
+                                            />
+                                        </div>
+                                        {errors.startDate && (
+                                            <p className="text-red-500 text-sm font-medium px-2">{errors.startDate.message}</p>
+                                        )}
+                                    </div>
+                                    <div className="space-y-2">
+                                        <div className={`bg-gray-100 rounded-lg p-4 ${errors.endDate ? "border border-red-500" : ""}`}>
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <Calendar className="w-4 h-4 text-gray-600" />
+                                                <label className="text-sm font-medium text-gray-900">Lease End</label>
+                                            </div>
+                                            <input
+                                                type="date"
+                                                min={getMinEndDate()}
+                                                {...register("endDate")}
+                                                onChange={handleInputChange}
+                                                className="w-full bg-transparent border-0 p-0 focus:ring-0 outline-none text-sm text-gray-500"
+                                            />
+                                        </div>
+                                        {errors.endDate && (
+                                            <p className="text-red-500 text-sm font-medium px-2">{errors.endDate.message}</p>
                                         )}
                                     </div>
                                 </div>
+                            </div>
 
-                                {/* Stripe Payment Form */}
-                                <div className="mt-8 bg-white rounded-2xl p-6 shadow-md">
-                                    <h2 className="text-xl font-bold text-gray-900 mb-4">Enter Payment Information</h2>
-                                    <Elements stripe={stripePromise} options={options}>
-                                        <PaymentForm
-                                            clientSecret={clientSecret}
-                                            bookingId={currentBookingId}
-                                            onPaymentSuccess={handlePaymentSuccess}
-                                        />
-                                    </Elements>
+                            {/* Comments Input Field */}
+                            <div>
+                                <h2 className="text-base font-semibold text-gray-900 mb-4">Comments</h2>
+                                <div className="space-y-2">
+                                    <textarea
+                                        {...register("specialRequest")}
+                                        onChange={handleInputChange}
+                                        rows={6}
+                                        className="w-full px-4 py-4 bg-gray-100 border-0 rounded-lg focus:ring-1 focus:ring-aqua outline-none transition resize-none text-sm text-gray-500 placeholder:text-gray-500"
+                                        placeholder="Enter comments"
+                                    ></textarea>
+                                    {errors.specialRequest && (
+                                        <p className="text-red-500 text-sm font-medium px-2">{errors.specialRequest.message}</p>
+                                    )}
                                 </div>
                             </div>
 
-                            {/* RIGHT COLUMN: Listing and Price Details (Unchanged) */}
-                            <div className="space-y-6">
-                                <div className="bg-white rounded-lg p-6 shadow-sm">
-                                    <div className="flex gap-4 mb-4">
-                                        <div className="w-24 h-24 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
-                                            {listing?.rentalImages?.[0] && (
-                                                <Image
-                                                    src={`${process.env.NEXT_PUBLIC_API_BASE_URL}${listing.rentalImages[0]}`}
-                                                    alt={listing?.name || "Listing image"}
-                                                    width={100}
-                                                    height={100}
-                                                    className="w-full h-full object-cover"
+                            {/* Booking Submission Button */}
+                            <button
+                                type="submit"
+                                disabled={isPending}
+                                className="w-48 bg-header text-white py-3 rounded-full font-semibold text-base hover:bg-teal-600 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {isPending ? "Processing..." : "Submit Booking"}
+                            </button>
+                        </div>
+
+                        {/* RIGHT COLUMN: Listing and Price Details (Unchanged) */}
+                        <div className="space-y-6">
+                            <div className="bg-white rounded-lg p-6 shadow-sm">
+                                <div className="flex gap-4 mb-4">
+                                    <div className="w-24 h-24 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
+                                        {listing?.rentalImages?.[0] && (
+                                            <Image
+                                                src={`${process.env.NEXT_PUBLIC_API_BASE_URL}${listing.rentalImages[0]}`}
+                                                alt={listing?.name || "Listing image"}
+                                                width={100}
+                                                height={100}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        )}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <h3 className="text-lg font-semibold text-gray-900 mt-2 mb-1">
+                                            {capitalizeWords(listing?.name || "")}
+                                        </h3>
+                                        <div className="flex items-center gap-1 mb-2">
+                                            {[...Array(5)].map((_, i) => (
+                                                <Star
+                                                    key={i}
+                                                    className={`w-4 h-4 ${i < Math.floor(listing?.ratings?.average || 0)
+                                                        ? "fill-yellow-400 text-yellow-400"
+                                                        : "text-gray-300"
+                                                        }`}
                                                 />
-                                            )}
+                                            ))}
                                         </div>
-                                        <div className="flex-1 min-w-0">
-                                            <h3 className="text-lg font-semibold text-gray-900 mt-2 mb-1">
-                                                {capitalizeWords(listing?.name || "")}
-                                            </h3>
-                                            <div className="flex items-center gap-1 mb-2">
-                                                {[...Array(5)].map((_, i) => (
-                                                    <Star
-                                                        key={i}
-                                                        className={`w-4 h-4 ${i < Math.floor(listing?.ratings?.average || 0)
-                                                            ? "fill-yellow-400 text-yellow-400"
-                                                            : "text-gray-300"
-                                                            }`}
-                                                    />
-                                                ))}
-                                            </div>
-                                            <div className="flex flex-wrap items-center gap-2">
-                                                <span className="bg-teal-500 text-white px-3 py-1 rounded-l-2xl rounded-b-2xl text-sm font-medium">
-                                                    {(listing?.ratings?.average || 0).toFixed(1)}/5
-                                                </span>
-                                                <span className="text-sm font-medium text-teal-600">Excellent</span>
-                                                <span className="text-sm text-gray-500">{listing?.ratings?.count || 0} reviews</span>
-                                            </div>
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            <span className="bg-teal-500 text-white px-3 py-1 rounded-l-2xl rounded-b-2xl text-sm font-medium">
+                                                {(listing?.ratings?.average || 0).toFixed(1)}/5
+                                            </span>
+                                            <span className="text-sm font-medium text-teal-600">Excellent</span>
+                                            <span className="text-sm text-gray-500">{listing?.ratings?.count || 0} reviews</span>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div className="bg-white rounded-2xl p-6 shadow-sm">
-                                    <h2 className="text-lg font-semibold text-gray-900 mb-4">Payment Details</h2>
-                                    <div className="space-y-3">
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-base text-gray-600">Base price</span>
-                                            <span className="text-base font-medium text-gray-900">${listing?.price?.toFixed(2) || "0.00"}</span>
-                                        </div>
-                                        <div className="flex justify-between items-center py-3 border-t">
-                                            <span className="text-base font-medium text-gray-900">Total Cost</span>
-                                            <span className="text-xl font-bold text-gray-900">${listing?.price?.toFixed(2) || "0.00"}</span>
-                                        </div>
+                            <div className="bg-white rounded-2xl p-6 shadow-sm">
+                                <h2 className="text-lg font-semibold text-gray-900 mb-4">Payment Details</h2>
+                                <div className="space-y-3">
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-base text-gray-600">Base price</span>
+                                        <span className="text-base font-medium text-gray-900">
+                                            ${Math.round(listing?.price || 0)}.00
+                                        </span>
+                                    </div>
+                                    <div className="flex justify-between items-center py-3 border-t">
+                                        <span className="text-base font-medium text-gray-900">Total Cost</span>
+                                        <span className="text-xl font-bold text-gray-900">
+                                            ${Math.round(listing?.price || 0)}.00
+                                        </span>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div className="bg-white rounded-2xl p-6 shadow-sm">
-                                    <h2 className="text-lg font-semibold text-gray-900 mb-4">Cancellation Policy</h2>
-                                    <div className="mb-3">
-                                        <h3 className="text-base font-semibold text-gray-900 mb-2">Non-refundable</h3>
-                                        <p className="text-sm text-gray-600 leading-relaxed">
-                                            This booking cannot be modified, and no refund will be given if you cancel it. If you fail to check
-                                            in, a penalty equivalent to the cancellation fee will be charged.
-                                        </p>
-                                    </div>
+                            <div className="bg-white rounded-2xl p-6 shadow-sm">
+                                <h2 className="text-lg font-semibold text-gray-900 mb-4">Cancellation Policy</h2>
+                                <div className="mb-3">
+                                    <h3 className="text-base font-semibold text-gray-900 mb-2">Non-refundable</h3>
+                                    <p className="text-sm text-gray-600 leading-relaxed">
+                                        This booking cannot be modified, and no refund will be given if you cancel it. If you fail to check
+                                        in, a penalty equivalent to the cancellation fee will be charged.
+                                    </p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                ) : (
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-6">
-
-                            {/* LEFT COLUMN: Booking Details/Submit Button */}
-                            <div className="space-y-6">
-                                {/* Date Input Fields */}
-                                <div>
-                                    <h2 className="text-base font-semibold text-gray-900 mb-4">Date</h2>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <div className={`bg-gray-100 rounded-lg p-4 ${errors.startDate ? "border border-red-500" : ""}`}>
-                                                <div className="flex items-center gap-2 mb-2">
-                                                    <Calendar className="w-4 h-4 text-gray-600" />
-                                                    <label className="text-sm font-medium text-gray-900">Lease Start</label>
-                                                </div>
-                                                <input
-                                                    type="date"
-                                                    min={getTodayDate()}
-                                                    {...register("startDate")}
-                                                    onChange={handleInputChange}
-                                                    className="w-full bg-transparent border-0 p-0 focus:ring-0 outline-none text-sm text-gray-500"
-                                                />
-                                            </div>
-                                            {errors.startDate && (
-                                                <p className="text-red-500 text-sm font-medium px-2">{errors.startDate.message}</p>
-                                            )}
-                                        </div>
-                                        <div className="space-y-2">
-                                            <div className={`bg-gray-100 rounded-lg p-4 ${errors.endDate ? "border border-red-500" : ""}`}>
-                                                <div className="flex items-center gap-2 mb-2">
-                                                    <Calendar className="w-4 h-4 text-gray-600" />
-                                                    <label className="text-sm font-medium text-gray-900">Lease End</label>
-                                                </div>
-                                                <input
-                                                    type="date"
-                                                    min={getMinEndDate()}
-                                                    {...register("endDate")}
-                                                    onChange={handleInputChange}
-                                                    className="w-full bg-transparent border-0 p-0 focus:ring-0 outline-none text-sm text-gray-500"
-                                                />
-                                            </div>
-                                            {errors.endDate && (
-                                                <p className="text-red-500 text-sm font-medium px-2">{errors.endDate.message}</p>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Comments Input Field */}
-                                <div>
-                                    <h2 className="text-base font-semibold text-gray-900 mb-4">Comments</h2>
-                                    <div className="space-y-2">
-                                        <textarea
-                                            {...register("specialRequest")}
-                                            onChange={handleInputChange}
-                                            rows={6}
-                                            className="w-full px-4 py-4 bg-gray-100 border-0 rounded-lg focus:ring-1 focus:ring-aqua outline-none transition resize-none text-sm text-gray-500 placeholder:text-gray-500"
-                                            placeholder="Enter comments"
-                                        ></textarea>
-                                        {errors.specialRequest && (
-                                            <p className="text-red-500 text-sm font-medium px-2">{errors.specialRequest.message}</p>
-                                        )}
-                                    </div>
-                                </div>
-
-                                {/* Booking Submission Button */}
-                                <button
-                                    type="submit"
-                                    disabled={isPending}
-                                    className="w-48 bg-header text-white py-3 rounded-full font-semibold text-base hover:bg-teal-600 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    {isPending ? "Processing..." : "Submit & Pay"}
-                                </button>
-                            </div>
-
-                            {/* RIGHT COLUMN: Listing and Price Details (Unchanged) */}
-                            <div className="space-y-6">
-                                <div className="bg-white rounded-lg p-6 shadow-sm">
-                                    <div className="flex gap-4 mb-4">
-                                        <div className="w-24 h-24 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
-                                            {listing?.rentalImages?.[0] && (
-                                                <Image
-                                                    src={`${process.env.NEXT_PUBLIC_API_BASE_URL}${listing.rentalImages[0]}`}
-                                                    alt={listing?.name || "Listing image"}
-                                                    width={100}
-                                                    height={100}
-                                                    className="w-full h-full object-cover"
-                                                />
-                                            )}
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <h3 className="text-lg font-semibold text-gray-900 mt-2 mb-1">
-                                                {capitalizeWords(listing?.name || "")}
-                                            </h3>
-                                            <div className="flex items-center gap-1 mb-2">
-                                                {[...Array(5)].map((_, i) => (
-                                                    <Star
-                                                        key={i}
-                                                        className={`w-4 h-4 ${i < Math.floor(listing?.ratings?.average || 0)
-                                                            ? "fill-yellow-400 text-yellow-400"
-                                                            : "text-gray-300"
-                                                            }`}
-                                                    />
-                                                ))}
-                                            </div>
-                                            <div className="flex flex-wrap items-center gap-2">
-                                                <span className="bg-teal-500 text-white px-3 py-1 rounded-l-2xl rounded-b-2xl text-sm font-medium">
-                                                    {(listing?.ratings?.average || 0).toFixed(1)}/5
-                                                </span>
-                                                <span className="text-sm font-medium text-teal-600">Excellent</span>
-                                                <span className="text-sm text-gray-500">{listing?.ratings?.count || 0} reviews</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="bg-white rounded-2xl p-6 shadow-sm">
-                                    <h2 className="text-lg font-semibold text-gray-900 mb-4">Payment Details</h2>
-                                    <div className="space-y-3">
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-base text-gray-600">Base price</span>
-                                            <span className="text-base font-medium text-gray-900">${listing?.price?.toFixed(2) || "0.00"}</span>
-                                        </div>
-                                        <div className="flex justify-between items-center py-3 border-t">
-                                            <span className="text-base font-medium text-gray-900">Total Cost</span>
-                                            <span className="text-xl font-bold text-gray-900">${listing?.price?.toFixed(2) || "0.00"}</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="bg-white rounded-2xl p-6 shadow-sm">
-                                    <h2 className="text-lg font-semibold text-gray-900 mb-4">Cancellation Policy</h2>
-                                    <div className="mb-3">
-                                        <h3 className="text-base font-semibold text-gray-900 mb-2">Non-refundable</h3>
-                                        <p className="text-sm text-gray-600 leading-relaxed">
-                                            This booking cannot be modified, and no refund will be given if you cancel it. If you fail to check
-                                            in, a penalty equivalent to the cancellation fee will be charged.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                )}
+                </form>
             </div>
         </div>
     )
