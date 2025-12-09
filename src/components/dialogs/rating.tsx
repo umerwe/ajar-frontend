@@ -41,7 +41,7 @@ export const RatingDialog = ({ open, onClose, bookingId }: RatingDialogProps) =>
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-sm px-0 py-3 gap-0">
+      <DialogContent className="max-w-xs sm:max-w-sm px-0 py-3 gap-0">
         <VisuallyHidden>
           <DialogTitle>Rate Our App Experience</DialogTitle>
         </VisuallyHidden>
@@ -54,7 +54,7 @@ export const RatingDialog = ({ open, onClose, bookingId }: RatingDialogProps) =>
           {/* Title */}
           <div className="text-center mb-6">
             <h2 className="text-xl font-semibold text-gray-900">
-              How would you rate our app experience?
+              How would you rate your experience?
             </h2>
           </div>
 

@@ -34,7 +34,6 @@ const FilterPage = ({ location, minPrice, maxPrice, category }: FilterPageProps)
     page: currentPage,
     limit: ITEMS_PER_PAGE,
   })
-  console.log(listingData)
 
   const listings = listingData?.listings || []
   const total = listingData?.total || 0
@@ -129,7 +128,7 @@ const FilterPage = ({ location, minPrice, maxPrice, category }: FilterPageProps)
       </div>
 
       <Dialog open={isFilterDialogOpen} onOpenChange={setIsFilterDialogOpen}>
-        <DialogContent className="w-full max-w-md">
+        <DialogContent className="max-w-xs">
           <DialogHeader className="flex flex-row items-center justify-between">
             <DialogTitle>Filter Properties</DialogTitle>
           </DialogHeader>
@@ -140,7 +139,7 @@ const FilterPage = ({ location, minPrice, maxPrice, category }: FilterPageProps)
       </Dialog>
 
       {/* Main layout */}
-      <div className="flex flex-col mx-4 md:mx-8 md:flex-row gap-4 md:gap-6 my-20 md:my-8">
+      <div className="flex flex-col mx-4 md:mx-8 md:flex-row gap-4 md:gap-6 mt-20 md:my-8">
         <div className="hidden md:block w-full md:w-80 bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden h-fit md:sticky md:top-6">
           <h2 className="text-xl font-semibold px-6 pt-6">Filter</h2>
           <div className="p-6">

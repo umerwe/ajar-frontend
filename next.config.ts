@@ -31,6 +31,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'ajar-server.hostdonor.com',
+        pathname: '/chat/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'sj61d7kn-5000.inc1.devtunnels.ms',
         pathname: '/uploads/**',
       },

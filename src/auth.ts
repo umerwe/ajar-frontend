@@ -15,7 +15,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (account?.provider === "google" && account?.id_token) {
         try {
           console.log(account.id_token)
-          // Send the Google idToken to your backend
           const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/oauth/google`, {
             params: {
               idToken: account.id_token,

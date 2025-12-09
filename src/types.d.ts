@@ -97,3 +97,10 @@ interface Article {
   createdAt: string; // or Date if already parsed
   images?: string[]; // optional array of image URLs
 }
+
+interface PricingActionsProps {
+  property?: Listing
+  bookingData?: Booking
+  category_id: string
+  id: string
+}

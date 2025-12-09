@@ -58,7 +58,7 @@ const ListingContent = ({ isHome, initialCategory }: ListingContentProps) => {
   }
 
   return (
-    <div className="mt-4 mb-20">
+    <div className="mt-4 sm:mb-20">
       <MainCard
         listings={filteredListings}
       />

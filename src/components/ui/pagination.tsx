@@ -28,7 +28,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) 
   };
 
   return (
-    <div className="flex justify-center items-center gap-2 my-6">
+    <div className="flex justify-center items-center gap-2 my-3">
       {/* Previous button */}
       <Button
         variant="outline"
@@ -45,11 +45,10 @@ const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) 
         <Button
           key={page}
           onClick={() => onPageChange(page)}
-          className={`rounded-full w-10 h-10 p-0 ${
-            currentPage === page
+          className={`rounded-full w-10 h-10 p-0 ${currentPage === page
               ? "bg-header text-white hover:text-white border-0"
               : "bg-transparent"
-          }`}
+            }`}
           variant="outline"
         >
           {page}

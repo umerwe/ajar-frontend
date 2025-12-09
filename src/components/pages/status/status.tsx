@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import MainCard from "@/components/cards/main-card";
 import NotFound from "@/components/common/not-found";
 import SkeletonLoader from "@/components/common/skeleton-loader";
@@ -46,6 +46,7 @@ const Status = ({ status }: { status: string }) => {
         <MainCard
           listings={listings}
           type="booking"
+          isApproved={status === "approved"}
         />
 
         {totalPages > 1 && (

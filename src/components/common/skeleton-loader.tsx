@@ -30,7 +30,7 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: 
 
     case "cards":
       return (
-        <div className="mb-15 mt-4">
+        <div className={`sm:mb-15 ${type === "filter" ? "mt-0" : "mt-4"}`}>
           <div className={`flex items-center justify-between px-6 pt-6 bg-white ${isFav ? "block" : "hidden"}`}>
             <div className="flex items-center gap-2 sm:gap-3">
               <div className="w-10 h-10 rounded-lg bg-gray-200" />
@@ -38,50 +38,50 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: 
             </div>
             <div className="px-3 py-1 w-24 h-6 bg-gray-200 rounded" />
           </div>
+
           <div className="min-h-[400px]">
             <div
-              className={`grid grid-cols-1 gap-4 w-full
-    ${type === "filter"
-                  ? "sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4" // Filter mode
-                  : "sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-4 xl:grid-cols-5 3xl:grid-cols-6" // Default mode
+              className={`grid grid-cols-2 gap-2 w-full
+                ${type === "filter"
+                  ? "sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 sm:gap-4"
+                  : "sm:grid-cols-2 md:grid-cols-3 p-2 sm:p-4 lg:grid-cols-4 xl:grid-cols-5 3xl:grid-cols-6 sm:gap-4"
                 }
-  `}              >
+              `}
+            >
               {Array.from({ length: count }).map((_, index) => (
                 <Card
                   key={index}
-                  className="w-full sm:max-w-[320px] mx-auto border-0 bg-white shadow-sm pb-0 animate-pulse"
+                  className="w-full mx-auto border-0 bg-white shadow-sm pb-0 animate-pulse overflow-hidden"
                 >
-                  <div className="flex sm:block items-center min-[500px]:gap-2">
-                    {/* Top / Image carousel placeholder */}
-                    <div className="w-[35%] sm:w-full">
-                      <div className="relative w-full">
-                        <div className="w-full h-38 sm:h-54 bg-gray-200 rounded-2xl" />
-                      </div>
+                  {/* Vertical Layout matches MainCard */}
+                  <div className="flex flex-col h-full">
+
+                    {/* Image Placeholder - Full width, square on mobile */}
+                    <div className="w-full relative aspect-square sm:aspect-auto">
+                      <div className="w-full h-full sm:h-54 bg-gray-200 rounded-xl" />
                     </div>
 
-                    {/* Body + Bottom placeholders */}
-                    <div className="flex flex-col sm:mt-0 gap-2 w-[60%] min-[500px]:w-[65%] sm:w-full">
-                      {/* CardBody placeholders */}
-                      <div className="px-2 mt-5">
-                        {/* Title + Rating */}
+                    {/* Content Placeholders */}
+                    <div className="flex md:px-1 flex-col justify-between flex-grow w-full gap-1 p-1 sm:p-0 sm:gap-2">
+
+                      {/* Body */}
+                      <div className="mt-1 sm:mt-5">
                         <div className="flex items-center justify-between">
-                          <div className="h-4 bg-gray-200 rounded w-3/4" />
-                          <div className="flex items-center gap-1">
-                            <div className="h-4 bg-gray-200 rounded w-8" />
-                          </div>
+                          <div className="h-3 sm:h-4 bg-gray-200 rounded w-3/4" />
+                          <div className="h-3 sm:h-4 bg-gray-200 rounded w-8" />
                         </div>
-                        {/* Location */}
-                        <div className="h-4 bg-gray-200 rounded w-2/3 mt-2" />
+                        <div className="h-3 sm:h-4 bg-gray-200 rounded w-1/2 mt-2" />
                       </div>
 
-                      {/* CardBottom placeholders */}
-                      <div className="px-2 sm:mb-2 min-[500px]:px-3 pb-2 pt-0 flex justify-between items-center mt-2">
+                      {/* Footer */}
+                      <div className="pb-2 sm:pb-3 pt-0 flex justify-between items-center mt-auto w-full">
                         <div className="flex flex-col gap-1">
-                          <div className="h-5 bg-gray-200 rounded w-16" />
-                          <div className="h-4 bg-gray-200 rounded w-12" />
+                          <div className="h-4 sm:h-5 bg-gray-200 rounded w-10 sm:w-16" />
+                          <div className="h-2 sm:h-3 bg-gray-200 rounded w-8 sm:w-12" />
                         </div>
-                        <div className="h-7.5 min-[500px]:h-9 bg-gray-200 rounded w-24" />
+                        <div className="h-8 min-[500px]:h-9 bg-gray-200 rounded w-16 sm:w-24" />
                       </div>
+
                     </div>
                   </div>
                 </Card>
@@ -247,7 +247,6 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: 
           </div>
         </div>
       )
-
     case "chat":
       return (
         <>
