@@ -30,7 +30,7 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: 
 
     case "cards":
       return (
-        <div className={`sm:mb-15 ${type === "filter" ? "mt-0" : "mt-4"}`}>
+        <div className={`sm:mb-15 ${type === "filter" ? "mt-0" : "mt-4"}  2xl:max-w-[1400px] 2xl:mx-auto`}>
           <div className={`flex items-center justify-between px-6 pt-6 bg-white ${isFav ? "block" : "hidden"}`}>
             <div className="flex items-center gap-2 sm:gap-3">
               <div className="w-10 h-10 rounded-lg bg-gray-200" />

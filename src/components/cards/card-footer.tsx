@@ -70,6 +70,7 @@ const CardBottom = ({ property, bookingId, totalPrice, isApproved }: CardBottomP
             variant="outline"
             className={buttonStyles}
             onClick={(e) => {
+              e.preventDefault();
               e.stopPropagation();
               handlePayClick();
             }}
@@ -88,7 +89,10 @@ const CardBottom = ({ property, bookingId, totalPrice, isApproved }: CardBottomP
                 ? `/booking/details/${bookingId}`
                 : `/listing/${property.subCategory?._id}/${property._id}`
             }
-            onClick={scrollToTop}
+            onClick={(e) => {
+              e.stopPropagation();
+              scrollToTop();
+            }}
           >
             <Button variant="outline" className={buttonStyles}>
               View Details
@@ -97,13 +101,15 @@ const CardBottom = ({ property, bookingId, totalPrice, isApproved }: CardBottomP
         )}
       </CardFooter>
 
-      <PaymentDialog
-        open={isPaymentOpen}
-        onOpenChange={setIsPaymentOpen}
-        clientSecret={clientSecret}
-        bookingId={bookingId || ""}
-        amount={totalPrice || property.price}
-      />
+      <div onClick={(e) => e.stopPropagation()}>
+        <PaymentDialog
+          open={isPaymentOpen}
+          onOpenChange={setIsPaymentOpen}
+          clientSecret={clientSecret}
+          bookingId={bookingId || ""}
+          amount={totalPrice || property.price}
+        />
+      </div>
     </>
   )
 }
