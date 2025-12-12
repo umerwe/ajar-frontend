@@ -7,9 +7,9 @@ export default function AuthLayout({ FormComponent, isVerfication = true }: Auth
         : "left-[13%] xl:left-[16%] 2xl:left-[19%]"
 
     return (
-        <div className="min-h-screen flex">
+        <div className="min-h-[calc(100vh-70px)] lg:min-h-screen flex">
             {/* Left Side - Form */}
-            <div className="w-full lg:w-[30%] flex items-center justify-center p-4 lg:p-8 max-[1024px]:bg-gradient-to-r from-aqua to-blue bg-gray-50">
+            <div className="w-full lg:w-[30%] flex items-center justify-center p-4 lg:p-8 bg-gray-50">
                 <div className={`w-full sm:w-[80%] lg:w-auto lg:absolute z-10 ${className}`}>
                     {FormComponent}
                 </div>

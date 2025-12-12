@@ -3,43 +3,69 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import Dropdown from "@/components/ui/dropdown";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import { formatStatus } from "@/utils/formatStatus";
 
-const statusOptions = ["Pending", "Approved", "Rejected", "Completed", "Cancelled"];
+const rawOptions = ["Pending", "Approved", "In Progress", "Rejected", "Completed", "Cancelled"];
+const statusOptions = ["All", ...rawOptions];
 
 const StatusOptions = () => {
     const params = useParams();
-    const statusParam = params.status as string;
+    // Default to 'all' if no parameter exists, though your routing likely handles this
+    const statusParam = (params.status as string) || "all";
 
-    const getHref = (status: string) => `/booking/${status.toLowerCase()}`;
-    const isActive = (status: string) => statusParam?.toLowerCase() === status?.toLowerCase();
+    const slugify = (str: string) => {
+        if (!str) return "";
+        if (str.toLowerCase() === "in progress") return "in_progress";
+        return str.toLowerCase();
+    };
+
+    // 1. FIXED: Simple logic. "All" -> "all" -> "/booking/all"
+    const getHref = (status: string) => `/booking/${slugify(status)}`;
+
+    // 2. FIXED: Checks if the slug of the option matches the current URL param
+    const isActive = (status: string) => {
+        return slugify(status) === slugify(statusParam);
+    };
+
+    // Helper to display the button text nicely
+    const getCurrentLabel = () => {
+        if (!statusParam || slugify(statusParam) === "all") return "All Status";
+        return formatStatus(statusParam);
+    };
 
     const mobileButton = (
         <button
-            className="w-full flex items-center justify-between gap-3 px-5 py-3 
-      rounded-lg border-2 bg-white hover:bg-gray-50 transition-colors
-      duration-200 shadow-sm border-t-aqua border-r-aqua border-b-blue border-l-blue"
+            className="w-full max-w-38 flex items-center justify-between gap-3 px-4 py-2.5 
+            rounded-lg border-2 border-t-aqua border-r-aqua border-b-blue
+          border-l-blue bg-white hover:bg-gray-50 transition-all
+            duration-200 shadow-sm group"
         >
             <span className="text-sm font-semibold text-[#01c89b]">
-                {statusParam ? statusParam.charAt(0).toUpperCase() + statusParam.slice(1) : "All Status"}
+                {getCurrentLabel()}
             </span>
-            <ChevronDownIcon className="w-4 h-4 text-gray-500" />
+            <ChevronDownIcon className="w-4 h-4 text-aqua group-hover:text-[#01c89b] transition-colors" />
         </button>
     );
 
     const mobileContent = (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-50 overflow-hidden">
-            <div className="py-2">
-                {statusOptions?.map((status, i) => {
+        <div className="absolute top-full max-w-38 left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-50 overflow-hidden">
+            <div className="max-h-[60vh] overflow-y-auto py-1">
+                {statusOptions.map((status, i) => {
                     const active = isActive(status);
                     return (
                         <Link
                             key={i}
                             href={getHref(status)}
-                            className={`flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors duration-150 ${active && "bg-blue-50 border-r-4 border-aqua text-aqua"}`}
+                            className={`flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors duration-150 border-l-4 ${
+                                active 
+                                ? "bg-blue-50 border-l-aqua text-aqua" 
+                                : "border-l-transparent text-gray-600"
+                            }`}
                         >
-                            <span className={`text-sm font-medium ${active ? "text-aqua" : "text-gray-500"}`}>
-                                {status}
+                            <span className={`text-sm font-medium ${active ? "text-aqua" : ""}`}>
+                                {status === "All" ? "All Status" : status}
                             </span>
+                            {active && <span className="h-2 w-2 rounded-full bg-aqua" />}
                         </Link>
                     );
                 })}
@@ -48,29 +74,34 @@ const StatusOptions = () => {
     );
 
     return (
-        <div className="flex justify-between px-4 sm:px-6 md:px-9 my-4">
-            {/* Desktop */}
+        <div className="flex justify-between px-4 sm:px-6 md:px-9 my-6">
+            {/* Desktop View */}
             <div className="hidden md:flex flex-wrap gap-3 flex-grow">
-                {statusOptions?.map((status, i) => {
+                {statusOptions.map((status, i) => {
                     const active = isActive(status);
                     return (
                         <Link
                             key={i}
                             href={getHref(status)}
-                            className={`flex items-center gap-2 px-5 py-2 rounded-full transition-colors duration-200 ${active
-                                ? "text-aqua border-2 border-t-aqua border-r-aqua border-b-blue border-l-blue bg-transparent"
-                                : "bg-gray-100 text-gray-400 border border-transparent hover:border-aqua hover:text-aqua"
-                                }`}
+                            className={`
+                                flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 border
+                                ${active
+                                    ? "text-aqua border-t-aqua border-r-aqua border-b-blue border-l-blue bg-white shadow-sm"
+                                    : "bg-gray-100/80 text-gray-500 border-transparent hover:bg-white hover:border-aqua/50 hover:text-aqua hover:shadow-sm"
+                                }
+                            `}
                         >
-                            <span className="text-sm font-semibold">{status}</span>
+                            {status}
                         </Link>
                     );
                 })}
             </div>
 
-            {/* Mobile */}
-            <div className="md:hidden flex-grow max-w-50 relative">
-                <Dropdown button={mobileButton}>{mobileContent}</Dropdown>
+            {/* Mobile View */}
+            <div className="md:hidden flex-grow w-full relative">
+                <Dropdown button={mobileButton}>
+                    {mobileContent}
+                </Dropdown>
             </div>
         </div>
     );

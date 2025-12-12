@@ -44,7 +44,7 @@ export default function SearchBar() {
     return (
       <div className="text-white px-4 sm:px-6 md:px-11 py-4 sm:py-6 flex items-center justify-center">
         <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl">
-          <div className="flex flex-col lg:flex-row divide-y lg:divide-y-0 lg:divide-x divide-gray-200">
+          <div className="flex flex-col lg:flex-row lg:divide-y-0 lg:divide-x divide-gray-200">
             {/* Location Skeleton */}
             <div className="relative flex-1 px-4 sm:px-6 md:px-8 py-3 min-w-0 flex items-center gap-2 sm:gap-3">
               <div className="bg-gray-200 rounded-full w-5 h-5 sm:w-6 sm:h-6 animate-pulse" />
@@ -70,7 +70,7 @@ export default function SearchBar() {
   return (
     <div className="text-white px-4 sm:px-6 md:px-11 py-4 sm:py-6 flex items-center justify-center">
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl">
-        <div className="flex flex-col lg:flex-row divide-y lg:divide-y-0 lg:divide-x divide-gray-200">
+        <div className="flex flex-col lg:flex-row lg:divide-y-0 lg:divide-x divide-gray-200">
           {/* Location Dropdown Group */}
           <div className="relative flex-1 px-4 sm:px-6 md:px-8 py-3 sm:py-2.5 min-w-0">
             <DropdownMenu>

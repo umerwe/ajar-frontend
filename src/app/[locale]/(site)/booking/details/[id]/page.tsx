@@ -1,14 +1,10 @@
 "use client"
-
-// import AboutListing from "@/components/pages/listing-details/about-listing"
 import CoreDetails from "@/components/pages/listing-details/core-details"
-// import ExploreArea from "@/components/pages/listing-details/explore-area"
 import Header from "@/components/pages/listing-details/header"
 import ImageGalleryLayout from "@/components/pages/listing-details/image-gallery-layout"
 import PricingActions from "@/components/pages/listing-details/pricing-actions"
 import Rating from "@/components/pages/listing-details/rating"
 import HostInfo from "@/components/pages/listing-details/host-info"
-// import ServicesAmenities from "@/components/pages/listing-details/services-amenities"
 import { useParams } from "next/navigation"
 import ExploreArea from "@/components/pages/listing-details/explore-area"
 import AboutListing from "@/components/pages/listing-details/about-listing"
@@ -104,24 +100,4 @@ const BookingDetails = () => {
   )
 }
 
-export default BookingDetails
-
-
-  // <div className="sm:px-3">
-       
-
-  //       {/* <Tabs
-  //         id={id}
-  //         defaultActive="Rooms"
-  //       /> */}
-
-  //       <div className="mt-8">
-  //         {/* <GuestReview property={property} /> */}
-
-  //         {/* <MostMentionedTabs property={property} /> */}
-
-  //         {/* <GuestImpressions property={property} /> */}
-  //       </div>
-  //     </div>
-
-  //     {/* <ServicesAmenities /> */}
+export default BookingDetails;

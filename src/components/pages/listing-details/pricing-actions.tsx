@@ -9,20 +9,27 @@ import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from "@/components/ui/hover-card"
+} from "@/components/ui/hover-card";
 import { toast } from "@/components/ui/toast"
 import { RatingDialog } from "../../dialogs/rating"
 import { getActionDetails } from "@/lib/actions/getAction"
 import api from "@/lib/axios"
 import { PaymentDialog } from "@/components/dialogs/payment"
+import { PinDialog } from "@/components/dialogs/pin"
+import { useExtendRental, useSubmitPin } from "@/hooks/useBooking"
+import { ExtensionDialog } from "@/components/dialogs/extenstion"
 
-const PricingActions = ({ property, bookingData, category_id, id }: PricingActionsProps) => {
+const PricingActions = ({ property, bookingData, category_id, id }: any) => {
+  const { mutate, isPending } = useSubmitPin();
+  const { mutate: sendExtendRental, isPending: isExtendRentalPending } = useExtendRental();
   const [isRateOpen, setIsRateOpen] = useState(false)
   const [isPaymentOpen, setIsPaymentOpen] = useState(false)
   const [loadingPayment, setLoadingPayment] = useState(false)
   const [clientSecret, setClientSecret] = useState<string | null>(null)
 
   const [isPriceOpen, setIsPriceOpen] = useState(false)
+  const [isPinOpen, setIsPinOpen] = useState(false);
+  const [isExtendOpen, setIsExtendOpen] = useState(false);
 
   const router = useRouter()
   const { label, link } = getActionDetails(bookingData?.status)
@@ -37,6 +44,7 @@ const PricingActions = ({ property, bookingData, category_id, id }: PricingActio
 
   const handlePaymentClick = async () => {
     if (!bookingData?._id) return
+
     setLoadingPayment(true)
     try {
       const response = await api.post("/api/payments/stripe/intent", {
@@ -54,6 +62,35 @@ const PricingActions = ({ property, bookingData, category_id, id }: PricingActio
       setLoadingPayment(false)
     }
   }
+
+  const handlePinSubmit = (pin: string) => {
+    mutate({ bookingId: bookingData._id, otp: pin },
+      {
+        onSuccess: () => {
+          setIsPinOpen(false)
+        }
+      }
+    )
+  }
+
+  const handleExtensionSubmit = (date: string) => {
+    sendExtendRental({
+      marketplaceListingId: bookingData.marketplaceListingId._id,
+      extensionDate: date
+    },
+      {
+        onSuccess: () => {
+          setIsExtendOpen(false)
+        }
+      }
+    )
+  }
+
+  const primaryButtonClass = "w-full sm:w-auto px-7 bg-header hover:bg-header/90 text-white"
+
+  const minExtensionDate = bookingData?.dates?.checkOut
+    ? new Date(bookingData.dates.checkOut).toISOString().split("T")[0]
+    : undefined;
 
   return (
     <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row justify-between items-start sm:items-center md:items-start lg:items-center gap-3 md:gap-4">
@@ -109,21 +146,38 @@ const PricingActions = ({ property, bookingData, category_id, id }: PricingActio
       {bookingData ? (
         label === "Rate Owner" ? (
           <Button onClick={() => setIsRateOpen(true)} variant="destructive" className="w-full sm:w-auto px-7">{label}</Button>
-        ) : (label === "Proceed to pay" || label === "Approved") ? (
-          <Button onClick={handlePaymentClick} disabled={loadingPayment} variant="destructive" className="w-full sm:w-auto px-7">
-            {loadingPayment ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Loading...</> : (label === "Approved" ? "Pay Now" : label)}
+        ) : label === "Extend Rental" ? (
+          <Button onClick={() => setIsExtendOpen(true)} className={primaryButtonClass}>
+            {label}
           </Button>
+        ) : (label === "Proceed to pay" || label === "Approved") ? (
+          bookingData.paymentStatus === "succeeded" ?
+            <Button
+              onClick={() => setIsPinOpen(true)}
+              disabled={loadingPayment}
+              className={primaryButtonClass}
+            >
+              {loadingPayment ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Loading...</> : "Submit Pin"}
+            </Button> :
+            <Button
+              onClick={handlePaymentClick}
+              disabled={loadingPayment}
+              className={primaryButtonClass}
+            >
+              {loadingPayment ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Loading...</> : (label === "Approved" ? "Pay Now" : label)}
+            </Button>
         ) : (
           <Link href={`/listing/${category_id}/${id}/${link}`}>
-            <Button variant="destructive" className="w-full sm:w-auto px-7">{label}</Button>
+            <Button className={primaryButtonClass}>{label}</Button>
           </Link>
         )
       ) : (
-        <Button onClick={() => router.push(`/listing/${category_id}/${id}/checkout`)} variant="destructive" className="w-full sm:w-auto px-7">
+        <Button onClick={() => router.push(`/listing/${category_id}/${id}/checkout`)} className={primaryButtonClass}>
           Checkout
         </Button>
       )}
 
+      {/* Dialogs */}
       <RatingDialog open={isRateOpen} onClose={() => setIsRateOpen(false)} bookingId={bookingData?._id as string} />
 
       <PaymentDialog
@@ -132,6 +186,22 @@ const PricingActions = ({ property, bookingData, category_id, id }: PricingActio
         clientSecret={clientSecret}
         bookingId={bookingData?._id as string}
         amount={displayPrice}
+      />
+
+      <PinDialog
+        open={isPinOpen}
+        isPending={isPending}
+        onOpenChange={setIsPinOpen}
+        onSubmit={handlePinSubmit}
+        amount={displayPrice}
+      />
+
+      <ExtensionDialog
+        open={isExtendOpen}
+        onOpenChange={setIsExtendOpen}
+        onSubmit={handleExtensionSubmit}
+        minDate={minExtensionDate}
+        isPending={isExtendRentalPending}
       />
 
     </div>

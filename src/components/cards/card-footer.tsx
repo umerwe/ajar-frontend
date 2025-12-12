@@ -53,7 +53,7 @@ const CardBottom = ({ property, bookingId, totalPrice, isApproved }: CardBottomP
 
   return (
     <>
-      <CardFooter className="pb-4 pt-0 flex justify-between items-center mt-auto w-full">
+      <CardFooter className="pb-2 pt-0 flex justify-between items-center mt-auto w-full">
 
         {/* Price Section */}
         <div className="flex flex-col">

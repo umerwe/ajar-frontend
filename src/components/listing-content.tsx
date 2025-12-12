@@ -20,7 +20,7 @@ interface ListingContentProps {
 const ListingContent = ({ isHome, initialCategory }: ListingContentProps) => {
   // const { data: session } = useSession();
   const [currentPage, setCurrentPage] = useState(1)
-  const limit = isHome ? 5 : 10
+  const limit = 10
 
   const { data, isLoading, isError, isFetching } = useGetMarketplaceListings({
     page: currentPage,
@@ -32,7 +32,7 @@ const ListingContent = ({ isHome, initialCategory }: ListingContentProps) => {
   const totalCount = data?.total ?? 0
 
   if (isLoading || isFetching) {
-    return <SkeletonLoader count={isHome ? 5 : 10} />;
+    return <SkeletonLoader count={10} />;
   }
 
   if (isError) {

@@ -74,7 +74,7 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: 
                       </div>
 
                       {/* Footer */}
-                      <div className="pb-2 sm:pb-3 pt-0 flex justify-between items-center mt-auto w-full">
+                      <div className="pb-2 pt-0 flex justify-between items-center mt-auto w-full">
                         <div className="flex flex-col gap-1">
                           <div className="h-4 sm:h-5 bg-gray-200 rounded w-10 sm:w-16" />
                           <div className="h-2 sm:h-3 bg-gray-200 rounded w-8 sm:w-12" />

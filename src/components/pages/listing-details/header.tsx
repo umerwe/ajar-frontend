@@ -11,6 +11,12 @@ interface HeaderProps {
 
 const Header = ({ status, title }: HeaderProps) => {
     const router = useRouter();
+
+    const formattedStatus =
+        status?.toLowerCase() === "in_progress"
+            ? "In Progress"
+            : capitalizeWords(status || "");
+
     return (
         <div className="flex items-center justify-between pt-6 bg-white">
             <div className="flex items-center gap-2 sm:gap-3">
@@ -21,8 +27,8 @@ const Header = ({ status, title }: HeaderProps) => {
             </div>
             {
                 status &&
-                <div className={` ${status === "Completed" ? "bg-green-200 text-green-700" : 'bg-orange-100 text-orange-600'} px-3 py-1 text-xs sm:text-sm font-semibold`}>
-                    {capitalizeWords(status)}
+                <div className={`${status === "Completed" ? "bg-green-200 text-green-700" : 'bg-orange-100 text-orange-600'} px-3 py-1 text-xs sm:text-sm font-semibold`}>
+                    {formattedStatus}
                 </div>
             }
         </div>

@@ -13,9 +13,10 @@ const ITEMS_PER_PAGE = 10;
 const Status = ({ status }: { status: string }) => {
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { data, isLoading } = useBooking(status, currentPage);
+  const { data, isLoading } = useBooking(status === "all" ? undefined : status, currentPage);
 
   const bookings = data?.data?.bookings || [];
+
   const totalItems = data?.data?.total || 0;
   const limit = data?.data?.limit || ITEMS_PER_PAGE;
 

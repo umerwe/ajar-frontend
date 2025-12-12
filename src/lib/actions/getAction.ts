@@ -7,6 +7,10 @@ export function getActionDetails(status?: string) {
       return {
         label: "Proceed to pay",
       };
+    case "in_progress":
+      return {
+        label: "Extend Rental"
+      }
 
     case "completed":
       return { label: "Rate Owner", link: "#" };

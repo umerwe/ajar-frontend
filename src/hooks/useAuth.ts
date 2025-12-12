@@ -54,7 +54,15 @@ export const useLogin = () => {
     const mutation = useMutation({
         mutationFn: loginUser,
         onSuccess: (data: LoginSuccessResponse) => {
-            if (data.require2FA) {
+            if (data?.user?.otp?.isVerified === false) {
+                toast({
+                    title: `4 Digit Code Sent to Email`,
+                    variant: "default",
+                })
+                localStorage.setItem("email", data?.user?.email);
+                router.push("/auth/verification");
+            }
+             else if (data?.require2FA) {
                 toast({
                     title: `6 Digit Code Sent to Email`,
                     variant: "default",
@@ -65,8 +73,7 @@ export const useLogin = () => {
             else {
                 localStorage.setItem("token", data.token!);
                 toast({
-                    title: "Login Successfully",
-                    variant: "default",
+                    title: "Login Successfully"
                 });
                 router.push("/");
             }
@@ -91,7 +98,6 @@ export const useForgotPassword = () => {
         mutationFn: forgotPassword,
         onSuccess: () => {
             toast({
-                title: "Success",
                 description: "A verification code has been sent to your email."
             });
             router.push("/auth/forgot-password/verification");

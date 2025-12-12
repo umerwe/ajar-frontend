@@ -48,7 +48,7 @@ const EmailVerificationForm = ({ type, title, description, buttonText }: { type?
             verifyUserByEmail(
                 { otp: formData.otp, email: email as string },
                 {
-                    onSuccess: () => {
+                    onSuccess: (data) => {
                         if (type === "password") {
                             router.replace("/auth/reset-password");
                             toast({
@@ -56,6 +56,7 @@ const EmailVerificationForm = ({ type, title, description, buttonText }: { type?
                                 variant: "default",
                             });
                         } else {
+                            localStorage.setItem("token", data.token)
                             setDialogOpen(true);
                         }
                     },

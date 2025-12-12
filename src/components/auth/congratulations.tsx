@@ -23,7 +23,7 @@ export default function CongratulationsDialog({
     open,
     title = "Congratulations!",
     description = "Your Account has been verified successfully.",
-    redirectTo = "/auth/login",
+    redirectTo = "/",
     seconds = 5,
 }: CongratulationsDialogProps) {
     const router = useRouter();
@@ -81,7 +81,7 @@ export default function CongratulationsDialog({
 
                 {/* Redirect Info */}
                 <p className="text-sm text-gray-custom mt-4">
-                    Redirecting to login page in <strong>{timeLeft}s</strong>...
+                    Redirecting Home page in <strong>{timeLeft}s</strong>...
                 </p>
             </DialogContent>
         </Dialog>

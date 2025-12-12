@@ -12,6 +12,12 @@ export type EditProfile = {
 };
 
 export interface LoginSuccessResponse {
+  user : {
+    otp : {
+    isVerified : false;
+  }
+  email : string;
+  }
   require2FA?: boolean;
   message?: string;
   tempToken?: string;

@@ -67,7 +67,7 @@ export type Booking = {
     _id: string;
   }[];
   otp?: string;
-  
+  paymentStatus : string;
   createdAt: string;
   updatedAt: string;
   __v: number;
