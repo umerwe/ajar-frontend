@@ -335,7 +335,8 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: 
           </div>
         </div>
       );
-    case "profile":
+    
+      case "profile":
       return (
         <div className="flex flex-col items-center space-y-3">
           {/* Avatar */}

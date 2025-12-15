@@ -103,87 +103,89 @@ export default function ArticlesSection() {
                 </div>
             </div>
 
+            <div className="max-w-7xl mx-auto mb-6 md:mb-10 pt-6 md:pt-12">
+                <div className="pb-15">
+                    {isError ? (
+                        <Error
+                            className="my-24"
+                        />
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {isLoadingList ? (
+                                <SkeletonLoader
+                                    variant="article"
+                                />
+                            ) : articlesData?.articles?.length === 0 ? (
+                                <div className="col-span-full text-center pt-24 text-gray-500">
+                                    <Search className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                                    <p className="text-lg font-medium">No articles found</p>
+                                    <p className="text-sm">Try adjusting your search terms.</p>
+                                </div>
+                            ) : (
+                                articlesData?.articles.map((article: Article) => (
+                                    <Card
+                                        key={article._id}
+                                        onClick={() => handleLearnMore(article._id)}
+                                        className="hover:shadow-lg transition-shadow duration-300 border border-gray-200 shadow-sm group h-full cursor-pointer"
+                                    >
+                                        <CardContent className="md:p-6 p-4">
+                                            <div className="flex items-start mb-4">
+                                                <div className="w-12 h-12 bg-aqua/10 rounded-lg overflow-hidden flex items-center justify-center mr-4 shrink-0 relative">
+                                                    {article.images && article.images.length > 0 ? (
+                                                        <Image
+                                                            src={`${process.env.NEXT_PUBLIC_API_BASE_URL}${article.images[0]}`}
+                                                            alt={article.title}
+                                                            fill
+                                                            className="object-cover"
+                                                        />
+                                                    ) : (
+                                                        <FileText className="w-6 h-6 text-aqua" />
+                                                    )}
+                                                </div>
 
-            <div className="pb-15 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 mb-6 md:mb-10 pt-6 md:pt-12">
-                {isError ? (
-                    <Error
-                        className="my-24"
-                    />
-                ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {isLoadingList ? (
-                            <SkeletonLoader
-                                variant="article"
-                            />
-                        ) : articlesData?.articles?.length === 0 ? (
-                            <div className="col-span-full text-center pt-24 text-gray-500">
-                                <Search className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                                <p className="text-lg font-medium">No articles found</p>
-                                <p className="text-sm">Try adjusting your search terms.</p>
-                            </div>
-                        ) : (
-                            articlesData?.articles.map((article: Article) => (
-                                <Card
-                                    key={article._id}
-                                    onClick={() => handleLearnMore(article._id)}
-                                    className="hover:shadow-lg transition-shadow duration-300 border border-gray-200 shadow-sm group h-full cursor-pointer"
-                                >
-                                    <CardContent className="md:p-6 p-4">
-                                        <div className="flex items-start mb-4">
-                                            <div className="w-12 h-12 bg-aqua/10 rounded-lg overflow-hidden flex items-center justify-center mr-4 shrink-0 relative">
-                                                {article.images && article.images.length > 0 ? (
-                                                    <Image
-                                                        src={`${process.env.NEXT_PUBLIC_API_BASE_URL}${article.images[0]}`}
-                                                        alt={article.title}
-                                                        fill
-                                                        className="object-cover"
-                                                    />
-                                                ) : (
-                                                    <FileText className="w-6 h-6 text-aqua" />
-                                                )}
-                                            </div>
-
-                                            <div>
-                                                <h3 className="text-lg font-semibold text-gray-900 line-clamp-1 group-hover:text-header transition-colors">
-                                                    {capitalizeWords(article.title)}
-                                                </h3>
-                                                <div className="text-xs text-gray-400 mb-2">
-                                                    {format(new Date(article.createdAt), "MMM dd, yyyy")}
+                                                <div>
+                                                    <h3 className="text-lg font-semibold text-gray-900 line-clamp-1 group-hover:text-header transition-colors">
+                                                        {capitalizeWords(article.title)}
+                                                    </h3>
+                                                    <div className="text-xs text-gray-400 mb-2">
+                                                        {format(new Date(article.createdAt), "MMM dd, yyyy")}
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        <p className="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-2">
-                                            {article.description}
-                                        </p>
+                                            <p className="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-2">
+                                                {article.description}
+                                            </p>
 
-                                        <Button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleLearnMore(article._id);
-                                            }}
-                                            className="text-header hover:text-emerald-600 font-medium shadow-none p-0 h-auto hover:bg-transparent flex items-center bg-transparent"
-                                        >
-                                            <span className="mb-0.5 -ml-2">Learn more</span>
-                                            <ChevronRight className="w-4 h-4 text-aqua" />
-                                        </Button>
-                                    </CardContent>
-                                </Card>
-                            ))
-                        )}
-                    </div>
-                )}
+                                            <Button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleLearnMore(article._id);
+                                                }}
+                                                className="text-header hover:text-emerald-600 font-medium shadow-none p-0 h-auto hover:bg-transparent flex items-center bg-transparent"
+                                            >
+                                                <span className="mb-0.5 -ml-2">Learn more</span>
+                                                <ChevronRight className="w-4 h-4 text-aqua" />
+                                            </Button>
+                                        </CardContent>
+                                    </Card>
+                                ))
+                            )}
+                        </div>
+                    )}
 
-                {!isError && totalPages > 1 && (
-                    <div className="mt-8">
-                        <Pagination
-                            currentPage={page}
-                            totalPages={totalPages}
-                            onPageChange={handlePageChange}
-                        />
-                    </div>
-                )}
+                    {!isError && totalPages > 1 && (
+                        <div className="mt-8">
+                            <Pagination
+                                currentPage={page}
+                                totalPages={totalPages}
+                                onPageChange={handlePageChange}
+                            />
+                        </div>
+                    )}
+                </div>
             </div>
+
 
             <GetInTouch />
 

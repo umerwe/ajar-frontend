@@ -32,7 +32,7 @@ export default function ProfilePage() {
                 <Header title="Profile" />
             </div>
 
-            <div className="mx-auto max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl rounded-md my-10">
+            <div className="mx-auto max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl rounded-md my-6 md:my-10">
                 <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
                     <div className="bg-white px-4 py-10">
                         {isLoading ? (

@@ -26,7 +26,7 @@ const BookingDetails = () => {
   const { data: user } = useUser();
 
   return (
-    <div className="mx-3 sm:mx-7 mb-9">
+    <div>
       <Header
         status={data?.status}
         title="Booking Details"
@@ -44,7 +44,7 @@ const BookingDetails = () => {
             property={listingData}
           />
 
-          <div className="flex flex-col md:flex-row gap-6 md:gap-8 lg:gap-10 px-3 md:px-6">
+          <div className="flex flex-col md:flex-row gap-6 md:gap-8 lg:gap-10">
             {/* LEFT COLUMN */}
             <div className="w-full md:w-3/5 lg:w-2/3 flex flex-col gap-4">
               <CoreDetails
