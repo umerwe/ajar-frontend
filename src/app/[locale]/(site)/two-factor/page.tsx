@@ -1,6 +1,6 @@
 "use client";
 
-import Header from "@/components/pages/listing-details/header";
+import Header from "@/components/ui/header";
 import { Checkbox } from "@/components/ui/checkbox";
 import React from "react";
 import { useUser } from "@/hooks/useAuth";

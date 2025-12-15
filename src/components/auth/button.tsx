@@ -1,10 +1,5 @@
+import { AuthButtonProps } from "@/types/auth"
 import { Button } from "../ui/button"
-
-interface AuthButtonProps {
-    text: string
-    className?: string
-    isPending?: boolean
-}
 
 const AuthButton = ({ text, className, isPending }: AuthButtonProps) => {
     return (

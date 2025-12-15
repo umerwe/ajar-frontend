@@ -1,6 +1,6 @@
 "use client";
 
-import Header from "@/components/pages/listing-details/header";
+import Header from "@/components/ui/header";
 import { Search } from "lucide-react";
 import { Input } from "../ui/input";
 import { useGetChatList, useMessageSeen } from "@/hooks/useChat";
@@ -14,7 +14,7 @@ import { Chat, Participant } from "@/types/chat";
 import { useEffect, useState } from "react";
 
 const ChatList = ({ id }: { id?: string }) => {
-    const { data: user, isLoading } = useUser();
+    const { data: user } = useUser();
     const { mutate } = useMessageSeen();
     const [searchQuery, setSearchQuery] = useState("");
 
@@ -44,8 +44,10 @@ const ChatList = ({ id }: { id?: string }) => {
     }, [id]);
 
     return (
-        <div className="bg-white shadow-lg overflow-hidden border border-gray-200 px-2">
-            <Header title="Chat" />
+        <div className="bg-white border border-gray-200 px-2 flex flex-col h-full">
+            <div className="pt-4 md:pt-6">
+                <Header title="Chat" />
+            </div>
 
             <div className="p-4 border-b border-gray-200 flex items-center gap-3">
                 <div className="relative flex-1">
@@ -59,10 +61,14 @@ const ChatList = ({ id }: { id?: string }) => {
                     />
                 </div>
             </div>
-
-            <div className="divide-y divide-gray-100">
-                {chatLoading || isLoading ? (
-                    <SkeletonLoader variant="chat" count={8} />
+            <div
+                className={clsx(
+                    "divide-y divide-gray-100 flex-1",
+                    chatLoading ? "overflow-hidden" : "overflow-y-auto"
+                )}
+            >
+                {chatLoading ? (
+                    <SkeletonLoader variant="chat" count={15} />
                 ) : chats?.length > 0 ? (
                     chats.map((chat: Chat) => {
                         const participant = chat?.participants[0];
@@ -79,7 +85,6 @@ const ChatList = ({ id }: { id?: string }) => {
                                         : "hover:bg-gray-50"
                                 )}
                             >
-                                {/* Avatar */}
                                 {participant?.profilePicture ? (
                                     <Image
                                         src={process.env.NEXT_PUBLIC_API_BASE_URL + participant?.profilePicture}
@@ -99,15 +104,9 @@ const ChatList = ({ id }: { id?: string }) => {
                                     </div>
                                 )}
 
-                                {/* Details */}
                                 <div className="flex-1 min-w-0 flex justify-between items-start">
                                     <div className="min-w-0">
-                                        <p
-                                            className={clsx(
-                                                "text-sm font-semibold truncate",
-                                                "text-gray-800"
-                                            )}
-                                        >
+                                        <p className="text-sm font-semibold truncate text-gray-800">
                                             {capitalizeWords(participant?.name)}
                                         </p>
                                     </div>

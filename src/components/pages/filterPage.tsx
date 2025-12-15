@@ -138,7 +138,6 @@ const FilterPage = ({ location, minPrice, maxPrice, category }: FilterPageProps)
         </DialogContent>
       </Dialog>
 
-      {/* Main layout */}
       <div className="flex flex-col mx-4 md:mx-8 md:flex-row gap-4 md:gap-6 mt-20 md:my-8">
         <div className="hidden md:block w-full md:w-80 bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden h-fit md:sticky md:top-6">
           <h2 className="text-xl font-semibold px-6 pt-6">Filter</h2>
@@ -156,7 +155,11 @@ const FilterPage = ({ location, minPrice, maxPrice, category }: FilterPageProps)
             <div className="flex flex-col gap-6">
               <MainCard listings={listings} type="filter" />
               {totalPages > 1 && (
-                <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                />
               )}
             </div>
           )}

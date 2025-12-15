@@ -12,24 +12,7 @@ import { CreditCard, Lock, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { toast } from "@/components/ui/toast"
 import { StripeCardFormProps } from "@/types/payment"
-
-const inputBaseClasses = "block w-full rounded-md border-transparent bg-gray-100 px-4 py-3 text-sm transition-all focus:border-gray-300 focus:bg-white focus:ring-1 focus:ring-gray-300 focus:outline-none"
-
-const stripeElementOptions = {
-    style: {
-        base: {
-            fontSize: "14px",
-            color: "#1f2937",
-            fontFamily: 'inherit',
-            "::placeholder": {
-                color: "#6b7280",
-            },
-        },
-        invalid: {
-            color: "#ef4444",
-        },
-    },
-}
+import { inputBaseClasses, stripeElementOptions } from "@/utils/stripe"
 
 export const StripeCardForm = ({ clientSecret, bookingId, amount }: StripeCardFormProps) => {
     const stripe = useStripe()

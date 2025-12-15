@@ -10,9 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useGetMarketplaceListing } from "@/hooks/useListing"
 import { useCreateBooking } from "@/hooks/useBooking"
 import { capitalizeWords } from "@/utils/capitalizeWords"
-import Header from "@/components/pages/listing-details/header"
-
-// Types & Validation
+import Header from "@/components/ui/header"
 import type { BookingRequest } from "@/types/booking"
 import { type BookingFormData, bookingSchema } from "@/validations/booking"
 
@@ -73,8 +71,8 @@ const CheckoutPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 mb-12">
-            <div className="max-w-7xl mx-auto px-4 md:px-8">
+        <div className="min-h-screen mb-12">
+            <div>
                 <Header title="Booking Submission" />
 
                 <form onSubmit={handleSubmit(onSubmit)}>
@@ -85,37 +83,40 @@ const CheckoutPage = () => {
                             {/* Date Input Fields */}
                             <div>
                                 <h2 className="text-base font-semibold text-gray-900 mb-4">Date</h2>
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    {/* Lease Start Input */}
                                     <div className="space-y-2">
-                                        <div className={`bg-gray-100 rounded-lg p-4 ${errors.startDate ? "border border-red-500" : ""}`}>
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <Calendar className="w-4 h-4 text-gray-600" />
-                                                <label className="text-sm font-medium text-gray-900">Lease Start</label>
+                                        <div className={`bg-gray-100 rounded-lg p-3 md:p-4 ${errors.startDate ? "border border-red-500" : ""}`}>
+                                            <div className="flex items-center gap-2 mb-1.5 md:mb-2">
+                                                <Calendar className="w-4 h-4 text-gray-600 shrink-0" />
+                                                <label className="text-xs md:text-sm font-medium text-gray-900 whitespace-nowrap">Lease Start</label>
                                             </div>
                                             <input
                                                 type="date"
                                                 min={getTodayDate()}
                                                 {...register("startDate")}
                                                 onChange={handleInputChange}
-                                                className="w-full bg-transparent border-0 p-0 focus:ring-0 outline-none text-sm text-gray-500"
+                                                className="w-full bg-transparent border-0 p-0 focus:ring-0 outline-none text-sm text-gray-500 min-w-0"
                                             />
                                         </div>
                                         {errors.startDate && (
                                             <p className="text-red-500 text-sm font-medium px-2">{errors.startDate.message}</p>
                                         )}
                                     </div>
+
+                                    {/* Lease End Input */}
                                     <div className="space-y-2">
-                                        <div className={`bg-gray-100 rounded-lg p-4 ${errors.endDate ? "border border-red-500" : ""}`}>
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <Calendar className="w-4 h-4 text-gray-600" />
-                                                <label className="text-sm font-medium text-gray-900">Lease End</label>
+                                        <div className={`bg-gray-100 rounded-lg p-3 md:p-4 ${errors.endDate ? "border border-red-500" : ""}`}>
+                                            <div className="flex items-center gap-2 mb-1.5 md:mb-2">
+                                                <Calendar className="w-4 h-4 text-gray-600 shrink-0" />
+                                                <label className="text-xs md:text-sm font-medium text-gray-900 whitespace-nowrap">Lease End</label>
                                             </div>
                                             <input
                                                 type="date"
                                                 min={getMinEndDate()}
                                                 {...register("endDate")}
                                                 onChange={handleInputChange}
-                                                className="w-full bg-transparent border-0 p-0 focus:ring-0 outline-none text-sm text-gray-500"
+                                                className="w-full bg-transparent border-0 p-0 focus:ring-0 outline-none text-sm text-gray-500 min-w-0"
                                             />
                                         </div>
                                         {errors.endDate && (
@@ -146,7 +147,7 @@ const CheckoutPage = () => {
                             <button
                                 type="submit"
                                 disabled={isPending}
-                                className="w-48 bg-header text-white py-3 rounded-full font-semibold text-base hover:bg-teal-600 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-full sm:w-48 bg-header text-white py-3 rounded-full font-semibold text-sm md:text-base hover:bg-teal-600 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {isPending ? "Processing..." : "Submit Booking"}
                             </button>
@@ -154,7 +155,7 @@ const CheckoutPage = () => {
 
                         {/* RIGHT COLUMN: Listing and Price Details (Unchanged) */}
                         <div className="space-y-6">
-                            <div className="bg-white rounded-lg p-6 shadow-sm">
+                            <div className="bg-white rounded-lg p-4 md:p-6 shadow-sm">
                                 <div className="flex gap-4 mb-4">
                                     <div className="w-24 h-24 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
                                         {listing?.rentalImages?.[0] && (
@@ -168,7 +169,7 @@ const CheckoutPage = () => {
                                         )}
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <h3 className="text-lg font-semibold text-gray-900 mt-2 mb-1">
+                                        <h3 className="text-sm md:text-lg font-semibold text-gray-900 mt-2 mb-1">
                                             {capitalizeWords(listing?.name || "")}
                                         </h3>
                                         <div className="flex items-center gap-1 mb-2">

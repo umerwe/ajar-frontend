@@ -4,11 +4,7 @@ import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-interface LogoutButtonProps {
-  variant?: "menu" | "full";
-  isPending?: boolean;
-}
+import { LogoutButtonProps } from "@/types/auth";
 
 const LogoutButton = ({ variant = "menu", isPending }: LogoutButtonProps) => {
   const router = useRouter();
@@ -38,7 +34,7 @@ const LogoutButton = ({ variant = "menu", isPending }: LogoutButtonProps) => {
   return (
     <div
       onClick={handleClick}
-      className="block px-4 py-2 text-sm transition-colors duration-150
+      className="px-4 py-2 text-sm transition-colors duration-150
        cursor-pointer text-red-600 hover:bg-red-50 hover:text-red-700 flex items-center gap-2"
     >
       <LogOut className="h-4 w-4" /> Log Out

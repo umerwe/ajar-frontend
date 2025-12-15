@@ -1,11 +1,11 @@
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "../ui/skeleton";
 
 const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: SkeletonLoaderProps) => {
   switch (variant) {
     case "subcategories":
       return (
-        <div className="flex justify-between px-4 sm:px-6 md:px-9 my-4">
+        <div className="flex justify-between">
           {/* Desktop */}
           <div className="hidden md:flex flex-wrap gap-3 flex-grow">
             {Array.from({ length: count }).map((_, i) => (
@@ -30,8 +30,8 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: 
 
     case "cards":
       return (
-        <div className={`sm:mb-15 ${type === "filter" ? "mt-0" : "mt-4"}  2xl:max-w-[1400px] 2xl:mx-auto`}>
-          <div className={`flex items-center justify-between px-6 pt-6 bg-white ${isFav ? "block" : "hidden"}`}>
+        <div className={`sm:mb-15 ${type === "filter" ? "mt-0" : "mt-0"}`}>
+          <div className={`flex items-center justify-between pt-6 bg-white ${isFav ? "block" : "hidden"}`}>
             <div className="flex items-center gap-2 sm:gap-3">
               <div className="w-10 h-10 rounded-lg bg-gray-200" />
               <div className="h-6 w-40 bg-gray-200 rounded" />
@@ -44,7 +44,7 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: 
               className={`grid grid-cols-2 gap-2 w-full
                 ${type === "filter"
                   ? "sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 sm:gap-4"
-                  : "sm:grid-cols-2 md:grid-cols-3 p-2 sm:p-4 lg:grid-cols-4 xl:grid-cols-5 3xl:grid-cols-6 sm:gap-4"
+                  : "sm:grid-cols-2 md:grid-cols-3 py-2 sm:py-4 lg:grid-cols-4 xl:grid-cols-5 3xl:grid-cols-6 sm:gap-4"
                 }
               `}
             >
@@ -91,7 +91,7 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: 
         </div>
       );
 
-    case "listing":
+
       return (
         <div className="mx-3 sm:mx-7 animate-pulse">
           {/* Header */}
@@ -232,6 +232,109 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: 
         </div>
       );
 
+    case "listing":
+      return (
+        <div className="mb-9 animate-pulse">
+
+          {/* Image Gallery - Matching ImageGalleryLayout.tsx structure */}
+          <div className="pb-6">
+            <div className="flex flex-col md:flex-row gap-2 h-auto">
+              {/* Big Left Image */}
+              <div className="w-full md:w-[45%] lg:w-[45%] h-[250px] sm:h-[280px] xl:h-[340px] min-h-[250px] rounded-lg bg-gray-200" />
+
+              {/* Right Side Grid */}
+              <div className="w-full md:w-[55%] lg:w-[55%] h-auto md:h-[280px] xl:h-[340px]">
+                {/* Desktop Grid */}
+                <div className="hidden md:grid grid-cols-3 grid-rows-2 gap-2 h-full">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <div key={i} className="w-full h-full rounded-lg bg-gray-200" />
+                  ))}
+                </div>
+                {/* Mobile Scroll */}
+                <div className="md:hidden flex gap-2 overflow-hidden pb-2">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <div key={i} className="flex-shrink-0 w-[120px] h-[120px] sm:w-[140px] sm:h-[140px] rounded-lg bg-gray-200" />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Main Content Layout - Matching BookingDetails.tsx structure */}
+          <div className="flex flex-col md:flex-row gap-6 md:gap-8 lg:gap-10 px-3 md:px-6">
+
+            {/* LEFT COLUMN */}
+            <div className="w-full md:w-3/5 lg:w-2/3 flex flex-col gap-6">
+
+              {/* Core Details */}
+              <div className="space-y-3">
+                <div className="h-8 w-3/4 bg-gray-200 rounded" /> {/* Title */}
+                <div className="flex items-center gap-2">
+                  <div className="h-4 w-24 bg-gray-200 rounded" /> {/* Stars */}
+                </div>
+                <div className="flex items-center gap-4 mt-2">
+                  <div className="h-4 w-1/2 bg-gray-200 rounded" /> {/* Address */}
+                  <div className="h-4 w-20 bg-gray-200 rounded" /> {/* Map Link */}
+                </div>
+              </div>
+
+              {/* Rating */}
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-6 bg-gray-200 rounded" /> {/* Score Box */}
+                <div className="h-4 w-20 bg-gray-200 rounded" /> {/* "Excellent" */}
+                <div className="h-4 w-32 bg-gray-200 rounded ml-2" /> {/* Reviews link */}
+              </div>
+
+              {/* About Listing */}
+              <div className="mt-2">
+                <div className="h-6 w-24 bg-gray-200 rounded mb-3" /> {/* "About" Title */}
+                <div className="space-y-2">
+                  <div className="h-4 w-full bg-gray-200 rounded" />
+                  <div className="h-4 w-full bg-gray-200 rounded" />
+                  <div className="h-4 w-2/3 bg-gray-200 rounded" />
+                </div>
+              </div>
+
+              {/* Host Info */}
+              <div className="mt-4">
+                <div className="h-6 w-32 bg-gray-200 rounded mb-4" /> {/* "Hosted By" Title */}
+                <div className="flex items-center justify-between">
+                  <div className="flex gap-3 items-center">
+                    <div className="w-12 h-12 bg-gray-200 rounded-full" /> {/* Avatar */}
+                    <div className="space-y-2">
+                      <div className="h-5 w-32 bg-gray-200 rounded" /> {/* Name */}
+                      <div className="h-3 w-40 bg-gray-200 rounded" /> {/* Email */}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* RIGHT COLUMN */}
+            <div className="w-full md:w-2/5 lg:w-1/3 space-y-6">
+
+              {/* Pricing Actions */}
+              <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row justify-between items-start sm:items-center md:items-start lg:items-center gap-3">
+                <div className="h-8 w-32 bg-gray-200 rounded" /> {/* Price */}
+                <div className="h-10 w-full sm:w-32 md:w-full lg:w-32 bg-gray-200 rounded" /> {/* Action Button */}
+              </div>
+
+              {/* Explore Area */}
+              <div className="space-y-3 pt-2">
+                <div className="h-6 w-40 bg-gray-200 rounded" /> {/* "Explore Area" Title */}
+                <div className="border-2 border-gray-200 rounded-xl overflow-hidden">
+                  <div className="w-full h-40 sm:h-54 md:h-44 lg:h-48 bg-gray-200" /> {/* Map Image */}
+                  <div className="p-4 space-y-2">
+                    <div className="h-4 w-3/4 bg-gray-200 rounded" /> {/* Address Text */}
+                    <div className="h-4 w-24 bg-gray-200 rounded" /> {/* View Map link */}
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      );
     case "profile":
       return (
         <div className="flex flex-col items-center space-y-3">
@@ -251,7 +354,7 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: 
       return (
         <>
           {Array.from({ length: count }).map((_, i) => (
-            <div key={i} className="flex items-center gap-3 p-3 animate-pulse">
+            <div key={i} className="flex items-center gap-3 p-3 animate-pulse overflow-y-hidden">
               <div className="w-12 h-12 rounded-full bg-gray-200"></div>
               <div className="flex-1 min-w-0">
                 <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
@@ -304,6 +407,52 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: 
             );
           })}
         </div>
+      )
+    case "searchbar":
+      return (
+        <div className="text-white px-4 sm:px-6 md:px-11 py-4 sm:py-6 flex items-center justify-center">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl">
+            <div className="flex flex-col lg:flex-row lg:divide-y-0 lg:divide-x divide-gray-200">
+              {/* Location Skeleton */}
+              <div className="relative flex-1 px-4 sm:px-6 md:px-8 py-3 min-w-0 flex items-center gap-2 sm:gap-3">
+                <div className="bg-gray-200 rounded-full w-5 h-5 sm:w-6 sm:h-6 animate-pulse" />
+
+                <div className="flex-1 space-y-1">
+                  <div className="bg-gray-200 rounded h-3 sm:h-4 w-16 animate-pulse" />
+                  <div className="bg-gray-300 rounded h-4 sm:h-5 w-32 animate-pulse" />
+                </div>
+
+                <div className="bg-gray-200 rounded w-4 h-4 sm:w-5 sm:h-5 animate-pulse" />
+              </div>
+
+              {/* Search Button Skeleton - HIDDEN on mobile now */}
+              <div className="hidden lg:flex p-3 sm:p-4 lg:p-0 items-center justify-center rounded-b-xl lg:rounded-r-xl">
+                <div className="bg-gray-200 rounded-xl h-10 sm:h-12 w-full lg:w-32 lg:min-w-32 lg:px-8 mx-3 sm:mx-4 lg:mx-6 animate-pulse" />
+              </div>
+            </div>
+          </div>
+        </div>
+      )
+    case "article":
+      return (
+        Array.from({ length: 6 }).map((_, i) => (
+          <Card key={i} className="border border-gray-200 shadow-sm h-full">
+            <CardContent className="p-6">
+              <div className="flex items-start mb-4">
+                <Skeleton className="w-12 h-12 rounded-lg shrink-0 mr-4" />
+                <div className="flex-1">
+                  <Skeleton className="h-5 w-3/4 mb-2" />
+                  <Skeleton className="h-3 w-1/4" />
+                </div>
+              </div>
+              <div className="space-y-2 mb-4">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6" />
+              </div>
+              <Skeleton className="h-4 w-24" />
+            </CardContent>
+          </Card>
+        ))
       )
 
     default: <div></div>;

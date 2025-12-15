@@ -1,12 +1,5 @@
 import Link from 'next/link';
-import React from 'react'
-
-type FooterProps = {
-    messageText: string;
-    linkHref: string;
-    linkText: string;
-    className?: string;
-};
+import { FooterProps } from '@/types/auth';
 
 const Footer = ({ messageText, linkHref, linkText, className="mt-4" }: FooterProps) => {
     return (

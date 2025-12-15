@@ -42,7 +42,6 @@ const Status = ({ status }: { status: string }) => {
   }
 
   return (
-    <div className="my-4">
       <div className="flex flex-col">
         <MainCard
           listings={listings}
@@ -58,7 +57,6 @@ const Status = ({ status }: { status: string }) => {
           />
         )}
       </div>
-    </div>
   );
 };
 

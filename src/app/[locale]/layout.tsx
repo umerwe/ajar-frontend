@@ -21,18 +21,17 @@ export default async function RootLayout({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
-  
+
   if (!hasLocale(routing.locales, locale)) {
     notFound()
   }
 
   const messages = (await import(`@/messages/${locale}.json`)).default
 
-  // Create QueryClient and prefetch data on server
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: 60 * 1000, // 1 minute
+        staleTime: 60 * 1000,
       },
     },
   })

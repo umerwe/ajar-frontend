@@ -27,7 +27,6 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
   const initialLoadRef = useRef(true)
   const lastPageLoadedRef = useRef(0)
 
-  // Handle data updates
   useEffect(() => {
     if (data?.messages?.length) {
       if (currentPage === 1) {
@@ -50,7 +49,6 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
     }
   }, [data, currentPage])
 
-  // Handle scroll position
   useEffect(() => {
     if (!scrollRef.current) return
     const container = scrollRef.current
@@ -69,7 +67,6 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
     }
   }, [messages, isLoading, currentPage])
 
-  // Handle infinite scroll
   const handleScroll = useCallback(() => {
     if (!scrollRef.current || !hasMore || isLoadingMore || isLoading) return
     const container = scrollRef.current
@@ -154,9 +151,7 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
 
   return (
     <div className="flex flex-col h-full w-full bg-white border shadow">
-      {/* Header */}
       <div className="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 border-b bg-white z-10 sticky top-0">
-        {/* Back Button (Mobile Only) */}
         <Link href="/chat" className="md:hidden p-2 -ml-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </Link>
@@ -185,16 +180,14 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
             )}
             <div className="flex-1 min-w-0">
               <p className="font-semibold text-sm sm:text-base truncate">{capitalizeWords(data?.receiver?.name)}</p>
-              {/* Optional: Add active status here if you have it */}
             </div>
           </>
         )}
       </div>
 
-      {/* Messages Area */}
-      <div 
-        ref={scrollRef} 
-        className="flex-1 overflow-y-auto overflow-x-hidden p-2 sm:p-4 space-y-3 bg-gray-50/50" 
+      <div
+        ref={scrollRef}
+        className={`flex-1 ${isLoading ? "overflow-y-hidden" : "overflow-y-auto"} overflow-x-hidden p-2 sm:p-4 space-y-3 bg-gray-50/50`}
         onScroll={handleScroll}
       >
         {isLoadingMore && hasMore && currentPage > 1 && (
@@ -205,7 +198,7 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
           </div>
         )}
 
-        {isLoading && currentPage === 1 && <SkeletonLoader variant="messages" count={6} />}
+        {isLoading && currentPage === 1 && <SkeletonLoader variant="messages" count={16} />}
 
         {messages
           ?.filter((msg) => msg.chatId === chatId)
@@ -241,11 +234,10 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
                     )}
 
                     <div
-                      className={`rounded-2xl px-3 py-2 sm:px-4 sm:py-2 shadow-sm ${
-                        isSent 
-                        ? "bg-aqua text-white rounded-br-none" 
+                      className={`rounded-2xl px-3 py-2 sm:px-4 sm:py-2 shadow-sm ${isSent
+                        ? "bg-aqua text-white rounded-br-none"
                         : "bg-white border border-gray-200 text-gray-800 rounded-bl-none"
-                      } ${messageType === "mixed" ? "space-y-3" : ""}`}
+                        } ${messageType === "mixed" ? "space-y-3" : ""}`}
                     >
                       {msg.attachments && msg.attachments.length > 0 && (
                         <div className={`grid gap-2 ${msg.attachments.length > 1 ? "grid-cols-2" : ""}`}>

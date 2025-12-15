@@ -4,10 +4,19 @@ export interface MessagePayload {
   text?: string;
   attachments?: string[];
 }
+
 export interface SendMessageProps {
-    chatId: string;
-    receiverId: string;
+  onSend: (args: { text?: string; fileUrls?: string[] }) => void;
+  isSending?: boolean;
+  chatId?: string;
+  receiverId?: string;
 }
+
+export interface FileItem {
+  url: string | null;
+  name: string;
+  isUploading: boolean;
+};
 
 export interface Message {
   _id: string;

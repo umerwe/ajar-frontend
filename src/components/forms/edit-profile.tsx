@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import AuthInput from "../fields/auth-input";
+import Input from "../ui/auth-input";
 import { Button } from "@/components/ui/button";
 import { useUpdateUser } from "@/hooks/useAuth";
 import { EditProfile } from "@/types/auth";
@@ -8,23 +8,15 @@ import Image from "next/image";
 import { Upload, File, X, CheckCircle2 } from "lucide-react";
 import { capitalizeWords } from "@/utils/capitalizeWords";
 import Loader from "../common/loader";
-
-interface Props {
-    file: File | null;
-    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    documents: Document[];
-    isLoading?: boolean;
-    user: User;
-}
+import { formatFileSize } from "@/utils/formatFileSize";
 
 export default function EditProfileForm({
     file,
     setOpen,
     documents = [],
     user
-}: Props) {
+}: ProfileProps) {
     const { mutate, isPending } = useUpdateUser();
-    console.log(user)
 
     const { register, handleSubmit } = useForm({
         defaultValues: {
@@ -63,20 +55,26 @@ export default function EditProfileForm({
             [value]: selectedFile,
         }));
     };
-
-    const formatFileSize = (bytes: number) => {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
-    };
-
+    
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <AuthInput label="Name" placeholder="Enter your name" type="text" register={register("name")} />
-            <AuthInput label="Date of Birth" type="date" register={register("dob")} />
-            <AuthInput label="Nationality" placeholder="Enter your country" type="text" register={register("nationality")} />
+            <Input
+                label="Name"
+                placeholder="Enter your name"
+                type="text" register={register("name")}
+            />
+
+            <Input
+                label="Date of Birth"
+                type="date"
+                register={register("dob")}
+            />
+
+            <Input
+                label="Nationality"
+                placeholder="Enter your country"
+                type="text"
+                register={register("nationality")} />
 
             {user?.documents && user.documents.length > 0 && (
                 <div className="mt-6">
@@ -136,9 +134,7 @@ export default function EditProfileForm({
                                     </div>
                                 )}
 
-
-
-                                {/* Enhanced File Upload */}
+                                {/* File Upload */}
                                 <div>
                                     <input
                                         type="file"

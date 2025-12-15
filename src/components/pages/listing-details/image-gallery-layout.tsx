@@ -21,7 +21,7 @@ const ImageGalleryLayout = ({ property }: { property: ImageProps }) => {
   const closeLightbox = () => setLightboxIndex(null);
 
   return (
-    <div className="py-6">
+    <div className="py-4 md:py-6">
       <div className="flex flex-col md:flex-row gap-2 h-auto">
         {/* Big Left Image */}
         <div className="w-full md:w-[45%] lg:w-[45%] h-[250px] sm:h-[280px] md:h-auto xl:h-[340px] min-h-[250px] relative rounded-lg overflow-hidden">

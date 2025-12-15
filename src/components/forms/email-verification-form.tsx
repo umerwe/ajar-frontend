@@ -3,13 +3,13 @@
 import { useForm } from "react-hook-form"
 import { Verification, VerificationSchema } from "@/validations/auth"
 import { zodResolver } from "@hookform/resolvers/zod"
-import Input from "../fields/auth-input"
+import Input from "../ui/auth-input"
 import Button from "../auth/button"
 import Header from "../auth/header"
 import { useResendVerificationByEmail, useVerificationByEmail } from "@/hooks/useVerification"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import CongratulationsDialog from "../auth/congratulations"
+import CongratulationsDialog from "../dialogs/congratulations"
 import { toast } from "../ui/toast"
 import { useTwoFactorVerify } from "@/hooks/useTwoFactor"
 
@@ -27,7 +27,6 @@ const EmailVerificationForm = ({ type, title, description, buttonText }: { type?
         defaultValues: { otp: '' }
     });
 
-    // ✔ VERIFY OTP
     const onSubmit = (formData: Verification) => {
         const email = localStorage.getItem("email");
 
@@ -65,7 +64,6 @@ const EmailVerificationForm = ({ type, title, description, buttonText }: { type?
         }
     };
 
-    // 🔁 RESEND OTP
     const handleResendOtp = async () => {
         const email = localStorage.getItem("email");
         resendVerificationByEmail(email as string);
@@ -73,7 +71,6 @@ const EmailVerificationForm = ({ type, title, description, buttonText }: { type?
         localStorage.setItem("otpTimer", (Date.now() + 60000).toString());
     };
 
-    // ⏱ TIMER HANDLER
     useEffect(() => {
         const savedExpiry = localStorage.getItem("otpTimer");
         if (savedExpiry) {
@@ -115,7 +112,6 @@ const EmailVerificationForm = ({ type, title, description, buttonText }: { type?
                         error={errors.otp?.message}
                     />
 
-                    {/* RESEND SECTION */}
                     {
                         !title &&
                         <p className="text-xs text-center text-gray-500">

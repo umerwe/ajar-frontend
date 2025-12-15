@@ -1,14 +1,11 @@
 "use client"
 
-// import AboutListing from "@/components/pages/listing-details/about-listing"
 import CoreDetails from "@/components/pages/listing-details/core-details"
-// import ExploreArea from "@/components/pages/listing-details/explore-area"
-import Header from "@/components/pages/listing-details/header"
+import Header from "@/components/ui/header"
 import ImageGalleryLayout from "@/components/pages/listing-details/image-gallery-layout"
 import PricingActions from "@/components/pages/listing-details/pricing-actions"
 import Rating from "@/components/pages/listing-details/rating"
 import HostInfo from "@/components/pages/listing-details/host-info"
-// import ServicesAmenities from "@/components/pages/listing-details/services-amenities"
 import { useParams } from "next/navigation"
 import { useGetMarketplaceListing } from "@/hooks/useListing"
 import ExploreArea from "@/components/pages/listing-details/explore-area"
@@ -17,107 +14,74 @@ import SkeletonLoader from "@/components/common/skeleton-loader"
 import Error from "@/components/common/error"
 import Document from "@/components/pages/listing-details/document"
 import { useUser } from "@/hooks/useAuth"
+import Container from "@/components/container"
 
 const ListingItems = () => {
   const params = useParams()
   const category_id = params?.category_id as string
-  const id = params?.id as string
+  const id = params?.id as string;
 
   const { data: listingData, isLoading, isError } = useGetMarketplaceListing(id);
   const { data: user } = useUser();
 
-  if (isLoading) {
-    return <SkeletonLoader variant="listing" />
-  }
-
-  if (isError) {
-    return <Error />
-  }
-
   return (
-    <div className="mx-3 sm:mx-7 mb-9">
-      <Header
-        title="Rental Details"
-      />
+    <div>
+      <Header title="Rental Details" />
 
-      <ImageGalleryLayout
-        property={listingData}
-      />
-
-      {/* <Tabs
-        id={id}
-        defaultActive="Overview"
-        activeClass="border-b-2 border-aqua text-aqua font-semibold"
-        inactiveClass="hover:text-aqua"
-      /> */}
-
-      <div className="flex flex-col md:flex-row gap-6 md:gap-8 lg:gap-10 px-3 md:px-6">
-        {/* LEFT COLUMN */}
-        <div className="w-full md:w-3/5 lg:w-2/3 flex flex-col gap-4">
-          <CoreDetails
-            property={listingData}
-          />
-
-          {/* <Features
-            freeCancellation={property.freeCancellation}
-            noPrepayment={property.noPrepayment}
-            layout="inline"
-          /> */}
-
-          <Rating
-            property={listingData}
-          />
-
-          {
-            listingData.leaser._id === user?._id && (
-              <Document property={listingData} />
-            )
-          }
-
-          {/* <GuestLikedPost property={property} /> */}
-
-          <AboutListing
-            property={listingData}
-          />
-          <HostInfo
-          property={listingData}
-        />
+      {isLoading ? (
+        <div className="mt-4 md:mt-6">
+          <SkeletonLoader variant="listing" />
         </div>
-
-        {/* RIGHT COLUMN */}
-        <div className="w-full md:w-2/5 lg:w-1/3 space-y-3 md:space-y-4">
-          <PricingActions
-            property={listingData}
-            category_id={category_id}
-            id={id}
-          />
-
-          <ExploreArea
+      ) : isError ? (
+        <Error />
+      ) : (
+        <>
+          <ImageGalleryLayout
             property={listingData}
           />
-        </div>
-      </div>
+
+          <div className="flex flex-col md:flex-row gap-6 md:gap-8 lg:gap-10">
+            {/* LEFT COLUMN */}
+            <div className="w-full md:w-3/5 lg:w-2/3 flex flex-col gap-4">
+              <CoreDetails
+                property={listingData}
+              />
+
+              <Rating
+                property={listingData}
+              />
+
+              {
+                listingData.leaser._id === user?._id &&
+                <Document property={listingData}
+                />}
+
+              <AboutListing
+                property={listingData}
+              />
+
+              <HostInfo
+                property={listingData}
+              />
+            </div>
+
+            {/* RIGHT COLUMN */}
+            <div className="w-full md:w-2/5 lg:w-1/3 space-y-3 md:space-y-4">
+              <PricingActions
+                id={id}
+                property={listingData}
+                category_id={category_id}
+              />
+
+              <ExploreArea
+                property={listingData}
+              />
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }
 
 export default ListingItems
-
-//  <div className="sm:px-3">
-        
-
-//         {/* <Tabs
-//           id={id}
-//           defaultActive="Rooms"
-//         /> */}
-
-//         <div className="mt-8">
-//           {/* <GuestReview property={property} /> */}
-
-//           {/* <MostMentionedTabs property={property} /> */}
-
-//           {/* <GuestImpressions property={property} /> */}
-//         </div>
-//       </div>
-
-//       {/* <ServicesAmenities /> */}

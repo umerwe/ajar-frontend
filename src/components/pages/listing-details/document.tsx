@@ -17,6 +17,7 @@ const Document = ({ property }: { property: Listing }) => {
     const [open, setOpen] = useState(false);
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const document = property.documents?.[0];
+   
     const imageUrl =
         document && process.env.NEXT_PUBLIC_API_BASE_URL + document.filesUrl?.[0];
 

@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Login, LoginSchema } from "@/validations/auth"
 import { useLogin } from "@/hooks/useAuth"
-import Input from "../fields/auth-input"
+import Input from "../ui/auth-input"
 import Button from "../auth/button"
 import Header from "../auth/header"
 import Footer from "../auth/footer"
@@ -82,14 +82,12 @@ const LoginForm = () => {
 
         <Button text="Sign In" isPending={isPending} />
 
-        {/* 👇 Divider */}
         <div className="flex items-center my-4">
           <div className="flex-grow border-t border-gray-300" />
           <span className="mx-2 text-gray-500 text-sm">or</span>
           <div className="flex-grow border-t border-gray-300" />
         </div>
 
-        {/* 👇 Google login button */}
         <button
           type="button"
           onClick={() => signIn("google", { callbackUrl: "/" })}

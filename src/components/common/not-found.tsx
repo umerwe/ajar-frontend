@@ -5,7 +5,7 @@ import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface NotFoundProps {
-  type?: "favourite" | "filter" | "listing" | "chat" | "booking" | string;
+  type?: "favourite" | "filter" | "listing" | "chat" | "booking" | "article";
 }
 
 const NotFound = ({ type = "listing" }: NotFoundProps) => {
@@ -16,6 +16,7 @@ const NotFound = ({ type = "listing" }: NotFoundProps) => {
     listing: "No Listings Found",
     booking: "No Booking Found",
     chat: "No Chats Found",
+    article: "No Articles Found",
   };
 
   // Dynamic descriptions
@@ -25,6 +26,7 @@ const NotFound = ({ type = "listing" }: NotFoundProps) => {
     listing: "There are no listings available right now. Please check again later.",
     booking: "There are no bookings available right now. Please check again later.",
     chat: "You have no conversations yet.",
+    article: "There are no articles available right now. Please check again later.",
   };
 
   // Dynamic button labels
@@ -46,13 +48,13 @@ const NotFound = ({ type = "listing" }: NotFoundProps) => {
     descriptions[type || ""] ||
     "We couldn’t find any data. Please try again later.";
 
-  const showButton = type !== "filter"; // filter should hide button
+  const showButton = type !== "filter";
 
   const buttonText = buttonLabels[type || ""] || "Go Home";
   const buttonHref = buttonLinks[type || ""] || "/";
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-300px)] lg:min-h-[calc(100vh-200px)]">
+    <div className="flex items-center justify-center min-h-[calc(100vh-250px)] lg:min-h-[calc(100vh-200px)]">
       <div className="text-center max-w-md mx-auto px-4 md:px-0">
         <div className="bg-gray-50 rounded-2xl shadow-sm border py-6 px-6">
           <div className="mb-4">

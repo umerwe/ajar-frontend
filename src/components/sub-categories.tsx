@@ -119,7 +119,7 @@ const SubCategories = () => {
   );
 
   return (
-    <div className="flex justify-between px-4 sm:px-6 md:px-9 mt-6 mb-4">
+    <div className="flex justify-between">
       {/* Desktop */}
       <div className="hidden md:flex flex-wrap gap-3 flex-grow">
         {subCategories.slice(0, 6).map((cat, i) => {
@@ -179,7 +179,7 @@ const SubCategories = () => {
       </div>
 
       {/* Mobile */}
-      <div className="md:hidden flex-grow max-w-50 relative">
+      <div className="md:hidden flex-grow max-w-44 relative">
         <Dropdown button={mobileButton} className="w-full">
           {mobileContent}
         </Dropdown>

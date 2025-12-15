@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/hover-card";
 import { toast } from "@/components/ui/toast"
 import { RatingDialog } from "../../dialogs/rating"
-import { getActionDetails } from "@/lib/actions/getAction"
+import { getActionDetails } from "@/lib/getAction"
 import api from "@/lib/axios"
 import { PaymentDialog } from "@/components/dialogs/payment"
 import { PinDialog } from "@/components/dialogs/pin"

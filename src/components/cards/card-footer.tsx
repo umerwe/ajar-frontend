@@ -3,11 +3,9 @@
 import { useState } from "react"
 import Link from "next/link"
 import { Loader2 } from "lucide-react"
-
 import { CardFooter } from "../ui/card"
 import { Button } from "../ui/button"
 import { toast } from "@/components/ui/toast"
-
 import api from "@/lib/axios"
 import { Listing } from "@/types/listing"
 import { PaymentDialog } from "../dialogs/payment"
@@ -55,7 +53,6 @@ const CardBottom = ({ property, bookingId, totalPrice, isApproved }: CardBottomP
     <>
       <CardFooter className="pb-2 pt-0 flex justify-between items-center mt-auto w-full">
 
-        {/* Price Section */}
         <div className="flex flex-col">
           <span className="text-sm min-[500px]:text-sm 2xl:text-base font-bold text-gray-900 tracking-tight leading-tight">
             ${Math.round(totalPrice ? totalPrice : property.price)}
@@ -64,7 +61,6 @@ const CardBottom = ({ property, bookingId, totalPrice, isApproved }: CardBottomP
           <span className="text-[10px] sm:text-xs text-gray-custom font-medium leading-none">day</span>
         </div>
 
-        {/* Button Section */}
         {isApproved ? (
           <Button
             variant="outline"

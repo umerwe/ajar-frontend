@@ -7,19 +7,8 @@ import { MessageForm, messageSchema } from "@/validations/chat";
 import { useState } from "react";
 import api from "@/lib/axios";
 import Image from "next/image";
-
-type SendMessageProps = {
-  onSend: (args: { text?: string; fileUrls?: string[] }) => void;
-  isSending?: boolean;
-  chatId?: string;
-  receiverId?: string;
-};
-
-type FileItem = {
-  url: string | null;
-  name: string;
-  isUploading: boolean;
-};
+import { toast } from "../ui/toast";
+import { SendMessageProps, FileItem } from "@/types/chat";
 
 const SendMessage = ({ onSend, isSending, chatId, receiverId }: SendMessageProps) => {
   const [files, setFiles] = useState<FileItem[]>([]);
@@ -36,7 +25,6 @@ const SendMessage = ({ onSend, isSending, chatId, receiverId }: SendMessageProps
 
   const textValue = watch("text");
 
-  // 📨 SEND MESSAGE
   const onSubmit = (values: MessageForm) => {
     const fileUrls = files.map(f => f.url!).filter(Boolean);
 
@@ -46,13 +34,11 @@ const SendMessage = ({ onSend, isSending, chatId, receiverId }: SendMessageProps
         fileUrls: fileUrls.length > 0 ? fileUrls : undefined
       });
     }
-
     setFiles([]);
     reset();
     setValue("text", "");
   };
 
-  // 📎 FILE UPLOAD
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = e.target.files;
     if (!selectedFiles || !chatId || !receiverId) return;
@@ -81,7 +67,10 @@ const SendMessage = ({ onSend, isSending, chatId, receiverId }: SendMessageProps
           )
         );
       } catch (error) {
-        console.error("❌ File Upload Error:", error);
+        toast({
+          title: "File Upload Failed",
+          variant: "destructive",
+        });
         setFiles(prev =>
           prev.map(f =>
             f.name === file.name
@@ -95,7 +84,6 @@ const SendMessage = ({ onSend, isSending, chatId, receiverId }: SendMessageProps
     e.target.value = "";
   };
 
-  // ❌ REMOVE FILE
   const removeFile = (name: string) => {
     setFiles(prev => prev.filter(f => f.name !== name));
   };
@@ -105,7 +93,6 @@ const SendMessage = ({ onSend, isSending, chatId, receiverId }: SendMessageProps
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col gap-2 p-3 border-t relative"
     >
-      {/* FILE PREVIEW SECTION */}
       {files.length > 0 && (
         <div className="flex gap-2 overflow-x-auto pb-2">
           {files.map((file, idx) => (
@@ -121,7 +108,6 @@ const SendMessage = ({ onSend, isSending, chatId, receiverId }: SendMessageProps
                   className="w-16 h-16 object-cover rounded-md"
                 />
               )}
-              {/* Remove button - fixed positioning */}
               <button
                 type="button"
                 onClick={() => removeFile(file.name)}
@@ -134,7 +120,6 @@ const SendMessage = ({ onSend, isSending, chatId, receiverId }: SendMessageProps
         </div>
       )}
 
-      {/* INPUT AND BUTTONS SECTION */}
       <div className="flex gap-2 items-center">
         <div className="flex-1 relative">
           <input
@@ -146,7 +131,6 @@ const SendMessage = ({ onSend, isSending, chatId, receiverId }: SendMessageProps
         </div>
 
         <div className="flex items-center gap-2">
-          {/* HIDDEN FILE INPUT */}
           <input
             type="file"
             className="hidden"
@@ -164,7 +148,7 @@ const SendMessage = ({ onSend, isSending, chatId, receiverId }: SendMessageProps
             disabled={
               isSending ||
               files.some(f => f.isUploading) ||
-              (!textValue?.trim() && files.length === 0)  // 🚀 no text & no file → disable
+              (!textValue?.trim() && files.length === 0)
             }
             className="bg-aqua text-white p-2 rounded-lg disabled:opacity-60 disabled:cursor-no-drop"
           >

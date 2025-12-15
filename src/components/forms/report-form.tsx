@@ -8,26 +8,18 @@ import {
     ChevronDown,
     DollarSign,
     FileText,
-    X, // Imported for the close/remove button
+    X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import Header from "@/components/pages/listing-details/header";
+import Header from "@/components/ui/header";
 import { useBooking } from "@/hooks/useBooking";
 import { capitalizeWords } from "@/utils/capitalizeWords";
 import { useSendReport } from "@/hooks/useReport";
 import Image from "next/image";
 import { Listing } from "@/types/listing";
 
-export interface ReportFormProps {
-    formTitle: string;
-    uploadLabel: string;
-}
-
-export default function ReportForm({
-    formTitle,
-    uploadLabel,
-}: ReportFormProps) {
-    const { data } = useBooking(); // Removed unused isLoading
+export default function ReportForm() {
+    const { data } = useBooking();
     const { mutate, isPending } = useSendReport();
     const bookings = data?.data?.bookings
 
@@ -43,18 +35,16 @@ export default function ReportForm({
         const uploadedFile = event.target.files?.[0];
         if (uploadedFile) {
             setFile(uploadedFile);
-            // Create a preview URL for images
             const url = URL.createObjectURL(uploadedFile);
             setFilePreviewUrl(url);
         }
-        // Clear the input value so the same file can be selected again after removal
         event.target.value = '';
     };
 
     const handleRemoveFile = () => {
         setFile(null);
         if (filePreviewUrl) {
-            URL.revokeObjectURL(filePreviewUrl); // Clean up the temporary URL
+            URL.revokeObjectURL(filePreviewUrl);
         }
         setFilePreviewUrl(null);
     };
@@ -72,15 +62,12 @@ export default function ReportForm({
 
     return (
         <div>
-            <Header title={formTitle} />
+            <Header title="Report Issue" />
+            <div className="max-w-6xl mx-auto pt-6">
+                <h1 className="text-lg md:text-2xl font-bold text-gray-800">Report Issue</h1>
+                <p className="text-xs md:text-sm text-gray-400 md:mt-1">Please fill the following details to report an issue</p>
 
-            <div className="max-w-6xl mx-auto py-6">
-                <h1 className="text-2xl font-bold text-gray-800">{formTitle}</h1>
-                <p className="text-sm text-gray-400 mt-1">Please fill the following details to report an issue</p>
-
-                {/* Form Fields - Now 4 fields in 2x2 grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-                    {/* New Field: Booking (Select Dropdown) */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Booking
@@ -99,7 +86,6 @@ export default function ReportForm({
                             >
                                 <option value="">Select Booking</option>
 
-                                {/* Map all bookings */}
                                 {bookings?.map((b: { _id: string; marketplaceListingId: Listing }) => (
                                     <option key={b._id} value={b._id}>
                                         {typeof b.marketplaceListingId === "object"
@@ -112,7 +98,6 @@ export default function ReportForm({
 
                         </div>
                     </div>
-                    {/* Issue Type - Remains Text Input */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Issue Type
@@ -131,7 +116,6 @@ export default function ReportForm({
                         </div>
                     </div>
 
-                    {/* New Field: Damaged Charges (Text Input) */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Damaged Charges
@@ -150,7 +134,6 @@ export default function ReportForm({
                         </div>
                     </div>
 
-                    {/* Rental - Changed to Text Input */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Rental Text
@@ -173,15 +156,13 @@ export default function ReportForm({
                 {/* Upload */}
                 <div className="mt-8">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                        {uploadLabel}
+                        Upload Image/Video
                     </label>
 
-                    {/* Conditionally render file preview or upload prompt */}
                     <label className={`relative flex flex-col items-center justify-center h-28 bg-gray-50 border border-gray-200 rounded-xl cursor-pointer ${filePreviewUrl ? 'p-2' : ''}`}>
 
                         {filePreviewUrl ? (
                             <>
-                                {/* Image Preview */}
                                 <Image
                                     src={filePreviewUrl}
                                     alt="Selected attachment preview"
@@ -190,7 +171,6 @@ export default function ReportForm({
                                     className="object-contain h-full w-full rounded-lg"
                                 />
 
-                                {/* Remove button */}
                                 <button
                                     type="button"
                                     onClick={(e) => {
@@ -204,23 +184,20 @@ export default function ReportForm({
                             </>
                         ) : (
                             <>
-                                {/* Default Upload Prompt */}
                                 <ArrowUpFromLine className="text-aqua mb-2" size={20} />
                                 <span className="text-sm text-gray-custom">Upload</span>
                             </>
                         )}
 
-                        {/* Hidden File Input */}
                         <input type="file" onChange={handleUpload} hidden />
                     </label>
                 </div>
 
-                {/* Submit */}
                 <div className="flex items-center justify-center mt-10">
                     <Button
                         variant="destructive"
                         className="px-30 py-5"
-                        onClick={handleSubmit} // Call the new handleSubmit function
+                        onClick={handleSubmit}
                         disabled={isPending}
                     >
                         {isPending ? "Submitting..." : "Submit Report"}

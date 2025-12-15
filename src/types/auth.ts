@@ -5,6 +5,30 @@ export interface AuthLayoutProps {
   isVerfication?: boolean
 }
 
+export interface AuthButtonProps {
+  text: string
+  className?: string
+  isPending?: boolean
+}
+
+export interface FooterProps {
+  messageText: string;
+  linkHref: string;
+  linkText: string;
+  className?: string;
+};
+
+export interface HeaderProps {
+  title: string,
+  description?: string
+  className?: string
+}
+
+export interface LogoutButtonProps {
+  variant?: "menu" | "full";
+  isPending?: boolean;
+}
+
 export type EditProfile = {
   name: string;
   dob: string;
@@ -12,11 +36,11 @@ export type EditProfile = {
 };
 
 export interface LoginSuccessResponse {
-  user : {
-    otp : {
-    isVerified : false;
-  }
-  email : string;
+  user: {
+    otp: {
+      isVerified: false;
+    }
+    email: string;
   }
   require2FA?: boolean;
   message?: string;
@@ -24,7 +48,6 @@ export interface LoginSuccessResponse {
   token?: string;
 }
 
-// Define the input type
 export interface TwoFactorParams {
   token: string;
   authToken?: string;

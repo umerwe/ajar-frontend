@@ -1,5 +1,3 @@
-import React from 'react'
-// import FeaturesList from './feature-list'
 import { Listing } from '@/types/listing'
 
 const AboutListing = ({ property }: { property: Listing }) => {
@@ -11,10 +9,6 @@ const AboutListing = ({ property }: { property: Listing }) => {
                     {property.subTitle}
                 </span>
             </p>
-            {/* <FeaturesList property={property} /> */}
-            {/* <Button variant="outline" className="mt-1 bg-transparent w-full sm:w-auto">
-                See all about this property
-            </Button> */}
         </div>
     )
 }

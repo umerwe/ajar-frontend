@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form"
 import { Verification, VerificationSchema } from "@/validations/auth"
 import { zodResolver } from "@hookform/resolvers/zod"
-import Input from "../fields/auth-input"
+import Input from "../ui/auth-input"
 import Button from "../auth/button"
 import Header from "../auth/header"
 import { useTwoFactorVerify } from "@/hooks/useTwoFactor"
@@ -19,7 +19,6 @@ const TwoFactorVerificationForm = () => {
         defaultValues: { otp: '' }
     });
 
-    // ✔ VERIFY OTP
     const onSubmit = (formData: Verification) => {
         const authToken = localStorage.getItem("2FAtoken");
 

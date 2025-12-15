@@ -1,6 +1,6 @@
 "use client"
 import EmailVerificationForm from "@/components/forms/email-verification-form";
-import Header from "@/components/pages/listing-details/header";
+import Header from "@/components/ui/header";
 import { useEnableTwoFactor } from "@/hooks/useTwoFactor";
 import { useEffect } from "react";
 

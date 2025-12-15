@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form"
 import { ForgotPassword, ForgotPasswordSchema } from "@/validations/auth"
 import { zodResolver } from "@hookform/resolvers/zod"
-import Input from "../fields/auth-input"
+import Input from "../ui/auth-input"
 import Button from "../auth/button"
 import Header from "../auth/header"
 import { useForgotPassword } from "@/hooks/useAuth"

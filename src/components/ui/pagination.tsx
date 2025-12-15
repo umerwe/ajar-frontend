@@ -35,7 +35,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) 
         size="icon"
         disabled={currentPage === 1}
         onClick={() => onPageChange(currentPage - 1)}
-        className="rounded-full"
+        className="rounded-full w-8 h-8 md:w-10 md:h-10"
       >
         <ChevronLeft className="h-4 w-4 text-aqua" />
       </Button>
@@ -45,7 +45,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) 
         <Button
           key={page}
           onClick={() => onPageChange(page)}
-          className={`rounded-full w-10 h-10 p-0 ${currentPage === page
+          className={`rounded-full w-8 h-8 md:w-10 md:h-10 p-0 ${currentPage === page
               ? "bg-header text-white hover:text-white border-0"
               : "bg-transparent"
             }`}
@@ -61,7 +61,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) 
         size="icon"
         disabled={currentPage === totalPages}
         onClick={() => onPageChange(currentPage + 1)}
-        className="rounded-full"
+        className="rounded-full w-8 h-8 md:w-10 md:h-10"
       >
         <ChevronRight className="h-4 w-4 text-aqua" />
       </Button>

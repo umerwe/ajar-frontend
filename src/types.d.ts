@@ -16,7 +16,6 @@ interface SubCategory {
   icon?: string | { src: string };
 }
 
-
 interface Document {
   value: string;
   name: string;
@@ -27,23 +26,23 @@ interface SkeletonLoaderProps {
   count?: number;
   variant?: string;
   isFav?: boolean;
-  type ?: string
+  type?: string
 }
 
 interface MarketplaceListingsProps {
   page?: number
   limit?: number
   subCategory?: string
-  category ?: string
+  category?: string
   currentPage?: number
   zone?: string
-  minPrice ?: string
-  maxPrice ?: string
+  minPrice?: string
+  maxPrice?: string
 }
 
 interface Zone {
-  _id : string
-  name : string
+  _id: string
+  name: string
 }
 
 interface ListingProps {
@@ -104,3 +103,28 @@ interface PricingActionsProps {
   category_id: string
   id: string
 }
+
+interface ProfileProps {
+  file: File | null;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  documents: Document[];
+  isLoading?: boolean;
+  user: User;
+}
+
+interface CongratulationsDialogProps {
+    open: boolean;
+    title?: string;
+    description?: string;
+    redirectTo?: string;
+    seconds?: number;
+}
+
+interface EditProfileDialogProps  {
+    data: any;
+    open: boolean;
+    setOpen: Dispatch<SetStateAction<boolean>>;
+    user: any;
+    documents: any[];
+    isLoading: boolean;
+};

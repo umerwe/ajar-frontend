@@ -58,9 +58,10 @@ const ListingContent = ({ isHome, initialCategory }: ListingContentProps) => {
   }
 
   return (
-    <div className="mt-4 sm:mb-20">
+    <div>
       <MainCard
         listings={filteredListings}
+        isHome = {isHome}
       />
 
       {!isHome && totalPages > 1 && (
@@ -68,7 +69,7 @@ const ListingContent = ({ isHome, initialCategory }: ListingContentProps) => {
       )}
 
       {isHome && totalCount > filteredListings.length && (
-        <div className="flex justify-center mt-4 mb-10">
+        <div className="flex justify-center mt-4">
           <Link href="/listing">
             <Button variant="destructive">Show more</Button>
           </Link>

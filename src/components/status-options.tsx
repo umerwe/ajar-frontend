@@ -4,13 +4,10 @@ import { useParams } from "next/navigation";
 import Dropdown from "@/components/ui/dropdown";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { formatStatus } from "@/utils/formatStatus";
-
-const rawOptions = ["Pending", "Approved", "In Progress", "Rejected", "Completed", "Cancelled"];
-const statusOptions = ["All", ...rawOptions];
+import { statusOptions } from "../constants/booking";
 
 const StatusOptions = () => {
     const params = useParams();
-    // Default to 'all' if no parameter exists, though your routing likely handles this
     const statusParam = (params.status as string) || "all";
 
     const slugify = (str: string) => {
@@ -19,15 +16,12 @@ const StatusOptions = () => {
         return str.toLowerCase();
     };
 
-    // 1. FIXED: Simple logic. "All" -> "all" -> "/booking/all"
     const getHref = (status: string) => `/booking/${slugify(status)}`;
 
-    // 2. FIXED: Checks if the slug of the option matches the current URL param
     const isActive = (status: string) => {
         return slugify(status) === slugify(statusParam);
     };
 
-    // Helper to display the button text nicely
     const getCurrentLabel = () => {
         if (!statusParam || slugify(statusParam) === "all") return "All Status";
         return formatStatus(statusParam);
@@ -56,11 +50,10 @@ const StatusOptions = () => {
                         <Link
                             key={i}
                             href={getHref(status)}
-                            className={`flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors duration-150 border-l-4 ${
-                                active 
-                                ? "bg-blue-50 border-l-aqua text-aqua" 
-                                : "border-l-transparent text-gray-600"
-                            }`}
+                            className={`flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors duration-150 border-l-4 ${active
+                                    ? "bg-blue-50 border-l-aqua text-aqua"
+                                    : "border-l-transparent text-gray-600"
+                                }`}
                         >
                             <span className={`text-sm font-medium ${active ? "text-aqua" : ""}`}>
                                 {status === "All" ? "All Status" : status}
@@ -74,7 +67,7 @@ const StatusOptions = () => {
     );
 
     return (
-        <div className="flex justify-between px-4 sm:px-6 md:px-9 my-6">
+        <div className="flex justify-between">
             {/* Desktop View */}
             <div className="hidden md:flex flex-wrap gap-3 flex-grow">
                 {statusOptions.map((status, i) => {

@@ -1,6 +1,7 @@
 "use client"
+
 import CoreDetails from "@/components/pages/listing-details/core-details"
-import Header from "@/components/pages/listing-details/header"
+import Header from "@/components/ui/header"
 import ImageGalleryLayout from "@/components/pages/listing-details/image-gallery-layout"
 import PricingActions from "@/components/pages/listing-details/pricing-actions"
 import Rating from "@/components/pages/listing-details/rating"
@@ -24,14 +25,6 @@ const BookingDetails = () => {
   const listingData = data?.marketplaceListingId;
   const { data: user } = useUser();
 
-  if (isLoading) {
-    return <SkeletonLoader variant="listing" />
-  }
-
-  if (isError) {
-    return <Error />
-  }
-
   return (
     <div className="mx-3 sm:mx-7 mb-9">
       <Header
@@ -39,63 +32,59 @@ const BookingDetails = () => {
         title="Booking Details"
       />
 
-      <ImageGalleryLayout
-        property={listingData}
-      />
-
-      {/* <Tabs
-        id={id}
-        defaultActive="Overview"
-        activeClass="border-b-2 border-aqua text-aqua font-semibold"
-        inactiveClass="hover:text-aqua"
-      /> */}
-
-      <div className="flex flex-col md:flex-row gap-6 md:gap-8 lg:gap-10 px-3 md:px-6">
-        {/* LEFT COLUMN */}
-        <div className="w-full md:w-3/5 lg:w-2/3 flex flex-col gap-4">
-          <CoreDetails
-            property={listingData}
-          />
-
-          {/* <Features
-            freeCancellation={property.freeCancellation}
-            noPrepayment={property.noPrepayment}
-            layout="inline"
-          /> */}
-
-          <Rating
-            property={listingData}
-          />
-
-          {
-            listingData.leaser._id === user?._id && (
-              <Document property={listingData} />
-            )
-          }
-
-          {/* <GuestLikedPost property={property} /> */}
-
-          <AboutListing
-            property={listingData}
-          />
-           <HostInfo
-          property={listingData}
-        />
+      {isLoading ? (
+        <div className="mt-6">
+          <SkeletonLoader variant="listing" />
         </div>
-
-        {/* RIGHT COLUMN */}
-        <div className="w-full md:w-2/5 lg:w-1/3 space-y-3 md:space-y-4">
-          <PricingActions
-            bookingData={data}
-            category_id={category_id}
-            id={id}
-          />
-
-          <ExploreArea
+      ) : isError ? (
+        <Error />
+      ) : (
+        <>
+          <ImageGalleryLayout
             property={listingData}
           />
-        </div>
-      </div>
+
+          <div className="flex flex-col md:flex-row gap-6 md:gap-8 lg:gap-10 px-3 md:px-6">
+            {/* LEFT COLUMN */}
+            <div className="w-full md:w-3/5 lg:w-2/3 flex flex-col gap-4">
+              <CoreDetails
+                property={listingData}
+              />
+
+              <Rating
+                property={listingData}
+              />
+
+              {
+                listingData.leaser._id === user?._id &&
+                <Document property={listingData}
+                />}
+
+              <AboutListing
+                property={listingData}
+              />
+
+              <HostInfo
+                property={listingData}
+              />
+            </div>
+
+            {/* RIGHT COLUMN */}
+            <div className="w-full md:w-2/5 lg:w-1/3 space-y-3 md:space-y-4">
+              <PricingActions
+                bookingData={data}
+                category_id={category_id}
+                id={id}
+              />
+
+
+              <ExploreArea
+                property={listingData}
+              />
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }
