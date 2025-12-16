@@ -77,7 +77,7 @@ const StatusOptions = () => {
                             key={i}
                             href={getHref(status)}
                             className={`
-                                flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 border
+                                flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 border-2
                                 ${active
                                     ? "text-aqua border-t-aqua border-r-aqua border-b-blue border-l-blue bg-white shadow-sm"
                                     : "bg-gray-100/80 text-gray-500 border-transparent hover:bg-white hover:border-aqua/50 hover:text-aqua hover:shadow-sm"
