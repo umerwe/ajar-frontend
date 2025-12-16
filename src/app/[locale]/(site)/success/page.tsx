@@ -1,13 +1,12 @@
 "use client"
 
-import React from 'react'
 import Link from 'next/link'
 import { CheckCircle } from 'lucide-react'
 
 const SuccessPage = () => {
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-50 to-gray-50 p-4">
-            <div className="w-full max-w-md bg-white rounded-2xl shadow-xl py-12 px-7 text-center">
+        <div className="min-h-screen flex items-center justify-center p-4">
+            <div className="w-full max-w-md bg-white rounded-2xl shadow-xl border py-12 px-7 text-center">
                 
                 {/* Success Icon */}
                 <div className="mb-4 flex justify-center">

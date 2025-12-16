@@ -1,14 +1,13 @@
 "use client"
 
-import React from 'react'
 import Link from 'next/link'
 import { XCircle } from 'lucide-react'
 
 const CancelPage = () => {
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-gray-50 p-4">
-            <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-12 text-center">
+        <div className="min-h-screen flex items-center justify-center p-4">
+            <div className="w-full max-w-md bg-white rounded-2xl shadow-xl border p-12 text-center">
 
                 {/* Error Icon */}
                 <div className="mb-4 flex justify-center">

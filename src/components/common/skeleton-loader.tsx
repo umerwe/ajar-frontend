@@ -436,9 +436,9 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: 
       )
     case "article":
       return (
-        Array.from({ length: 6 }).map((_, i) => (
+        Array.from({ length: 3 }).map((_, i) => (
           <Card key={i} className="border border-gray-200 shadow-sm h-full">
-            <CardContent className="p-6">
+            <CardContent className="md:p-6 p-4">
               <div className="flex items-start mb-4">
                 <Skeleton className="w-12 h-12 rounded-lg shrink-0 mr-4" />
                 <div className="flex-1">

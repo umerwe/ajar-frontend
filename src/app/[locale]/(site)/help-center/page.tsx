@@ -14,9 +14,10 @@ import Pagination from "@/components/ui/pagination"
 import { useGetArticles } from "@/hooks/useArticles"
 import { capitalizeWords } from "@/utils/capitalizeWords"
 import Error from "@/components/common/error"
-import SkeletonLoader from "@/components/common/skeleton-loader"
+import { Skeleton } from "@/components/ui/skeleton"
 import GetInTouch from "@/components/getInTouch"
 import ArticleDetailDialog from "@/components/dialogs/articleDetails"
+import SkeletonLoader from "@/components/common/skeleton-loader"
 
 export default function ArticlesSection() {
     const [page, setPage] = useState(1)
@@ -103,8 +104,8 @@ export default function ArticlesSection() {
                 </div>
             </div>
 
-            <div className="max-w-7xl mx-auto mb-6 md:mb-10 pt-6 md:pt-12">
-                <div className="pb-15">
+            <div className="mb-6 md:mb-10 pt-6 md:pt-12">
+                <div className="pb-15 max-w-7xl mx-auto px-3 sm:px-0">
                     {isError ? (
                         <Error
                             className="my-24"
@@ -112,9 +113,7 @@ export default function ArticlesSection() {
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {isLoadingList ? (
-                                <SkeletonLoader
-                                    variant="article"
-                                />
+                                <SkeletonLoader variant="article" />
                             ) : articlesData?.articles?.length === 0 ? (
                                 <div className="col-span-full text-center pt-24 text-gray-500">
                                     <Search className="w-12 h-12 mx-auto mb-3 text-gray-300" />
