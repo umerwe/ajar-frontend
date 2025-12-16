@@ -29,7 +29,7 @@ export default function TwoFactorAuthPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen">
             <div className="px-3 sm:px-7">
                 <Header title="Two-Factor Authentication" />
             </div>

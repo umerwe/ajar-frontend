@@ -37,6 +37,6 @@ export const profileItems = [
     {
         icon: Flag,
         label: "Report",
-        href: "/reports/report-issue",
+        href: "/report",
     }
 ];
