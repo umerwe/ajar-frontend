@@ -19,6 +19,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const checkAuth = () => {
       const token = localStorage.getItem("token");
+
       if (!token) {
         if (pathname.includes("auth")) {
           setIsVerified(true);
@@ -31,18 +32,21 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
       try {
         const decoded: DecodedToken = jwtDecode(token);
         const now = Date.now() / 1000;
+
         if (decoded.exp < now || decoded.role !== "user") {
+          localStorage.removeItem("token");
           router.replace("/auth/login");
           return;
         }
+
         if (pathname.includes("auth")) {
           router.replace("/");
-          setIsVerified(true);
           return;
         }
+
         setIsVerified(true);
       } catch (error) {
-        console.error("Auth error:", error);
+        localStorage.removeItem("token");
         router.replace("/auth/login");
       }
     };
@@ -50,8 +54,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     checkAuth();
   }, [pathname, router]);
 
-  if (!isVerified)
-    return null
+  if (!isVerified) return null;
 
   return <>{children}</>;
 }
