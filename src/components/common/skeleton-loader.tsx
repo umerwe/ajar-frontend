@@ -335,8 +335,8 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: 
           </div>
         </div>
       );
-    
-      case "profile":
+
+    case "profile":
       return (
         <div className="flex flex-col items-center space-y-3">
           {/* Avatar */}
@@ -454,6 +454,70 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: 
             </CardContent>
           </Card>
         ))
+      )
+    case "checkout":
+      return (
+        <div className="min-h-screen mb-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-6">
+            {/* LEFT COLUMN SKELETON */}
+            <div className="space-y-6">
+              <div>
+                <Skeleton className="h-6 w-16 mb-4 bg-gray-200" /> {/* Date Header */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Skeleton className="h-[74px] rounded-lg bg-gray-200" /> {/* Input 1 */}
+                  <Skeleton className="h-[74px] rounded-lg bg-gray-200" /> {/* Input 2 */}
+                </div>
+              </div>
+              <div>
+                <Skeleton className="h-6 w-24 mb-4 bg-gray-200" /> {/* Comments Header */}
+                <Skeleton className="h-40 w-full rounded-lg bg-gray-200" /> {/* Textarea */}
+              </div>
+              <Skeleton className="h-12 w-full sm:w-48 rounded-full bg-gray-200" /> {/* Button */}
+            </div>
+
+            {/* RIGHT COLUMN SKELETON */}
+            <div className="space-y-6">
+              {/* Listing Card Skeleton */}
+              <div className="bg-white rounded-lg p-4 md:p-6 shadow-sm">
+                <div className="flex gap-4 mb-4">
+                  <Skeleton className="w-24 h-24 rounded-lg flex-shrink-0 bg-gray-200" />
+                  <div className="flex-1 space-y-2 py-1">
+                    <Skeleton className="h-6 w-3/4 bg-gray-200" />
+                    <Skeleton className="h-4 w-1/2 bg-gray-200" />
+                    <div className="flex gap-2 pt-1">
+                      <Skeleton className="h-6 w-16 rounded-l-2xl rounded-b-2xl bg-gray-200" />
+                      <Skeleton className="h-6 w-20 bg-gray-200" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Payment Details Skeleton */}
+              <div className="bg-white rounded-2xl p-6 shadow-sm space-y-4">
+                <Skeleton className="h-6 w-40 bg-gray-200" />
+                <div className="space-y-3">
+                  <div className="flex justify-between">
+                    <Skeleton className="h-5 w-24 bg-gray-200" />
+                    <Skeleton className="h-5 w-16 bg-gray-200" />
+                  </div>
+                  <div className="flex justify-between border-t pt-3">
+                    <Skeleton className="h-6 w-24 bg-gray-200" />
+                    <Skeleton className="h-6 w-20 bg-gray-200" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Cancellation Policy Skeleton */}
+              <div className="bg-white rounded-2xl p-6 shadow-sm space-y-3">
+                <Skeleton className="h-6 w-48 bg-gray-200" />
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-32 bg-gray-200" />
+                  <Skeleton className="h-16 w-full bg-gray-200" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       )
 
     default: <div></div>;

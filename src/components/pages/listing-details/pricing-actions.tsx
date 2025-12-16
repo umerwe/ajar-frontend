@@ -189,8 +189,6 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
 
   return (
     <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row justify-between items-start sm:items-center md:items-start lg:items-center gap-3 md:gap-4">
-
-      {/* --- Price Display --- */}
       {bookingData ? (
         <div className="flex flex-col gap-1">
           <HoverCard open={isPriceOpen} onOpenChange={setIsPriceOpen}>
@@ -200,30 +198,41 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
                 onClick={() => setIsPriceOpen(!isPriceOpen)}
               >
                 <span className="text-xl sm:text-2xl font-semibold border-b border-dotted border-gray-400 pb-1 group-hover:border-gray-800 transition-colors">
-                  ${Math.round(displayPrice)}.00
+                  ${displayPrice.toFixed(2)}
                 </span>
                 <Info className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
               </div>
             </HoverCardTrigger>
+
             <HoverCardContent className="w-72 p-4" align="start">
               <div className="space-y-2">
                 <h4 className="font-medium leading-none mb-3">Price Breakdown</h4>
+
                 <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>Base Price</span><span>${Math.round(basePrice)}.00</span>
+                  <span>Base Price</span>
+                  <span>${basePrice.toFixed(2)}</span>
                 </div>
+
                 <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>Admin Fee</span><span>${Math.round(adminFee)}.00</span>
+                  <span>Admin Fee</span>
+                  <span>${adminFee.toFixed(2)}</span>
                 </div>
+
                 <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>Tax</span><span>${Math.round(tax)}.00</span>
+                  <span>Tax</span>
+                  <span>${tax.toFixed(2)}</span>
                 </div>
+
                 {additionalCharges > 0 && (
                   <div className="flex justify-between text-sm text-muted-foreground">
-                    <span>Extra Charges</span><span>${Math.round(additionalCharges)}.00</span>
+                    <span>Extra Charges</span>
+                    <span>${additionalCharges.toFixed(2)}</span>
                   </div>
                 )}
+
                 <div className="border-t pt-2 mt-2 flex justify-between font-semibold">
-                  <span>Total</span><span>${Math.round(displayPrice)}.00</span>
+                  <span>Total</span>
+                  <span>${displayPrice.toFixed(2)}</span>
                 </div>
               </div>
             </HoverCardContent>
@@ -232,12 +241,11 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
       ) : (
         <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
           <span className="text-xl sm:text-2xl font-semibold border-b border-dotted border-gray-400 pb-1">
-            ${Math.round(property?.price as number || 0)}.00
+            ${(property?.price as number || 0).toFixed(2)}
           </span>
         </div>
       )}
 
-      {/* --- Action Buttons (Refactored) --- */}
       {renderActionButton()}
 
       <RatingDialog

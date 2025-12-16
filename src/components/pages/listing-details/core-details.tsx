@@ -21,7 +21,7 @@ const CoreDetails = ({ property }: { property: Listing }) => {
             <div className="text-xs sm:text-sm text-gray-600 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 md:gap-20">
                 <div className="flex gap-1 items-center">
                     <MapPin color="black" className="w-4 h-4" />
-                    <span>{property.address}</span>
+                    <span>{capitalizeWords(property?.address)}</span>
                 </div>
 
                 {/* Show on Map link */}

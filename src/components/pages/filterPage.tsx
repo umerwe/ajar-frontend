@@ -115,12 +115,12 @@ const FilterPage = ({ location, minPrice, maxPrice, category }: FilterPageProps)
   }
 
   return (
-    <div className="max-w-[1400px] mx-auto">
-      <div className="md:hidden absolute top-24 right-4 mb-4 flex">
+    <div>
+      <div className="md:hidden absolute top-22 right-4 mb-4 flex">
         <Button
           onClick={() => setIsFilterDialogOpen(true)}
           variant="outline"
-          className="max-w-44 gap-2 text-header hover:bg-aqua/10 border-aqua"
+          className="max-w-44 gap-2 text-aqua hover:bg-aqua/10 border-aqua"
         >
           <Filter className="h-4 w-4 text-aqua" />
           Filters
@@ -138,7 +138,7 @@ const FilterPage = ({ location, minPrice, maxPrice, category }: FilterPageProps)
         </DialogContent>
       </Dialog>
 
-      <div className="flex flex-col mx-4 md:mx-8 md:flex-row gap-4 md:gap-6 mt-20 md:my-8">
+      <div className="flex flex-col md:flex-row gap-4 md:gap-6 mt-12 md:mt-5">
         <div className="hidden md:block w-full md:w-80 bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden h-fit md:sticky md:top-6">
           <h2 className="text-xl font-semibold px-6 pt-6">Filter</h2>
           <div className="p-6">

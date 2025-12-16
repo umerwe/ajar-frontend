@@ -43,7 +43,11 @@ const MainCard = ({ listings, showRemoveButton = false, type, isApproved, isHome
             <div className="flex flex-col h-full">
 
               <div className="w-full relative aspect-square sm:aspect-auto">
-                <CardTop property={property} showRemoveButton={showRemoveButton} type={type} />
+                <CardTop
+                  property={property}
+                  showRemoveButton={showRemoveButton}
+                  type={type}
+                />
               </div>
 
               <div className="flex flex-col sm:px-0.5 justify-between flex-grow w-full gap-1 sm:gap-2">

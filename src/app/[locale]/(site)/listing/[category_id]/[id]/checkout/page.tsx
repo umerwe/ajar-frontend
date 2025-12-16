@@ -6,19 +6,20 @@ import { useParams } from "next/navigation"
 import Image from "next/image"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-
 import { useGetMarketplaceListing } from "@/hooks/useListing"
 import { useCreateBooking } from "@/hooks/useBooking"
 import { capitalizeWords } from "@/utils/capitalizeWords"
 import Header from "@/components/ui/header"
 import type { BookingRequest } from "@/types/booking"
 import { type BookingFormData, bookingSchema } from "@/validations/booking"
+import { Skeleton } from "@/components/ui/skeleton" // Import Skeleton
+import SkeletonLoader from "@/components/common/skeleton-loader"
 
 const CheckoutPage = () => {
     const params = useParams()
     const id = params?.id as string
 
-    const { data: listing } = useGetMarketplaceListing(id)
+    const { data: listing, isLoading } = useGetMarketplaceListing(id)
     const { mutateAsync: createBooking, isPending } = useCreateBooking()
 
     const {
@@ -71,16 +72,16 @@ const CheckoutPage = () => {
     }
 
     return (
-        <div className="min-h-screen mb-12">
+        <div className="min-h-screen">
             <div>
                 <Header title="Booking Submission" />
-
+                {isLoading ? 
+                <SkeletonLoader variant="checkout" /> :
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-6">
 
                         {/* LEFT COLUMN: Booking Details/Submit Button */}
                         <div className="space-y-6">
-                            {/* Date Input Fields */}
                             <div>
                                 <h2 className="text-base font-semibold text-gray-900 mb-4">Date</h2>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -196,21 +197,24 @@ const CheckoutPage = () => {
 
                             <div className="bg-white rounded-2xl p-6 shadow-sm">
                                 <h2 className="text-lg font-semibold text-gray-900 mb-4">Payment Details</h2>
+
                                 <div className="space-y-3">
                                     <div className="flex justify-between items-center">
                                         <span className="text-base text-gray-600">Base price</span>
                                         <span className="text-base font-medium text-gray-900">
-                                            ${Math.round(listing?.price || 0)}.00
+                                            ${(listing?.price || 0).toFixed(2)}
                                         </span>
                                     </div>
+
                                     <div className="flex justify-between items-center py-3 border-t">
                                         <span className="text-base font-medium text-gray-900">Total Cost</span>
                                         <span className="text-xl font-bold text-gray-900">
-                                            ${Math.round(listing?.price || 0)}.00
+                                            ${(listing?.price || 0).toFixed(2)}
                                         </span>
                                     </div>
                                 </div>
                             </div>
+
 
                             <div className="bg-white rounded-2xl p-6 shadow-sm">
                                 <h2 className="text-lg font-semibold text-gray-900 mb-4">Cancellation Policy</h2>
@@ -224,7 +228,7 @@ const CheckoutPage = () => {
                             </div>
                         </div>
                     </div>
-                </form>
+                </form>}
             </div>
         </div>
     )
