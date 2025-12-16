@@ -20,8 +20,9 @@ interface CardBottomProps {
 const CardBottom = ({ property, bookingId, totalPrice, isApproved }: CardBottomProps) => {
   const [isPaymentOpen, setIsPaymentOpen] = useState(false)
   const [loadingPayment, setLoadingPayment] = useState(false)
-  const [clientSecret, setClientSecret] = useState<string | null>(null)
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
 
+  console.log(property)
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" })
   }
@@ -52,7 +53,6 @@ const CardBottom = ({ property, bookingId, totalPrice, isApproved }: CardBottomP
   return (
     <>
       <CardFooter className="pb-2 pt-0 flex justify-between items-center mt-auto w-full">
-
         <div className="flex flex-col">
           <span className="text-sm min-[500px]:text-sm 2xl:text-base font-bold text-gray-900 tracking-tight leading-tight">
             ${Math.round(totalPrice ? totalPrice : property.price)}

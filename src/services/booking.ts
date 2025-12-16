@@ -26,6 +26,13 @@ export async function createBooking({ booking }: { booking: BookingRequest }) {
   return data;
 }
 
+export async function updateBookingStatus({ bookingId }: { bookingId: string }) {
+  const { data } = await api.patch(`/api/bookings/${bookingId}/status`, {
+    status: "cancelled"
+  });
+  return data;
+}
+
 export async function submitPin({ bookingId, otp }: {
   bookingId: string;
   otp: string;

@@ -12,9 +12,10 @@ import { Listing } from "@/types/listing"
 interface CardTopProps {
   property: Listing
   showRemoveButton?: boolean
+  type?: string
 }
 
-const CardTop = ({ property, showRemoveButton = false }: CardTopProps) => {
+const CardTop = ({ property, showRemoveButton = false, type }: CardTopProps) => {
   const images: string[] = property?.rentalImages?.slice(0, 5) || []
 
   const [emblaRef, emblaApi] = useEmblaCarousel(
@@ -49,11 +50,14 @@ const CardTop = ({ property, showRemoveButton = false }: CardTopProps) => {
             </div>
           )}
         </div>
-        {showRemoveButton ? (
-          <RemoveFavouriteButton listingId={property._id} />
-        ) : (
-          <FavouriteButton listingId={property._id} />
+        {type !== "booking" && (
+          showRemoveButton ? (
+            <RemoveFavouriteButton listingId={property._id} />
+          ) : (
+            <FavouriteButton listingId={property._id} />
+          )
         )}
+
       </div>
 
       {images.length > 1 ? (
@@ -84,8 +88,8 @@ const CardTop = ({ property, showRemoveButton = false }: CardTopProps) => {
                 key={index}
                 onClick={() => emblaApi?.scrollTo(index)}
                 className={`h-1.5 w-1.5 -mt-10 rounded-full transition-all duration-300 ${index === selectedIndex
-                    ? "bg-white w-2.5"
-                    : "bg-gray-300"
+                  ? "bg-white w-2.5"
+                  : "bg-gray-300"
                   }`}
               />
             ))}

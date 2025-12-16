@@ -30,6 +30,7 @@ const BookingDetails = () => {
       <Header
         status={data?.status}
         title="Booking Details"
+        isBookingLoading = {isLoading}
       />
 
       {isLoading ? (

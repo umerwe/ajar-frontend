@@ -2,7 +2,7 @@ import { useCreateChat, useGetChatList } from '@/hooks/useChat'
 import { Chat, Participant } from '@/types/chat'
 import { Listing } from '@/types/listing'
 import { capitalizeWords } from '@/utils/capitalizeWords'
-import { MessageCircleMore, Star } from 'lucide-react'
+import { MessageCircleMore } from 'lucide-react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 
@@ -39,6 +39,9 @@ const HostInfo = ({ property }: { property: Listing }) => {
         }
     }
 
+    const hostName = property?.leaser?.name || "";
+    const hostInitial = hostName.charAt(0).toUpperCase();
+
     return (
         <div className="mt-4">
             <div className="flex items-center mb-2">
@@ -46,15 +49,23 @@ const HostInfo = ({ property }: { property: Listing }) => {
             </div>
             <div className="flex items-center justify-between max-w-100 space-x-3">
                 <div className="flex gap-3">
-                    <div className="w-12 h-12 rounded-full overflow-hidden">
-                        <Image
-                            src="/host-img.png"
-                            alt={property?.leaser?.name || "Host profile image"}
-                            width={100}
-                            height={100}
-                            className="w-full h-full object-cover"
-                        />
+                    {/* Updated Image Logic */}
+                    <div className="w-12 h-12 rounded-full overflow-hidden shrink-0">
+                        {property.leaser.profilePicture ? (
+                            <Image
+                                src={`${process.env.NEXT_PUBLIC_API_BASE_URL}${property.leaser.profilePicture}`}
+                                alt={hostName || "Host profile image"}
+                                width={100}
+                                height={100}
+                                className="w-full h-full object-cover"
+                            />
+                        ) : (
+                            <div className="w-full h-full bg-aqua flex items-center justify-center text-white font-bold text-lg">
+                                {hostInitial}
+                            </div>
+                        )}
                     </div>
+
                     <div>
                         <p className="font-semibold text-gray-800 text-base xl:text-lg">
                             {capitalizeWords(property.leaser.name)}

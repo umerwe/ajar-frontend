@@ -261,7 +261,7 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: 
           </div>
 
           {/* Main Content Layout - Matching BookingDetails.tsx structure */}
-          <div className="flex flex-col md:flex-row gap-6 md:gap-8 lg:gap-10 px-3 md:px-6">
+          <div className="flex flex-col md:flex-row gap-6 md:gap-8 lg:gap-10">
 
             {/* LEFT COLUMN */}
             <div className="w-full md:w-3/5 lg:w-2/3 flex flex-col gap-6">

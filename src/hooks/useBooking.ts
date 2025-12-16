@@ -1,7 +1,7 @@
 import { toast } from "@/components/ui/toast";
-import { extendRental, submitPin } from "@/services/booking";
+import { extendRental, submitPin, updateBookingStatus } from "@/services/booking";
 import { createBooking, getBooking, getBookingId } from "@/services/booking";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 
@@ -21,16 +21,44 @@ export function useGetBookingId(id?: string) {
 
 export function useCreateBooking() {
   const router = useRouter();
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: createBooking,
     onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["bookings"],
+      });
+
       toast({ description: "Booking request submitted successfully." })
-      router.replace(`/booking/pending`)
+      router.replace(`/booking/pending`);
+
     },
     onError: (error) => {
       const err = error as AxiosError<ErrorResponse>;
       toast({
         title: "Booking Failed",
+        description: err.response?.data?.message || "Something went wrong.",
+        variant: "destructive",
+      });
+    },
+  });
+}
+
+export function useUpdateBookingStatus() {
+  const router = useRouter();
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: updateBookingStatus,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["bookings"] })
+      toast({ description: "Booking status updated successfully." })
+      router.replace(`/booking/all`);
+    },
+    onError: (error) => {
+      const err = error as AxiosError<ErrorResponse>;
+      toast({
+        title: "Booking Status Update Failed",
         description: err.response?.data?.message || "Something went wrong.",
         variant: "destructive",
       });

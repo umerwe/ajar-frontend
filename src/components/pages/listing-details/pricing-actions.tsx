@@ -16,12 +16,16 @@ import { getActionDetails } from "@/lib/getAction"
 import api from "@/lib/axios"
 import { PaymentDialog } from "@/components/dialogs/payment"
 import { PinDialog } from "@/components/dialogs/pin"
-import { useExtendRental, useSubmitPin } from "@/hooks/useBooking"
+import { useExtendRental, useSubmitPin, useUpdateBookingStatus } from "@/hooks/useBooking"
 import { ExtensionDialog } from "@/components/dialogs/extenstion"
+import { useUser } from "@/hooks/useAuth"
+import Loader from "@/components/common/loader"
 
 const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const { mutate, isPending } = useSubmitPin();
   const { mutate: sendExtendRental, isPending: isExtendRentalPending } = useExtendRental();
+  const { mutate: updateStatus, isPending: isStatusLoading } = useUpdateBookingStatus();
+  const { data } = useUser();
   const [isRateOpen, setIsRateOpen] = useState(false)
   const [isPaymentOpen, setIsPaymentOpen] = useState(false)
   const [loadingPayment, setLoadingPayment] = useState(false)
@@ -86,11 +90,102 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
     )
   }
 
-  const primaryButtonClass = "w-full sm:w-auto px-7 bg-header hover:bg-header/90 text-white"
-
   const minExtensionDate = bookingData?.dates?.checkOut
     ? new Date(bookingData.dates.checkOut).toISOString().split("T")[0]
     : undefined;
+
+  const renderActionButton = () => {
+    if (!bookingData) {
+      if (data._id !== property.leaser._id) {
+        return (
+          <Button
+            onClick={() => router.push(`/listing/${category_id}/${id}/checkout`)}
+            variant="destructive"
+          >
+            Checkout
+          </Button>
+        );
+      }
+      return null;
+    }
+
+    if (label === "Cancelled" || label === "Rejected") {
+      return null;
+    }
+
+    switch (label) {
+      case "Cancel Request":
+        return (
+          <Button
+            onClick={() => updateStatus({ bookingId: bookingData._id })}
+            variant="destructive"
+            disabled={isStatusLoading}
+          >
+            {isStatusLoading ? <Loader /> : label}
+          </Button>
+        );
+
+      case "Rate Owner":
+        return (
+          <Button onClick={() => setIsRateOpen(true)} variant="destructive" className="w-full sm:w-auto px-7">
+            {label}
+          </Button>
+        );
+
+      case "Extend Rental":
+        return (
+          <Button onClick={() => setIsExtendOpen(true)} variant="destructive">
+            {label}
+          </Button>
+        );
+
+      case "Proceed to pay":
+      case "Approved":
+        if (bookingData.paymentStatus === "succeeded") {
+          return (
+            <Button
+              onClick={() => setIsPinOpen(true)}
+              disabled={loadingPayment}
+              variant="destructive"
+            >
+              {loadingPayment ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Loading...
+                </>
+              ) : (
+                "Submit Pin"
+              )}
+            </Button>
+          );
+        } else {
+          return (
+            <Button
+              onClick={handlePaymentClick}
+              disabled={loadingPayment}
+              variant="destructive"
+            >
+              {loadingPayment ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Loading...
+                </>
+              ) : (
+                label === "Approved" ? "Pay Now" : label
+              )}
+            </Button>
+          );
+        }
+
+      default:
+        // Generic Link Fallback
+        return (
+          <Link href={`/listing/${category_id}/${id}/${link}`}>
+            <Button variant="destructive">
+              {label}
+            </Button>
+          </Link>
+        );
+    }
+  };
 
   return (
     <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row justify-between items-start sm:items-center md:items-start lg:items-center gap-3 md:gap-4">
@@ -142,43 +237,14 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
         </div>
       )}
 
-      {/* --- Buttons --- */}
-      {bookingData ? (
-        label === "Rate Owner" ? (
-          <Button onClick={() => setIsRateOpen(true)} variant="destructive" className="w-full sm:w-auto px-7">{label}</Button>
-        ) : label === "Extend Rental" ? (
-          <Button onClick={() => setIsExtendOpen(true)} className={primaryButtonClass}>
-            {label}
-          </Button>
-        ) : (label === "Proceed to pay" || label === "Approved") ? (
-          bookingData.paymentStatus === "succeeded" ?
-            <Button
-              onClick={() => setIsPinOpen(true)}
-              disabled={loadingPayment}
-              className={primaryButtonClass}
-            >
-              {loadingPayment ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Loading...</> : "Submit Pin"}
-            </Button> :
-            <Button
-              onClick={handlePaymentClick}
-              disabled={loadingPayment}
-              className={primaryButtonClass}
-            >
-              {loadingPayment ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Loading...</> : (label === "Approved" ? "Pay Now" : label)}
-            </Button>
-        ) : (
-          <Link href={`/listing/${category_id}/${id}/${link}`}>
-            <Button className={primaryButtonClass}>{label}</Button>
-          </Link>
-        )
-      ) : (
-        <Button onClick={() => router.push(`/listing/${category_id}/${id}/checkout`)} className={primaryButtonClass}>
-          Checkout
-        </Button>
-      )}
+      {/* --- Action Buttons (Refactored) --- */}
+      {renderActionButton()}
 
-      {/* Dialogs */}
-      <RatingDialog open={isRateOpen} onClose={() => setIsRateOpen(false)} bookingId={bookingData?._id as string} />
+      <RatingDialog
+        open={isRateOpen}
+        onClose={() => setIsRateOpen(false)}
+        bookingId={bookingData?._id as string}
+      />
 
       <PaymentDialog
         open={isPaymentOpen}

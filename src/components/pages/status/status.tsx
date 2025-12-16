@@ -25,7 +25,8 @@ const Status = ({ status }: { status: string }) => {
   const listings = bookings.map((x: Booking) => ({
     ...(x.marketplaceListingId as Listing),
     bookingId: x._id,
-    totalPrice: x.priceDetails.totalPrice
+    totalPrice: x.priceDetails.totalPrice,
+    bookingStatus: x.status
   }));
 
   const handlePageChange = useCallback((page: number) => {
@@ -37,26 +38,26 @@ const Status = ({ status }: { status: string }) => {
     return <SkeletonLoader />;
   }
 
-  if (totalItems === 0) {
+  if (totalItems === 0 && !isLoading) {
     return <NotFound type="booking" />;
   }
 
   return (
-      <div className="flex flex-col">
-        <MainCard
-          listings={listings}
-          type="booking"
-          isApproved={status === "approved"}
-        />
+    <div className="flex flex-col">
+      <MainCard
+        listings={listings}
+        type="booking"
+        isApproved={status === "approved"}
+      />
 
-        {totalPages > 1 && (
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-          />
-        )}
-      </div>
+      {totalPages > 1 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+      )}
+    </div>
   );
 };
 

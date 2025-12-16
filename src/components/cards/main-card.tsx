@@ -6,14 +6,14 @@ import { Listing } from "@/types/listing";
 import { useRouter } from "next/navigation";
 
 interface MainCardProps {
-  listings: (Listing & { bookingId?: string; totalPrice?: number })[];
+  listings: (Listing & { bookingId?: string; totalPrice?: number, bookingStatus?: string })[];
   showRemoveButton?: boolean;
   type?: "booking" | "listing" | "filter"
   isApproved?: boolean;
-  isHome ?: boolean
+  isHome?: boolean
 }
 
-const MainCard = ({ listings, showRemoveButton = false, type, isApproved,isHome }: MainCardProps) => {
+const MainCard = ({ listings, showRemoveButton = false, type, isApproved, isHome }: MainCardProps) => {
   const router = useRouter();
 
   return (
@@ -43,11 +43,14 @@ const MainCard = ({ listings, showRemoveButton = false, type, isApproved,isHome 
             <div className="flex flex-col h-full">
 
               <div className="w-full relative aspect-square sm:aspect-auto">
-                <CardTop property={property} showRemoveButton={showRemoveButton} />
+                <CardTop property={property} showRemoveButton={showRemoveButton} type={type} />
               </div>
 
               <div className="flex flex-col sm:px-0.5 justify-between flex-grow w-full gap-1 sm:gap-2">
-                <CardBody property={property} />
+                <CardBody
+                  property={property}
+                  bookingStatus={property?.bookingStatus}
+                />
                 <CardBottom
                   property={property}
                   bookingId={property.bookingId}

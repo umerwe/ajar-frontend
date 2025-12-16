@@ -14,7 +14,6 @@ import SkeletonLoader from "@/components/common/skeleton-loader"
 import Error from "@/components/common/error"
 import Document from "@/components/pages/listing-details/document"
 import { useUser } from "@/hooks/useAuth"
-import Container from "@/components/container"
 
 const ListingItems = () => {
   const params = useParams()

@@ -1,5 +1,7 @@
 "use client"
 import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
+import { getStatusStyles } from "@/constants/booking";
 import { capitalizeWords } from "@/utils/capitalizeWords";
 import { ArrowLeft } from "lucide-react"
 import { useRouter } from "next/navigation";
@@ -7,9 +9,10 @@ import { useRouter } from "next/navigation";
 interface HeaderProps {
     status?: string
     title: string
+    isBookingLoading?: boolean
 }
 
-const Header = ({ status, title }: HeaderProps) => {
+const Header = ({ status, title, isBookingLoading }: HeaderProps) => {
     const router = useRouter();
 
     const formattedStatus =
@@ -25,12 +28,16 @@ const Header = ({ status, title }: HeaderProps) => {
                 </Button>
                 <h1 className="text-md sm:text-lg font-semibold text-gray-900">{title}</h1>
             </div>
-            {
-                status &&
-                <div className={`${status === "Completed" ? "bg-green-200 text-green-700" : 'bg-orange-100 text-orange-600'} px-3 py-1 text-xs sm:text-sm font-semibold`}>
-                    {formattedStatus}
-                </div>
-            }
+
+            {isBookingLoading ? (
+                <Skeleton className="h-7 w-20 sm:w-24 rounded-none bg-gray-200" />
+            ) : (
+                status && (
+                    <div className={`${getStatusStyles(status)} px-3 py-1 text-xs sm:text-sm font-semibold`}>
+                        {formattedStatus}
+                    </div>
+                )
+            )}
         </div>
     )
 }

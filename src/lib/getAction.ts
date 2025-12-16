@@ -15,6 +15,12 @@ export function getActionDetails(status?: string) {
     case "completed":
       return { label: "Rate Owner", link: "#" };
 
+    case "cancelled":
+      return { label: "Cancelled", link: "#" };
+
+    case "rejected":
+      return { label: "Rejected", link: "#" };
+
     default:
       return { label: "Unknown", link: "/" };
   }
