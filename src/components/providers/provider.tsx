@@ -1,5 +1,4 @@
 "use client"
-import type React from "react"
 import { ThemeProvider } from "./theme-provider"
 import { NextIntlClientProvider } from "next-intl"
 import ReactQueryProvider from "./query-provider"

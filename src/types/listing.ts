@@ -31,6 +31,7 @@ export interface Listing  {
     address: string;
     Price: number;
     price: number;
+    priceUnit : string;
     isActive: boolean;
     language: string;
     subTitle: string;

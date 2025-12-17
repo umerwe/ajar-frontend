@@ -56,7 +56,7 @@ const CardBottom = ({ property, bookingId, totalPrice, isApproved }: CardBottomP
           <span className="text-sm min-[500px]:text-sm 2xl:text-base font-bold text-gray-900 tracking-tight leading-tight">
             ${(totalPrice ? totalPrice : property.price).toFixed(2)}/
           </span>
-          <span className="text-[10px] sm:text-xs text-gray-custom font-medium leading-none">day</span>
+          <span className="text-[10px] sm:text-xs text-gray-custom font-medium leading-none">{property?.priceUnit}</span>
         </div>
 
         {isApproved ? (

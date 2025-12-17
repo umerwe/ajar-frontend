@@ -149,9 +149,7 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
               variant="destructive"
             >
               {loadingPayment ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Loading...
-                </>
+                <Loader />
               ) : (
                 "Submit Pin"
               )}
@@ -165,9 +163,7 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
               variant="destructive"
             >
               {loadingPayment ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Loading...
-                </>
+                <Loader />
               ) : (
                 label === "Approved" ? "Pay Now" : label
               )}
@@ -176,7 +172,6 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
         }
 
       default:
-        // Generic Link Fallback
         return (
           <Link href={`/listing/${category_id}/${id}/${link}`}>
             <Button variant="destructive">

@@ -16,6 +16,7 @@ interface MainCardProps {
 const MainCard = ({ listings, showRemoveButton = false, type, isApproved, isHome }: MainCardProps) => {
   const router = useRouter();
 
+  console.log(listings)
   return (
     <div className={`min-h-[400px] ${isHome ? "mt-0" : "mt-2"}`}>
       <div

@@ -52,7 +52,7 @@ export function useUpdateBookingStatus() {
     mutationFn: updateBookingStatus,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["bookings"] })
-      toast({ description: "Booking status updated successfully." })
+      toast({ description: "Booking cancelled successfully." })
       router.replace(`/booking/all`);
     },
     onError: (error) => {
