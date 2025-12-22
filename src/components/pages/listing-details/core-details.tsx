@@ -8,7 +8,7 @@ const CoreDetails = ({ property }: { property: Listing }) => {
         <div>
             <h1 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-2 md:mb-1 flex flex-col sm:flex-row sm:items-center gap-2">
                 <span>{capitalizeWords(property.name)}</span>
-                <div className="flex pt-0 sm:pt-1.5 gap-0.5">
+                <div className="flex gap-0.5">
                     {[...Array(5)].map((_, i) => (
                         <Star
                             key={i}
