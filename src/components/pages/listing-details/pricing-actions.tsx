@@ -20,6 +20,7 @@ import { useExtendRental, useSubmitPin, useUpdateBookingStatus } from "@/hooks/u
 import { ExtensionDialog } from "@/components/dialogs/extenstion"
 import { useUser } from "@/hooks/useAuth"
 import Loader from "@/components/common/loader"
+import Document from "./document"
 
 const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const { mutate, isPending } = useSubmitPin();
@@ -106,7 +107,7 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
           </Button>
         );
       }
-      return null;
+      return <Document property={property} />
     }
 
     if (label === "Cancelled" || label === "Rejected") {

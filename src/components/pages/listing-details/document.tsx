@@ -28,11 +28,7 @@ const Document = ({ property }: { property: Listing }) => {
                 <DialogTrigger asChild>
                     <Button
                         variant="destructive"
-                        className="flex items-center gap-2 hover:bg-aqua
-                         hover:text-white transition-all max-w-[150px]  "
-
                     >
-                        <FileIcon className="h-4 w-4 text-white" />
                         Documents
                     </Button>
                 </DialogTrigger>

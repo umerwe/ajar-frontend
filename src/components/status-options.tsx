@@ -34,7 +34,7 @@ const StatusOptions = () => {
           border-l-blue bg-white hover:bg-gray-50 transition-all
             duration-200 shadow-sm group"
         >
-            <span className="text-sm font-semibold text-[#01c89b]">
+            <span className="text-sm text-[#01c89b]">
                 {getCurrentLabel()}
             </span>
             <ChevronDownIcon className="w-4 h-4 text-aqua group-hover:text-[#01c89b] transition-colors" />
@@ -55,7 +55,7 @@ const StatusOptions = () => {
                                     : "border-l-transparent text-gray-600"
                                 }`}
                         >
-                            <span className={`text-sm font-medium ${active ? "text-aqua" : ""}`}>
+                            <span className={`text-sm ${active ? "text-aqua" : ""}`}>
                                 {status === "All" ? "All Status" : status}
                             </span>
                             {active && <span className="h-2 w-2 rounded-full bg-aqua" />}
@@ -77,7 +77,7 @@ const StatusOptions = () => {
                             key={i}
                             href={getHref(status)}
                             className={`
-                                flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 border-2
+                                flex items-center gap-2 px-5 py-2 rounded-full text-sm transition-all duration-200 border-2
                                 ${active
                                     ? "text-aqua border-t-aqua border-r-aqua border-b-blue border-l-blue bg-white shadow-sm"
                                     : "bg-gray-100/80 text-gray-500 border-transparent hover:bg-white hover:border-aqua/50 hover:text-aqua hover:shadow-sm"

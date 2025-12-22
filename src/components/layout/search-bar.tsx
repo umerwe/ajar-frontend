@@ -48,7 +48,7 @@ export default function SearchBar() {
                     <p className="text-xs sm:text-sm text-gray-500 font-medium">
                       Location
                     </p>
-                    <p className="font-bold text-sm sm:text-base text-gray-800 truncate">
+                    <p className="font-semibold text-sm sm:text-base text-gray-800 truncate">
                       {zones?.find((z: Zone) => z._id === zoneId)?.name ||
                         "Select a location"}
                     </p>

@@ -42,21 +42,19 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: 
           <div className="min-h-[400px]">
             <div
               className={`grid grid-cols-2 gap-2 w-full
-                ${type === "filter"
+            ${type === "filter"
                   ? "sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 sm:gap-4"
-                  : "sm:grid-cols-2 md:grid-cols-3 py-2 sm:py-4 lg:grid-cols-4 xl:grid-cols-5 3xl:grid-cols-6 sm:gap-4"
+                  : "sm:grid-cols-2 md:grid-cols-3 py-2 sm:py-4 lg:grid-cols-4 sm:gap-4"
                 }
-              `}
+          `}
             >
               {Array.from({ length: count }).map((_, index) => (
                 <Card
                   key={index}
                   className="w-full mx-auto border-0 bg-white shadow-sm pb-0 animate-pulse overflow-hidden"
                 >
-                  {/* Vertical Layout matches MainCard */}
                   <div className="flex flex-col h-full">
-
-                    {/* Image Placeholder - Full width, square on mobile */}
+                    {/* Image Placeholder */}
                     <div className="w-full relative aspect-square sm:aspect-auto">
                       <div className="w-full h-full sm:h-54 bg-gray-200 rounded-xl" />
                     </div>
@@ -64,7 +62,7 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: 
                     {/* Content Placeholders */}
                     <div className="flex md:px-1 flex-col justify-between flex-grow w-full gap-1 p-1 sm:p-0 sm:gap-2">
 
-                      {/* Body */}
+                      {/* Body Placeholder */}
                       <div className="mt-1 sm:mt-5">
                         <div className="flex items-center justify-between">
                           <div className="h-3 sm:h-4 bg-gray-200 rounded w-3/4" />
@@ -73,14 +71,29 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: 
                         <div className="h-3 sm:h-4 bg-gray-200 rounded w-1/2 mt-2" />
                       </div>
 
-                      {/* Footer */}
+                      {/* Footer Placeholder */}
                       <div className="pb-2 pt-0 flex justify-between items-center mt-auto w-full">
                         <div className="flex flex-col gap-1">
                           <div className="h-4 sm:h-5 bg-gray-200 rounded w-10 sm:w-16" />
                           <div className="h-2 sm:h-3 bg-gray-200 rounded w-8 sm:w-12" />
                         </div>
-                        <div className="h-8 min-[500px]:h-9 bg-gray-200 rounded w-16 sm:w-24" />
+                        {/* Hide button skeleton if it's a booking type to match your logic */}
+                        {type !== "booking" && (
+                          <div className="h-8 min-[500px]:h-9 bg-gray-200 rounded-full w-16 sm:w-24" />
+                        )}
                       </div>
+
+                      {/* New Booking Details Skeleton (Only shows if type is booking) */}
+                      {type === "booking" && (
+                        <div className="pb-4 flex flex-col gap-3 mt-1">
+                          {/* Dates Row Skeleton */}
+                          <div className="flex items-center gap-2">
+                            <div className="w-4 h-4 bg-gray-200 rounded" />
+                            <div className="h-3 bg-gray-200 rounded w-1/3" />
+                            <div className="h-3 bg-gray-200 rounded w-1/2" />
+                          </div>
+                        </div>
+                      )}
 
                     </div>
                   </div>

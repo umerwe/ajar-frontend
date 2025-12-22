@@ -63,7 +63,7 @@ export default function ArticlesSection() {
                 <div className="relative bg-header overflow-hidden flex justify-between rounded-md max-w-7xl mx-auto shrink-0">
                     <div className="relative flex items-center mx-5 md:mx-10 py-6 lg:py-6 xl:py-8">
                         <div className="max-w-2xl">
-                            <h2 className="text-xl md:text-2xl font-bold text-white">Help Center</h2>
+                            <h2 className="text-xl md:text-2xl font-semibold text-white">Help Center</h2>
                             <p className="text-emerald-100 mb-4 text-sm md:text-base">
                                 Find answers to your questions and explore our latest articles and updates.
                             </p>

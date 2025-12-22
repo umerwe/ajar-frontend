@@ -26,7 +26,8 @@ const Status = ({ status }: { status: string }) => {
     ...(x.marketplaceListingId as Listing),
     bookingId: x._id,
     totalPrice: x.priceDetails.totalPrice,
-    bookingStatus: x.status
+    bookingStatus: x.status,
+    dates : x.dates
   }));
 
   const handlePageChange = useCallback((page: number) => {
@@ -35,11 +36,13 @@ const Status = ({ status }: { status: string }) => {
   }, []);
 
   if (isLoading) {
-    return <SkeletonLoader />;
+    return <SkeletonLoader type="booking" />;
   }
 
   if (totalItems === 0 && !isLoading) {
-    return <NotFound type="booking" />;
+    return <div className="mt-10">
+      <NotFound type="booking" />
+    </div>;
   }
 
   return (

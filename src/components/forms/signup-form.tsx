@@ -8,6 +8,8 @@ import Input from "../ui/auth-input";
 import Button from "../auth/button";
 import Header from "../auth/header";
 import Footer from "../auth/footer";
+import { signIn } from "next-auth/react";
+import { FcGoogle } from "react-icons/fc";
 
 const SignUpForm = () => {
   const { mutate, isPending } = useSignup();
@@ -74,9 +76,26 @@ const SignUpForm = () => {
 
         <Button
           text="Sign Up"
-          className="mt-1.5"
+          className="mt-5"
           isPending={isPending}
         />
+
+        <div className="flex items-center my-4">
+          <div className="flex-grow border-t border-gray-300" />
+          <span className="mx-2 text-gray-500 text-sm">or</span>
+          <div className="flex-grow border-t border-gray-300" />
+        </div>
+
+        <button
+          type="button"
+          onClick={() => signIn("google", { callbackUrl: "/" })}
+          className="w-full flex items-center justify-center gap-3 border border-gray-300 rounded-full py-2 hover:bg-gray-100 transition-all"
+        >
+          <FcGoogle className="text-2xl" />
+          <span className="text-gray-700 text-sm font-medium">
+            Sign up with Google
+          </span>
+        </button>
       </form>
 
       <Footer

@@ -55,7 +55,7 @@ const NotFound = ({ type = "listing" }: NotFoundProps) => {
 
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-250px)] lg:min-h-[calc(100vh-200px)]">
-      <div className="text-center max-w-md mx-auto px-4 md:px-0">
+      <div className="text-center max-w-md mx-auto">
         <div className="bg-gray-50 rounded-2xl shadow-sm border py-6 px-6">
           <div className="mb-4">
             <Search className="w-16 h-16 text-gray-300 mx-auto" />

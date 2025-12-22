@@ -100,10 +100,14 @@ const EmailVerificationForm = ({ type, title, description, buttonText }: { type?
                 open={dialogOpen}
             />
 
-            <div className={`bg-white rounded-md shadow-2xl px-4 py-8 sm:py-10 sm:px-6 w-full ${title ? "lg:w-[400px]" : "lg:w-[300px]"}`}>
-                <Header title={`${title ? title : "Email Verification"}`} description={`${description ? description : "Enter OTP to get your account verified"}`} />
+            <div className={`bg-white rounded-md shadow-2xl px-4 py-8 sm:py-10 sm:px-6 w-full ${title ? "lg:w-[400px]" : "lg:w-[333px]"}`}>
+                <Header
+                    title={`${title ? title : "Email Verification"}`}
+                    description={`${description ? description : "Enter OTP to get your account verified"}`}
+                    className="mb-6"
+                />
 
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
                     <Input
                         label="Enter OTP"
                         type="number"

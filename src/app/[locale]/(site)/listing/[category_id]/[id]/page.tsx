@@ -50,11 +50,6 @@ const ListingItems = () => {
                 property={listingData}
               />
 
-              {
-                listingData.leaser._id === user?._id &&
-                <Document property={listingData}
-                />}
-
               <AboutListing
                 property={listingData}
               />

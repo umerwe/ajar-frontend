@@ -24,7 +24,7 @@ const ForgotPasswordForm = () => {
         localStorage.setItem("email", formData.email)
     }
     return (
-        <div className="bg-white rounded-md shadow-2xl px-4 py-8 sm:px-6 w-full lg:w-[330px]">
+        <div className="bg-white rounded-md shadow-2xl px-4 py-8 sm:px-6 w-full lg:w-[333px]">
             <Header
                 title="Forgot Password"
                 description="Enter your email to forgot your password"
@@ -42,7 +42,7 @@ const ForgotPasswordForm = () => {
 
                 <Button
                     isPending={isPending}
-                    text="Verify Account"
+                    text="Continue"
                 />
 
                 <Footer

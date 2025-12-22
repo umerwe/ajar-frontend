@@ -6,7 +6,7 @@ import { Listing } from "@/types/listing";
 import { useRouter } from "next/navigation";
 
 interface MainCardProps {
-  listings: (Listing & { bookingId?: string; totalPrice?: number, bookingStatus?: string })[];
+  listings: (Listing & { bookingId?: string; totalPrice?: number, bookingStatus?: string, dates?: { checkIn: string; checkOut: string } })[];
   showRemoveButton?: boolean;
   type?: "booking" | "listing" | "filter"
   isApproved?: boolean;
@@ -16,14 +16,13 @@ interface MainCardProps {
 const MainCard = ({ listings, showRemoveButton = false, type, isApproved, isHome }: MainCardProps) => {
   const router = useRouter();
 
-  console.log(listings)
   return (
     <div className={`min-h-[400px] ${isHome ? "mt-0" : "mt-2"}`}>
       <div
         className={`grid grid-cols-2 gap-2 w-full
           ${type === "filter"
             ? "sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 sm:gap-4"
-            : "sm:grid-cols-2 md:grid-cols-3 py-2 sm:py-4 lg:grid-cols-4 xl:grid-cols-5 3xl:grid-cols-6 sm:gap-4"
+            : "sm:grid-cols-2 md:grid-cols-3 py-2 sm:py-4 lg:grid-cols-4 sm:gap-4"
           }
         `}
       >
@@ -60,6 +59,7 @@ const MainCard = ({ listings, showRemoveButton = false, type, isApproved, isHome
                   property={property}
                   bookingId={property.bookingId}
                   totalPrice={property?.totalPrice}
+                  dates={property?.dates}
                   isApproved={isApproved}
                 />
               </div>

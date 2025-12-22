@@ -26,7 +26,7 @@ const CardBody = ({ property, bookingStatus }: CardBodyProps) => {
             {capitalizeWords(bookingStatus)}
           </span>
         ) : (
-          <div className="flex items-center gap-1 text-xs sm:text-sm">
+          <div className="flex items-center gap-1 text-xs">
             <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-400 text-yellow-400" />
             <span className="text-header">{property.ratings?.count || 0}</span>
             <span className="text-header">
@@ -35,6 +35,17 @@ const CardBody = ({ property, bookingStatus }: CardBodyProps) => {
           </div>
         )}
       </div>
+
+      {
+        bookingStatus && 
+        <div className="flex items-center gap-1 text-xs my-1">
+        <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-400 text-yellow-400" />
+        <span className="text-header">{property.ratings?.count || 0}</span>
+        <span className="text-header">
+          ({property.ratings?.average || 0})
+        </span>
+      </div>
+      }
 
       <p className="text-xs text-[#00CC99] font-medium mb-2 truncate 2xl:mt-0.5">
         Location: {property.address}
