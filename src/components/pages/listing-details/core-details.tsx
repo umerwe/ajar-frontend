@@ -33,7 +33,7 @@ const CoreDetails = ({ property }: { property: Listing }) => {
                 >
                     <Button
                         variant="link"
-                        className="p-0 h-auto text-aqua font-semibold cursor-pointer"
+                        className="p-0 h-auto text-aqua font-medium cursor-pointer"
                     >
                         Show on Map
                     </Button>

@@ -58,7 +58,7 @@ const SubCategories = () => {
           border-l-blue"
     >
       <div className="flex items-center gap-3">
-        <span className="text-sm font-semibold text-[#01c89b]">
+        <span className="text-sm text-[#01c89b]">
           {activeSubCategory.name}
         </span>
       </div>
@@ -79,7 +79,7 @@ const SubCategories = () => {
                 }`}
             >
               <span
-                className={`text-sm font-medium text-gray-500 ${active && "text-aqua"
+                className={`text-sm text-gray-500 ${active && "text-aqua"
                   } `}
               >
                 {capitalizeWords(cat.name)}
@@ -133,7 +133,7 @@ const SubCategories = () => {
                 : "bg-gray-100 text-gray-400 border border-transparent hover:border-aqua hover:text-aqua"
                 }`}
             >
-              <span className="text-sm font-semibold">{capitalizeWords(cat.name)}</span>
+              <span className="text-sm">{capitalizeWords(cat.name)}</span>
             </Link>
           );
         })}
@@ -166,7 +166,7 @@ const SubCategories = () => {
                           : "bg-gray-100 text-gray-400 border border-transparent hover:border-aqua hover:text-aqua"
                           }`}
                       >
-                        <span className="text-sm font-semibold">{capitalizeWords(cat.name)}</span>
+                        <span className="text-sm">{capitalizeWords(cat.name)}</span>
                       </Link>
                     </DialogTrigger>
                   );
