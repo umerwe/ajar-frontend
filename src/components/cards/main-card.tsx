@@ -21,7 +21,7 @@ const MainCard = ({ listings, showRemoveButton = false, type, isApproved, isHome
       <div
         className={`grid grid-cols-2 gap-2 w-full
           ${type === "filter"
-            ? "sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 sm:gap-4"
+            ? "sm:grid-cols-2 md:grid-cols-3 sm:gap-4"
             : "sm:grid-cols-2 md:grid-cols-3 py-2 sm:py-4 lg:grid-cols-4 sm:gap-4"
           }
         `}

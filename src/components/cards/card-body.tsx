@@ -19,7 +19,7 @@ const CardBody = ({ property, bookingStatus }: CardBodyProps) => {
 
         {bookingStatus ? (
           <span
-            className={`text-[10px] sm:text-xs font-medium px-2 py-0.5 md:pb-1 ${getStatusStyles(
+            className={`text-[10px] sm:text-xs font-medium px-2 py-0.5 ${getStatusStyles(
               bookingStatus
             )}`}
           >

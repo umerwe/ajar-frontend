@@ -26,7 +26,7 @@ const Header = ({ status, title, isBookingLoading }: HeaderProps) => {
                 <Button variant="ghost" className="bg-gray-100" onClick={title === "Chat" ? () => router.push('/') : () => router.back()}>
                     <ArrowLeft style={{ width: '18px', height: '18px' }} />
                 </Button>
-                <h1 className="text-md sm:text-lg font-semibold text-gray-900">{title}</h1>
+                <h1 className="text-base sm:text-lg text-gray-900">{title}</h1>
             </div>
 
             {isBookingLoading ? (

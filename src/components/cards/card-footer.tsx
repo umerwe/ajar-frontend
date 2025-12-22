@@ -65,7 +65,7 @@ const CardBottom = ({ property, bookingId, totalPrice, isApproved, dates }: Card
     <>
       <CardFooter className="pb-2 pt-0 flex justify-between items-center mt-auto w-full">
         <div className="flex flex-col">
-          <span className="text-xs min-[500px]:text-sm 2xl:text-base font-bold text-gray-900 tracking-tight truncate leading-tight">
+          <span className="text-xs min-[500px]:text-sm 2xl:text-base font-semibold text-gray-900 tracking-tight truncate leading-tight">
             ${(totalPrice ? totalPrice : property.price).toFixed(2)}/
           </span>
           <span className="text-[10px] sm:text-xs text-gray-custom font-medium leading-none">{property?.priceUnit}</span>

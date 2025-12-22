@@ -57,15 +57,31 @@ export default function ReportForm() {
         formData.append("rentalText", rental);
         if (file) formData.append("attachments", file);
 
-        mutate(formData);
+        mutate(formData, {
+            onSuccess: () => {
+                resetForm();
+            }
+        });
+    };
+
+    const resetForm = () => {
+        setRental("");
+        setIssueType("");
+        setBooking("");
+        setDamagedCharges("");
+        setFile(null);
+        if (filePreviewUrl) {
+            URL.revokeObjectURL(filePreviewUrl);
+        }
+        setFilePreviewUrl(null);
     };
 
     return (
         <div>
             <Header title="Report Issue" />
             <div className="max-w-6xl mx-auto pt-6">
-                <h1 className="text-lg md:text-2xl font-bold text-gray-800">Report Issue</h1>
-                <p className="text-xs md:text-sm text-gray-400 md:mt-1">Please fill the following details to report an issue</p>
+                <h1 className="text-lg md:text-xl font-semibold text-gray-800">Report Issue</h1>
+                <p className="text-xs md:text-sm text-gray-400">Please fill the following details to report an issue</p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                     <div>

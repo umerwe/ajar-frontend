@@ -8,8 +8,7 @@ export function useSendReport() {
         mutationFn: sendReport,
         onSuccess: () => {
             toast({
-                title: "Report Submitted",
-                description: "Your report has been successfully submitted.",
+                title: "Your Report has been successfully submitted.",
             });
         },
         onError: (error) => {

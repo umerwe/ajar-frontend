@@ -76,6 +76,7 @@ const FilterPage = ({ location, minPrice, maxPrice, category }: FilterPageProps)
       priceRange: [0, 100000],
     })
     setCurrentPage(1)
+    setIsFilterDialogOpen(false)
     router.push("/?minPrice=0&maxPrice=100000")
   }, [router])
 
