@@ -21,7 +21,7 @@ const BookingDetails = () => {
   const id = params?.id as string
 
   const { data, isLoading, isError } = useGetBookingId(id);
-
+  
   const listingData = data?.marketplaceListingId;
   const { data: user } = useUser();
 
@@ -30,7 +30,7 @@ const BookingDetails = () => {
       <Header
         status={data?.status}
         title="Booking Details"
-        isBookingLoading = {isLoading}
+        isBookingLoading={isLoading}
       />
 
       {isLoading ? (

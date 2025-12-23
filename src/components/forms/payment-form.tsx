@@ -55,7 +55,12 @@ export const StripeCardForm = ({ clientSecret, bookingId, amount }: StripeCardFo
             })
             setIsLoading(false)
         } else if (paymentIntent && paymentIntent.status === 'succeeded') {
-            window.location.href = `/success?bookingId=${bookingId}`
+            if (bookingId) {
+                window.location.href = `/success?bookingId=${bookingId}`
+            }
+            else {
+                window.location.href = `/success`
+            }
         }
     }
 

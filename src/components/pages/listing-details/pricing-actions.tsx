@@ -21,11 +21,13 @@ import { ExtensionDialog } from "@/components/dialogs/extenstion"
 import { useUser } from "@/hooks/useAuth"
 import Loader from "@/components/common/loader"
 import Document from "./document"
+import { useDeductWallet } from "@/hooks/useWallet"
 
 const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const { mutate, isPending } = useSubmitPin();
   const { mutate: sendExtendRental, isPending: isExtendRentalPending } = useExtendRental();
   const { mutate: updateStatus, isPending: isStatusLoading } = useUpdateBookingStatus();
+  const { mutate: deductWallet, isPending: isDeductPending } = useDeductWallet();
   const { data } = useUser();
   const [isRateOpen, setIsRateOpen] = useState(false)
   const [isPaymentOpen, setIsPaymentOpen] = useState(false)
@@ -50,22 +52,32 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const handlePaymentClick = async () => {
     if (!bookingData?._id) return
 
-    setLoadingPayment(true)
-    try {
-      const response = await api.post("/api/payments/stripe/intent", {
-        bookingId: bookingData._id,
+    deductWallet({
+      amount: displayPrice,
+      description: "Booking payment",
+      bookingId: bookingData._id
+    },
+      {
+        onSuccess: () => {
+          router.replace(`/success/${bookingData._id}`)
+        }
       })
-      const secret = response.data?.clientSecret
+    // setLoadingPayment(true)
+    // try {
+    //   const response = await api.post("/api/payments/stripe/intent", {
+    //     bookingId: bookingData._id,
+    //   })
+    //   const secret = response.data?.clientSecret
 
-      if (secret) {
-        setClientSecret(secret)
-        setIsPaymentOpen(true)
-      }
-    } catch {
-      toast({ description: "Failed to initialize payment.", variant: "destructive" })
-    } finally {
-      setLoadingPayment(false)
-    }
+    //   if (secret) {
+    //     setClientSecret(secret)
+    //     setIsPaymentOpen(true)
+    //   }
+    // } catch {
+    //   toast({ description: "Failed to initialize payment.", variant: "destructive" })
+    // } finally {
+    //   setLoadingPayment(false)
+    // }
   }
 
   const handlePinSubmit = (pin: string) => {
@@ -160,10 +172,10 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
           return (
             <Button
               onClick={handlePaymentClick}
-              disabled={loadingPayment}
+              disabled={isDeductPending}
               variant="destructive"
             >
-              {loadingPayment ? (
+              {isDeductPending ? (
                 <Loader />
               ) : (
                 label === "Approved" ? "Pay Now" : label

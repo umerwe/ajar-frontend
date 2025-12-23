@@ -533,6 +533,73 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: 
         </div>
       )
 
+      case "wallet":
+      return (
+        <div className="animate-pulse">
+          
+          <div className="max-w-md mx-auto border py-8 rounded-md">
+            {/* Balance Section */}
+            <section className="flex flex-col items-center px-4">
+              <div className="h-4 w-24 bg-gray-200 rounded mb-3" /> {/* Your Balance text */}
+              <div className="h-10 w-40 bg-gray-200 rounded" /> {/* Amount */}
+            </section>
+
+            {/* Action Buttons */}
+            <section className="flex justify-around mt-10 px-6">
+              {[1, 2].map((i) => (
+                <div key={i} className="flex flex-col items-center gap-2">
+                  <div className="w-14 h-14 bg-gray-200 rounded-full" />
+                  <div className="h-3 w-12 bg-gray-200 rounded" />
+                </div>
+              ))}
+            </section>
+
+            {/* Latest Transactions Section */}
+            <section className="mt-12 px-5">
+              <div className="flex items-center justify-between mb-5">
+                <div className="h-6 w-36 bg-gray-200 rounded" /> {/* Title */}
+                <div className="h-4 w-16 bg-gray-200 rounded" /> {/* See All */}
+              </div>
+
+              <div className="space-y-4">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="flex items-center justify-between py-2">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-gray-200 rounded-full" />
+                      <div className="space-y-2">
+                        <div className="h-4 w-28 bg-gray-200 rounded" />
+                        <div className="h-3 w-20 bg-gray-200 rounded" />
+                      </div>
+                    </div>
+                    <div className="h-5 w-12 bg-gray-200 rounded" />
+                  </div>
+                ))}
+              </div>
+            </section>
+          </div>
+        </div>
+      );
+
+    case "transactions":
+      return (
+          <div className="min-h-screen bg-white max-w-md mx-auto border rounded-md py-6 px-5">
+            <div className="space-y-6">
+              {Array.from({ length: count }).map((_, i) => (
+                <div key={i} className="flex items-center justify-between py-2">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-gray-200 rounded-full" />
+                    <div className="space-y-2">
+                      <div className="h-4 w-32 bg-gray-200 rounded" />
+                      <div className="h-3 w-24 bg-gray-200 rounded" />
+                    </div>
+                  </div>
+                  <div className="h-5 w-14 bg-gray-200 rounded" />
+                </div>
+              ))}
+            </div>
+          </div>
+      );
+
     default: <div></div>;
 
   }

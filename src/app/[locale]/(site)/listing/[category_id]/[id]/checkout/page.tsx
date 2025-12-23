@@ -12,7 +12,6 @@ import { capitalizeWords } from "@/utils/capitalizeWords"
 import Header from "@/components/ui/header"
 import type { BookingRequest } from "@/types/booking"
 import { type BookingFormData, bookingSchema } from "@/validations/booking"
-import { Skeleton } from "@/components/ui/skeleton" // Import Skeleton
 import SkeletonLoader from "@/components/common/skeleton-loader"
 
 const CheckoutPage = () => {
@@ -148,7 +147,7 @@ const CheckoutPage = () => {
                             <button
                                 type="submit"
                                 disabled={isPending}
-                                className="w-full sm:w-48 bg-header text-white py-3 rounded-full font-semibold text-sm md:text-base hover:bg-teal-600 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-full sm:w-48 bg-header text-white py-3 rounded-full font-medium text-sm md:text-base hover:bg-teal-600 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {isPending ? "Processing..." : "Submit Booking"}
                             </button>

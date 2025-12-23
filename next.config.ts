@@ -45,6 +45,18 @@ const nextConfig: NextConfig = {
         pathname: '/chat/**',
       },
       {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '5000',
+        pathname: '/uploads/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '5000',
+        pathname: '/chat/**',
+      },
+      {
         protocol: 'https',
         hostname: 'lh3.googleusercontent.com',
         pathname: '/**',

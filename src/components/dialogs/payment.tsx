@@ -27,7 +27,7 @@ export const PaymentDialog = ({
           <DialogTitle>Complete Payment</DialogTitle>
         </DialogHeader>
 
-        {clientSecret && bookingId && (
+        {clientSecret && (
           <Elements stripe={stripePromise} options={{ clientSecret }}>
             <StripeCardForm
               clientSecret={clientSecret}
