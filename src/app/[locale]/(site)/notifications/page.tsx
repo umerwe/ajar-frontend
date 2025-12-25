@@ -1,9 +1,7 @@
 "use client"
 
-import React from 'react'
-import { Clock, BellOff, CheckCircle2, Loader2 } from 'lucide-react'
+import { Clock, BellOff} from 'lucide-react'
 import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import Header from '@/components/ui/header'
 import { useNotification } from "@/hooks/useNotification"

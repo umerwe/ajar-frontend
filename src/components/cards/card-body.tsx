@@ -47,8 +47,8 @@ const CardBody = ({ property, bookingStatus }: CardBodyProps) => {
       </div>
       }
 
-      <p className="text-xs text-[#00CC99] font-medium mb-2 truncate 2xl:mt-0.5">
-        Location: {property.address}
+      <p className="text-[13px] text-[#00CC99] font-medium mb-2 truncate 2xl:mt-0.5">
+        Location: {capitalizeWords(property?.zone?.name)}
       </p>
     </CardContent>
   );

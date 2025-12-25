@@ -25,7 +25,6 @@ import { useDeductWallet } from "@/hooks/useWallet"
 
 const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const { mutate, isPending } = useSubmitPin();
-  console.log(property)
   const { mutate: sendExtendRental, isPending: isExtendRentalPending } = useExtendRental();
   const { mutate: updateStatus, isPending: isStatusLoading } = useUpdateBookingStatus();
   const { mutate: deductWallet, isPending: isDeductPending } = useDeductWallet();
@@ -52,7 +51,7 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
 
 
   // Price Calculation
-  const priceDetails = bookingData?.priceDetails
+  const priceDetails = bookingData?.priceDetails || 0
   const basePrice = priceDetails?.price || property?.price || 0
   const adminFee = priceDetails?.adminFee || 0
   const tax = priceDetails?.tax || 0

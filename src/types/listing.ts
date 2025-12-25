@@ -23,7 +23,9 @@ export interface Listing  {
       createdAt: string; // ISO date string
       updatedAt: string; // ISO date string
     };
-    zone: string;
+    zone: {
+      name : string
+    };
     name: string;
     images: string[];
     rentalImages: string[];

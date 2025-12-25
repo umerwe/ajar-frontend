@@ -19,7 +19,7 @@ const ListingItems = () => {
   const id = params?.id as string;
 
   const { data: listingData, isLoading, isError } = useGetMarketplaceListing(id);
-
+  
   return (
     <div>
       <Header title="Rental Details" />

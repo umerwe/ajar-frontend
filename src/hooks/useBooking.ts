@@ -87,7 +87,7 @@ export function useExtendRental() {
   return useMutation({
     mutationFn: extendRental,
     onSuccess: () => {
-      toast({ description: "Booking extend successfully" })
+      toast({ description: "Extension request created successfully" })
 
     },
     onError: (error) => {
