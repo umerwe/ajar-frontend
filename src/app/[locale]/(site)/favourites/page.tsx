@@ -19,6 +19,8 @@ const FavouritesPage = () => {
     return <Error />
   }
 
+  console.log(listings)
+
   return (
     <div>
       <Header title="My Favourites" />

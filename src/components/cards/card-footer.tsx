@@ -66,7 +66,7 @@ const CardBottom = ({ property, bookingId, totalPrice, isApproved, dates }: Card
       <CardFooter className="pb-2 pt-0 flex justify-between items-center mt-auto w-full">
         <div className="flex flex-col">
           <span className="text-xs min-[500px]:text-sm 2xl:text-base font-semibold text-gray-900 tracking-tight truncate leading-tight">
-            ${(totalPrice ? totalPrice : property.price + property.adminFee + property.tax || 0).toFixed(2)}/
+            ${(totalPrice ? totalPrice : property?.price + property?.adminFee + property?.tax || 0).toFixed(2)}/
           </span>
           <span className="text-[10px] sm:text-xs text-gray-custom font-medium leading-none">{property?.priceUnit}</span>
         </div>
@@ -118,10 +118,12 @@ const CardBottom = ({ property, bookingId, totalPrice, isApproved, dates }: Card
         <div className="pb-2 flex flex-col gap-3">
           <div className="flex items-center text-[12px]">
             <Calendar className="w-4 h-4 mr-1 text-[#8fa3bf]" strokeWidth={1.5} />
-            <span className="text-[#90A3BF] mr-2">Dates:</span>
-            <span className="text-[#858585] truncate">
-              {formatDate(dates?.checkIn)} - {formatDate(dates?.checkOut)}
-            </span>
+            <div className="pt-0.5">
+              <span className="text-[#90A3BF] mr-2">Dates:</span>
+              <span className="text-[#858585] truncate">
+                {formatDate(dates?.checkIn)} - {formatDate(dates?.checkOut)}
+              </span>
+            </div>
           </div>
         </div>
       }
