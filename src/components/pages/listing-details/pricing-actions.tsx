@@ -25,6 +25,7 @@ import { useDeductWallet } from "@/hooks/useWallet"
 
 const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const { mutate, isPending } = useSubmitPin();
+  console.log(property)
   const { mutate: sendExtendRental, isPending: isExtendRentalPending } = useExtendRental();
   const { mutate: updateStatus, isPending: isStatusLoading } = useUpdateBookingStatus();
   const { mutate: deductWallet, isPending: isDeductPending } = useDeductWallet();
@@ -39,7 +40,16 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const [isExtendOpen, setIsExtendOpen] = useState(false);
 
   const router = useRouter()
-  const { label, link } = getActionDetails(bookingData?.status)
+  const { label, link } = getActionDetails(bookingData?.status);
+
+  // Price when NO booking exists (use property data)
+  const rawPrice = property?.price || 0;
+  const adminFeeNoBooking = property?.adminFee || 0;
+  const taxNoBooking = property?.tax || 0;
+
+  const totalNoBookingPrice =
+    rawPrice + adminFeeNoBooking + taxNoBooking;
+
 
   // Price Calculation
   const priceDetails = bookingData?.priceDetails
@@ -153,36 +163,37 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
         );
 
       case "Proceed to pay":
-      case "Approved":
-        if (bookingData.paymentStatus === "succeeded") {
-          return (
-            <Button
-              onClick={() => setIsPinOpen(true)}
-              disabled={loadingPayment}
-              variant="destructive"
-            >
-              {loadingPayment ? (
-                <Loader />
-              ) : (
-                "Submit Pin"
-              )}
-            </Button>
-          );
-        } else {
-          return (
-            <Button
-              onClick={handlePaymentClick}
-              disabled={isDeductPending}
-              variant="destructive"
-            >
-              {isDeductPending ? (
-                <Loader />
-              ) : (
-                label === "Approved" ? "Pay Now" : label
-              )}
-            </Button>
-          );
-        }
+        return (
+          <Button
+            onClick={() => setIsPinOpen(true)}
+            disabled={loadingPayment}
+            variant="destructive"
+          >
+            {loadingPayment ? (
+              <Loader />
+            ) : (
+              "Submit Pin"
+            )}
+          </Button>
+        );
+      // // if (bookingData.paymentStatus === "succeeded") {
+
+      // // } 
+      // // else {
+      // //   return (
+      // //     <Button
+      // //       onClick={handlePaymentClick}
+      // //       disabled={isDeductPending}
+      // //       variant="destructive"
+      // //     >
+      // //       {isDeductPending ? (
+      // //         <Loader />
+      // //       ) : (
+      // //         label === "Approved" ? "Pay Now" : label
+      // //       )}
+      // //     </Button>
+      // //   );
+      // }
 
       default:
         return (
@@ -247,10 +258,48 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
           </HoverCard>
         </div>
       ) : (
-        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
-          <span className="text-xl sm:text-2xl font-semibold border-b border-dotted border-gray-400 pb-1">
-            ${(property?.price as number || 0).toFixed(2)}
-          </span>
+        <div className="flex flex-col gap-1">
+          <HoverCard open={isPriceOpen} onOpenChange={setIsPriceOpen}>
+            <HoverCardTrigger asChild>
+              <div
+                className="flex items-center gap-2 cursor-pointer group"
+                onClick={() => setIsPriceOpen(!isPriceOpen)}
+              >
+                <span className="text-xl sm:text-2xl font-semibold border-b border-dotted border-gray-400 pb-1 group-hover:border-gray-800 transition-colors">
+                  ${totalNoBookingPrice.toFixed(2)}
+                </span>
+                <Info className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+              </div>
+            </HoverCardTrigger>
+
+            <HoverCardContent className="w-72 p-4" align="start">
+              <div className="space-y-2">
+                <h4 className="font-medium leading-none mb-3">
+                  Price Breakdown
+                </h4>
+
+                <div className="flex justify-between text-sm text-muted-foreground">
+                  <span>Base Price</span>
+                  <span>${rawPrice.toFixed(2)}</span>
+                </div>
+
+                <div className="flex justify-between text-sm text-muted-foreground">
+                  <span>Admin Fee</span>
+                  <span>${adminFeeNoBooking.toFixed(2)}</span>
+                </div>
+
+                <div className="flex justify-between text-sm text-muted-foreground">
+                  <span>Tax</span>
+                  <span>${taxNoBooking.toFixed(2)}</span>
+                </div>
+
+                <div className="border-t pt-2 mt-2 flex justify-between font-semibold">
+                  <span>Total</span>
+                  <span>${totalNoBookingPrice.toFixed(2)}</span>
+                </div>
+              </div>
+            </HoverCardContent>
+          </HoverCard>
         </div>
       )}
 

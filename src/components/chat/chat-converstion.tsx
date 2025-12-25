@@ -1,19 +1,20 @@
 "use client"
 
-import { useGetMessages } from "@/hooks/useChat"
+import { useGetMessages, useSendMessage } from "@/hooks/useChat"
 import { socket } from "@/lib/socket"
 import Image from "next/image"
-import Link from "next/link" // Imported Link
+import Link from "next/link"
 import { useUser } from "@/hooks/useAuth"
 import { useEffect, useRef, useState, useCallback } from "react"
 import { capitalizeWords } from "@/utils/capitalizeWords"
 import SendMessage from "./send-message"
 import SkeletonLoader from "../common/skeleton-loader"
 import type { Message, MessagePayload } from "@/types/chat"
-import { MessageSquare, ArrowLeft } from "lucide-react" // Imported ArrowLeft
+import { MessageSquare, ArrowLeft } from "lucide-react"
 
 const ChatConversation = ({ id: chatId }: { id?: string }) => {
-  const { data: user } = useUser()
+  const { data: user } = useUser();
+  const { mutate } = useSendMessage();
   const [messages, setMessages] = useState<Message[]>([])
   const [currentPage, setCurrentPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
@@ -25,7 +26,16 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
   const prevScrollHeightRef = useRef<number>(0)
   const isLoadingOldMessagesRef = useRef(false)
   const initialLoadRef = useRef(true)
-  const lastPageLoadedRef = useRef(0)
+  const lastPageLoadedRef = useRef(0);
+
+  const scrollToBottom = () => {
+    requestAnimationFrame(() => {
+      if (scrollRef.current) {
+        scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+      }
+    })
+  }
+
 
   useEffect(() => {
     if (data?.messages?.length) {
@@ -132,13 +142,32 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
 
   const handleSend = ({ text, fileUrls }: { text?: string; fileUrls?: string[] }) => {
     if (!user || !chatId || !data?.receiver?._id) return
+
     const payload: MessagePayload = {
       chatId,
       receiver: data.receiver._id,
     }
     if (text) payload.text = text
     if (fileUrls && fileUrls.length > 0) payload.attachments = fileUrls
-    socket?.emit("message:send", payload)
+    scrollToBottom()
+    // Logic: If socket is not connected, show message immediately then mutate
+    if (!socket?.connected) {
+      const optimisticMessage: Message = {
+        _id: `temp-${Date.now()}`, // Temporary ID
+        chatId,
+        text: text || "",
+        attachments: fileUrls || [],
+        sender: user, // Current logged-in user
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      }
+
+      setMessages((prev) => [...prev, optimisticMessage]);
+      mutate(payload);
+      return;
+    }
+
+    socket.emit("message:send", payload)
   }
 
   const getMessageType = (msg: Message) => {
@@ -229,9 +258,10 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
                   </div>
 
                   <div className={`flex flex-col ${isSent ? "items-end" : "items-start"}`}>
-                    {!isSent && (
-                      <div className="text-[10px] sm:text-xs font-medium text-gray-500 mb-1 px-1">{capitalizeWords(sender.name)}</div>
-                    )}
+                    <div className="text-[10px] sm:text-xs font-medium text-gray-500 mb-1 px-1">
+                      {/* Show "You" if isSent is true */}
+                      {isSent ? "You" : capitalizeWords(sender.name)}
+                    </div>
 
                     <div
                       className={`rounded-2xl px-3 py-2 sm:px-4 sm:py-2 shadow-sm ${isSent
@@ -244,7 +274,7 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
                           {msg.attachments.map((fileUrl, idx) => (
                             <div key={idx} className="relative">
                               <Image
-                                src={`${process.env.NEXT_PUBLIC_API_BASE_URL}${fileUrl}`}
+                                src={fileUrl.startsWith('/') ? `${process.env.NEXT_PUBLIC_API_BASE_URL}${fileUrl}` : fileUrl}
                                 alt="attachment"
                                 width={200}
                                 height={200}
@@ -285,7 +315,6 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
           </div>
         )}
       </div>
-
       <SendMessage onSend={handleSend} isSending={false} chatId={chatId} receiverId={data?.receiver?._id} />
     </div>
   )

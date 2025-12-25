@@ -41,5 +41,7 @@ export interface Listing  {
     documents: Document[];
     createdAt: string; 
     updatedAt: string; 
+    adminFee : number;
+    tax : number;
     __v: number;
   };

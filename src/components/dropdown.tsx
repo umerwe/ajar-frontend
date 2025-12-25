@@ -19,6 +19,12 @@ const NotificationContent = () => {
     <div className="absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50 md:w-80">
       <div className="px-4 py-3 border-b border-gray-100 flex justify-between items-center">
         <p className="text-base font-semibold text-gray-900">Notifications</p>
+        <Link
+          href="/notifications"
+          className="text-xs text-aqua cursor-pointer"
+        >
+          Show All
+        </Link>
       </div>
 
       <div className="max-h-80 overflow-y-auto">
@@ -31,7 +37,7 @@ const NotificationContent = () => {
           notifications.map((item: Notification) => (
             <Link
               key={item._id}
-              href={`/dashboard/${item.data.type}/${item.data.listingId}`}
+              href={`#`}
               className={`block px-4 py-3 transition-colors duration-150 ${item.isRead ? "text-gray-700 hover:bg-gray-50" : "bg-green-50/50 text-gray-900 hover:bg-aqua/10"
                 }`}
             >
@@ -88,7 +94,7 @@ export default function ProfileDropdown() {
     return (
       <div
         style={imageWrapperStyle}
-        className="flex items-center justify-center rounded-full bg-aqua text-white text-sm font-semibold flex-shrink-0"
+        className="flex items-center justify-center rounded-full bg-aqua text-white text-xs font-semibold flex-shrink-0"
       >
         {getInitial(user?.name)}
       </div>

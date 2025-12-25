@@ -31,7 +31,7 @@ export interface Message {
     name: string;
     profilePicture?: string;
   };
-  attachments?: string[];
+  attachments?: string[] | undefined;
   text: string;
   createdAt: string;
   updatedAt?: string;

@@ -369,7 +369,7 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: 
         <>
           {Array.from({ length: count }).map((_, i) => (
             <div key={i} className="flex items-center gap-3 p-3 animate-pulse overflow-y-hidden">
-              <div className="w-12 h-12 rounded-full bg-gray-200"></div>
+              <div className="w-10 h-10 rounded-full bg-gray-200"></div>
               <div className="flex-1 min-w-0">
                 <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
                 <div className="h-3 bg-gray-200 rounded w-1/3"></div>
@@ -533,10 +533,10 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: 
         </div>
       )
 
-      case "wallet":
+    case "wallet":
       return (
         <div className="animate-pulse">
-          
+
           <div className="max-w-md mx-auto border py-8 rounded-md">
             {/* Balance Section */}
             <section className="flex flex-col items-center px-4">
@@ -582,25 +582,75 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: 
 
     case "transactions":
       return (
-          <div className="min-h-screen bg-white max-w-md mx-auto border rounded-md py-6 px-5">
-            <div className="space-y-6">
-              {Array.from({ length: count }).map((_, i) => (
-                <div key={i} className="flex items-center justify-between py-2">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-gray-200 rounded-full" />
-                    <div className="space-y-2">
-                      <div className="h-4 w-32 bg-gray-200 rounded" />
-                      <div className="h-3 w-24 bg-gray-200 rounded" />
-                    </div>
+        <div className="min-h-screen bg-white max-w-md mx-auto border rounded-md py-6 px-5">
+          <div className="space-y-6">
+            {Array.from({ length: count }).map((_, i) => (
+              <div key={i} className="flex items-center justify-between py-2">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-gray-200 rounded-full" />
+                  <div className="space-y-2">
+                    <div className="h-4 w-32 bg-gray-200 rounded" />
+                    <div className="h-3 w-24 bg-gray-200 rounded" />
                   </div>
-                  <div className="h-5 w-14 bg-gray-200 rounded" />
                 </div>
-              ))}
-            </div>
+                <div className="h-5 w-14 bg-gray-200 rounded" />
+              </div>
+            ))}
           </div>
+        </div>
       );
 
-    default: <div></div>;
+    case "bank-accounts":
+  return (
+    <div className="max-w-2xl mx-auto space-y-4">
+      {Array.from({ length: 3 }).map((_, i) => (
+        <Card
+          key={i}
+          className="border bg-white shadow-sm rounded-2xl overflow-hidden"
+        >
+          <CardContent className="p-6">
+            {/* Header */}
+            <div className="flex justify-between items-start">
+              <div className="flex gap-4">
+                {/* Icon */}
+                <div className="pt-1">
+                  <Skeleton className="w-5 h-5 rounded bg-slate-200" />
+                </div>
+
+                {/* Bank + Account Name */}
+                <div className="space-y-1.5">
+                  <Skeleton className="h-5 w-36 rounded bg-slate-200" />
+                  <Skeleton className="h-4 w-28 rounded bg-slate-200" />
+                </div>
+              </div>
+
+              {/* Action buttons */}
+              <div className="flex gap-1">
+                <Skeleton className="w-9 h-9 rounded-full bg-slate-200" />
+                <Skeleton className="w-9 h-9 rounded-full bg-slate-200" />
+              </div>
+            </div>
+
+            {/* Divider + Details */}
+            <div className="mt-6 space-y-3 border-t pt-5 border-slate-50">
+              <div className="flex items-center">
+                <Skeleton className="h-3 w-36 mr-4 rounded bg-slate-200" />
+                <Skeleton className="h-3 w-44 rounded bg-slate-200" />
+              </div>
+
+              <div className="flex items-center">
+                <Skeleton className="h-3 w-36 mr-4 rounded bg-slate-200" />
+                <Skeleton className="h-3 w-44 rounded bg-slate-200" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+
+    
+      default: <div></div>;
 
   }
 };

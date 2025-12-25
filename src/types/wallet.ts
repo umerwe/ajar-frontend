@@ -10,3 +10,11 @@ export interface Transaction {
     requestedAt: string;
     __v: number;
 }
+
+export interface BankAccount {
+    _id: string;
+    bankName: string;
+    accountName: string;
+    accountNumber: string;
+    ibanNumber: string;
+}

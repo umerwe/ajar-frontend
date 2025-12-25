@@ -12,6 +12,7 @@ export async function getChatList() {
 }
 
 export async function sendMessage(payload: MessagePayload) {
+  console.log("called")
   const { data } = await api.post("/api/chats/send-message", payload);
   return data.data;
 }

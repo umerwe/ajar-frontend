@@ -91,12 +91,12 @@ const ChatList = ({ id }: { id?: string }) => {
                                         alt={participant.name}
                                         width={256}
                                         height={256}
-                                        className="w-12 h-12 rounded-full object-cover"
+                                        className="w-10 h-10 rounded-full object-cover"
                                     />
                                 ) : (
                                     <div
                                         className={clsx(
-                                            "w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold text-lg",
+                                            "w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold text-base",
                                             "bg-aqua"
                                         )}
                                     >

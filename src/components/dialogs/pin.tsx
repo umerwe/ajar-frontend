@@ -32,7 +32,7 @@ export const PinDialog = ({ open, onOpenChange, onSubmit, amount, isPending }: {
         <DialogHeader>
           <DialogTitle>Enter PIN for Payment</DialogTitle>
           <DialogDescription>
-            Enter the PIN sent to your email to authorize the payment of ${Math.round(amount)}.00.
+            Enter the PIN sent to leaser email to authorize the payment of ${Math.round(amount)}.00.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
