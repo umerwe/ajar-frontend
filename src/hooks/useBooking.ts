@@ -47,7 +47,7 @@ export function useCreateBooking() {
 
 export function useUpdateBookingStatus() {
   const router = useRouter();
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: updateBookingStatus,
     onSuccess: () => {
@@ -67,11 +67,15 @@ export function useUpdateBookingStatus() {
 }
 
 export function useSubmitPin() {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: submitPin,
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["bookings"] })
       toast({ description: "PIN submitted successfully" })
-
+      router.push('/booking/in-progress')
     },
     onError: (error) => {
       const err = error as AxiosError<ErrorResponse>;
