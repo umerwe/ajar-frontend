@@ -38,7 +38,7 @@ const MainCard = ({ listings, showRemoveButton = false, type, isApproved, isHome
               router.push(path);
             }}
             key={index}
-            className="w-full mx-auto border-0 bg-white shadow-sm hover:shadow-md transition-shadow duration-200 pb-0 overflow-hidden"
+            className="w-full mx-auto border-0 bg-white shadow-sm hover:shadow-md transition-shadow duration-200 pb-0 overflow-hidden cursor-pointer"
           >
             <div className="flex flex-col h-full">
 
