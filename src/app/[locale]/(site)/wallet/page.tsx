@@ -54,7 +54,15 @@ const WalletPage = () => {
 
     const balance = data?.balance || 0;
 
-    const transactions: Transaction[] = data?.transactions?.slice(0, 6) || [];
+    const transactions: Transaction[] =
+        data?.transactions
+            ?.filter(
+                (t: Transaction) => t.status === "succeeded" || t.status === "failed"
+            )
+            .slice(0, 6) || [];
+
+    console.log("Filtered transactions:", transactions);
+
 
     const onSubmit = async (data: TopUpFormData) => {
         if (!data.amount) return
@@ -190,17 +198,25 @@ const WalletPage = () => {
                                                     <Wallet className="w-6 h-6 text-[#00D1A0]" />
                                                 </div>
                                                 <div>
-                                                    <h3 className="font-medium text-slate-800 text-base">
+                                                    {/* <h3 className="font-medium text-slate-800 text-base">
                                                         {tx.type === 'credit' ? 'Wallet Credited' : 'Wallet Debited'}
+                                                    </h3> */}
+                                                    <h3 className="font-medium text-slate-800 text-base">
+                                                        Wallet Credited
                                                     </h3>
                                                     <p className="text-xs text-slate-400 font-medium">
                                                         {formatDate(tx.createdAt)}
                                                     </p>
                                                 </div>
                                             </div>
-                                            <div className="text-right">
-                                                <span className={`font-medium text-base ${tx.type === 'credit' ? 'text-slate-900' : 'text-red-500'}`}>
+                                            {/* <div className="text-right">
+                                                <span className={`font-medium text-base  ${tx.type === 'credit' ? 'text-slate-900' : 'text-red-500'}`}>
                                                     {tx.type === 'credit' ? '+' : '-'}${tx.amount}
+                                                </span>
+                                            </div> */}
+                                            <div className="text-right">
+                                                <span className={`font-medium text-base text-slate-900`}>
+                                                    +${tx.amount}
                                                 </span>
                                             </div>
                                         </div>
