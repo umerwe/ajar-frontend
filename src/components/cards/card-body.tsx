@@ -4,6 +4,13 @@ import { capitalizeWords } from "@/utils/capitalizeWords";
 import { getStatusStyles } from "@/constants/booking";
 import { Star } from "lucide-react";
 
+export const formatStatusText = (status: string) => {
+  return status
+    .replace(/_/g, " ")
+    .toLowerCase()
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+};
+
 type CardBodyProps = {
   property: Listing;
   bookingStatus?: string;
@@ -23,7 +30,7 @@ const CardBody = ({ property, bookingStatus }: CardBodyProps) => {
               bookingStatus
             )}`}
           >
-            {capitalizeWords(bookingStatus)}
+            {formatStatusText(bookingStatus)}
           </span>
         ) : (
           <div className="flex items-center gap-1 text-xs">
