@@ -100,7 +100,7 @@ const ChatList = ({ id }: { id?: string }) => {
                                             "bg-aqua"
                                         )}
                                     >
-                                        {participant?.name.charAt(0).toUpperCase()}
+                                        {participant?.name?.charAt(0).toUpperCase()}
                                     </div>
                                 )}
 
