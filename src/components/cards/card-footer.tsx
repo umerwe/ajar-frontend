@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Loader2, Calendar, Users, BedDouble } from "lucide-react" // Added icons
+import { Loader2, Calendar } from "lucide-react"
 import { CardFooter } from "../ui/card"
 import { Button } from "../ui/button"
 import { toast } from "@/components/ui/toast"

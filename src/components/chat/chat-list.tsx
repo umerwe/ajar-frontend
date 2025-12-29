@@ -45,7 +45,7 @@ const ChatList = ({ id }: { id?: string }) => {
 
     return (
         <div className="bg-white border border-gray-200 px-2 flex flex-col h-full">
-            <div className="pt-4 md:pt-6">
+            <div className="pt-4 md:pt-6 pl-2">
                 <Header title="Chat" />
             </div>
 
@@ -96,7 +96,7 @@ const ChatList = ({ id }: { id?: string }) => {
                                 ) : (
                                     <div
                                         className={clsx(
-                                            "w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold text-base",
+                                            "w-10 h-10 rounded-full flex items-center justify-center text-white text-base",
                                             "bg-aqua"
                                         )}
                                     >
