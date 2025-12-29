@@ -8,7 +8,7 @@ import { useBooking } from "@/hooks/useBooking";
 import { Booking } from "@/types/booking";
 import { Listing } from "@/types/listing";
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 8;
 
 const Status = ({ status }: { status: string }) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -36,7 +36,7 @@ const Status = ({ status }: { status: string }) => {
   }, []);
 
   if (isLoading) {
-    return <SkeletonLoader type="booking" />;
+    return <SkeletonLoader type="booking" count={ITEMS_PER_PAGE} />;
   }
 
   if (totalItems === 0 && !isLoading) {
