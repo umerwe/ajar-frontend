@@ -42,6 +42,12 @@ const HostInfo = ({ property }: { property: Listing }) => {
     const hostName = property?.leaser?.name || "";
     const hostInitial = hostName.charAt(0).toUpperCase();
 
+    const profilePicture = property?.leaser?.profilePicture;
+    const imageSrc =
+        profilePicture?.startsWith("/uploads/")
+            ? `${process.env.NEXT_PUBLIC_API_BASE_URL}${profilePicture}`
+            : profilePicture
+
     return (
         <div className="mt-3">
             <div className="flex items-center mb-2">
@@ -53,7 +59,7 @@ const HostInfo = ({ property }: { property: Listing }) => {
                     <div className="w-12 h-12 rounded-full overflow-hidden shrink-0">
                         {property.leaser.profilePicture ? (
                             <Image
-                                src={`${process.env.NEXT_PUBLIC_API_BASE_URL}${property.leaser.profilePicture}`}
+                                src={imageSrc}
                                 alt={hostName || "Host profile image"}
                                 width={100}
                                 height={100}
