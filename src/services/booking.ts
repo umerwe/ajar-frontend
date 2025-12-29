@@ -5,6 +5,7 @@ export async function getBooking(status?: string, currentPage?: number) {
   const params = new URLSearchParams();
 
   params.append("role", "renter");
+  params.append("limit", "8");
 
   if (status) params.append("status", status);
   if (currentPage) params.append("page", currentPage.toString());
