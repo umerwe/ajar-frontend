@@ -1,5 +1,7 @@
 type ErrorResponse = {
   message: string;
+  requiredBalance?: number;
+  currentBalance?: number;
 };
 
 type ProviderProps = {

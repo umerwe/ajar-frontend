@@ -36,11 +36,19 @@ export function useCreateBooking() {
     },
     onError: (error) => {
       const err = error as AxiosError<ErrorResponse>;
-      toast({
-        title: "Booking Failed",
-        description: err.response?.data?.message || "Something went wrong.",
-        variant: "destructive",
-      });
+
+      const data = err.response?.data;
+
+      if (
+        data?.requiredBalance !== undefined &&
+        data?.currentBalance !== undefined
+      ) {
+        toast({
+          title: "Booking Failed",
+          description: `Your wallet balance is $${data.currentBalance.toFixed(2)}. You need at least $${data.requiredBalance.toFixed(2)} to create this booking. Please add funds and try again.`,
+          variant: "destructive",
+        });
+      }
     },
   });
 }
@@ -76,7 +84,7 @@ export function useSubmitPin() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["bookings"] })
       toast({ description: "PIN submitted successfully" })
-      router.push('/booking/in-progress')
+      router.push('/booking/in_progress')
     },
     onError: (error) => {
       const err = error as AxiosError<ErrorResponse>;
@@ -97,10 +105,19 @@ export function useExtendRental() {
     },
     onError: (error) => {
       const err = error as AxiosError<ErrorResponse>;
-      toast({
-        description: err.response?.data?.message || "Something went wrong.",
-        variant: "destructive",
-      });
+      const data = err.response?.data;
+
+      if (
+        data?.requiredBalance !== undefined &&
+        data?.currentBalance !== undefined
+      ) {
+        toast({
+          title: "Insufficient Wallet Balance",
+          description: `Your wallet balance is $${data.currentBalance.toFixed(2)}. You need at least $${data.requiredBalance.toFixed(2)} to request an extension. Please add funds and try again.`,
+          variant: "destructive",
+        });
+        return;
+      }
     },
   });
 }

@@ -32,8 +32,7 @@ export const ExtensionDialog = ({
     const handleSubmit = () => {
         if (!date) return
         const isoDate = new Date(date).toISOString()
-        onSubmit(isoDate)
-        setDate("");
+        onSubmit(isoDate);
     }
 
     return (
