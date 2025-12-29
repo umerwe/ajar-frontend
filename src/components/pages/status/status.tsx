@@ -27,7 +27,7 @@ const Status = ({ status }: { status: string }) => {
     bookingId: x._id,
     totalPrice: x.priceDetails.totalPrice,
     bookingStatus: x.status,
-    dates : x.dates
+    dates: x.dates
   }));
 
   const handlePageChange = useCallback((page: number) => {
@@ -50,7 +50,6 @@ const Status = ({ status }: { status: string }) => {
       <MainCard
         listings={listings}
         type="booking"
-        isApproved={status === "approved"}
       />
 
       {totalPages > 1 && (

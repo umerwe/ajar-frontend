@@ -9,11 +9,10 @@ interface MainCardProps {
   listings: (Listing & { bookingId?: string; totalPrice?: number, bookingStatus?: string, dates?: { checkIn: string; checkOut: string } })[];
   showRemoveButton?: boolean;
   type?: "booking" | "listing" | "filter"
-  isApproved?: boolean;
   isHome?: boolean
 }
 
-const MainCard = ({ listings, showRemoveButton = false, type, isApproved, isHome }: MainCardProps) => {
+const MainCard = ({ listings, showRemoveButton = false, type, isHome }: MainCardProps) => {
   const router = useRouter();
 
   return (
@@ -60,7 +59,6 @@ const MainCard = ({ listings, showRemoveButton = false, type, isApproved, isHome
                   bookingId={property.bookingId}
                   totalPrice={property?.totalPrice}
                   dates={property?.dates}
-                  isApproved={isApproved}
                 />
               </div>
             </div>

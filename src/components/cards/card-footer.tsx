@@ -14,14 +14,13 @@ interface CardBottomProps {
   property: Listing
   bookingId?: string
   totalPrice?: number
-  isApproved?: boolean
   dates?: {
     checkIn: string
     checkOut: string
   }
 }
 
-const CardBottom = ({ property, bookingId, totalPrice, isApproved, dates }: CardBottomProps) => {
+const CardBottom = ({ property, bookingId, totalPrice, dates }: CardBottomProps) => {
   const [isPaymentOpen, setIsPaymentOpen] = useState(false)
   const [loadingPayment, setLoadingPayment] = useState(false)
   const [clientSecret, setClientSecret] = useState<string | null>(null);
@@ -71,46 +70,47 @@ const CardBottom = ({ property, bookingId, totalPrice, isApproved, dates }: Card
           <span className="text-[10px] sm:text-xs text-gray-custom font-medium leading-none">{property?.priceUnit}</span>
         </div>
 
-        {isApproved ? (
-          <Button
-            variant="outline"
-            className={buttonStyles}
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              handlePayClick();
-            }}
-            disabled={loadingPayment}
-          >
-            {loadingPayment ? (
-              <Loader2 className="h-3 w-3 animate-spin" />
-            ) : (
-              "Pay Now"
-            )}
-          </Button>
-        ) : (
-          !dates ?
-            <Link
-              href={
-                bookingId
-                  ? `/booking/details/${bookingId}`
-                  : `/listing/${property.subCategory?._id}/${property._id}`
-              }
-              onClick={(e) => {
-                e.stopPropagation();
-                scrollToTop();
-              }}
-            >
-              <Button
-                variant="outline"
-                className={buttonStyles}
+        {
+          // isApproved ? (
+          //   <Button
+          //     variant="outline"
+          //     className={buttonStyles}
+          //     onClick={(e) => {
+          //       e.preventDefault();
+          //       e.stopPropagation();
+          //       handlePayClick();
+          //     }}
+          //     disabled={loadingPayment}
+          //   >
+          //     {loadingPayment ? (
+          //       <Loader2 className="h-3 w-3 animate-spin" />
+          //     ) : (
+          //       "Pay Now"
+          //     )}
+          //   </Button>
+          // ) : (
+            !dates ?
+              <Link
+                href={
+                  bookingId
+                    ? `/booking/details/${bookingId}`
+                    : `/listing/${property.subCategory?._id}/${property._id}`
+                }
+                onClick={(e) => {
+                  e.stopPropagation();
+                  scrollToTop();
+                }}
               >
-                View Details
-              </Button>
-            </Link>
-            :
-            null
-        )}
+                <Button
+                  variant="outline"
+                  className={buttonStyles}
+                >
+                  View Details
+                </Button>
+              </Link>
+              :
+              null
+          }
       </CardFooter>
 
       {
