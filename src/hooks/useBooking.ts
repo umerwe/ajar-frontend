@@ -48,6 +48,13 @@ export function useCreateBooking() {
           description: `Your wallet balance is $${data.currentBalance.toFixed(2)}. You need at least $${data.requiredBalance.toFixed(2)} to create this booking. Please add funds and try again.`,
           variant: "destructive",
         });
+
+      } else {
+        toast({
+          title: "Booking Failed",
+          description: data?.message || "Something went wrong.",
+          variant: "destructive",
+        });
       }
     },
   });
@@ -116,7 +123,13 @@ export function useExtendRental() {
           description: `Your wallet balance is $${data.currentBalance.toFixed(2)}. You need at least $${data.requiredBalance.toFixed(2)} to request an extension. Please add funds and try again.`,
           variant: "destructive",
         });
-        return;
+      }
+      else {
+        toast({
+          title: "Extension Request Failed",
+          description: data?.message || "Something went wrong.",
+          variant: "destructive",
+        });
       }
     },
   });
