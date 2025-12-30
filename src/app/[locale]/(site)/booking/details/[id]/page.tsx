@@ -10,20 +10,23 @@ import { useParams } from "next/navigation"
 import ExploreArea from "@/components/pages/listing-details/explore-area"
 import AboutListing from "@/components/pages/listing-details/about-listing"
 import SkeletonLoader from "@/components/common/skeleton-loader"
-import Error from "@/components/common/error"
 import Document from "@/components/pages/listing-details/document"
 import { useUser } from "@/hooks/useAuth"
 import { useGetBookingId } from "@/hooks/useBooking"
+import NotFound from "@/components/common/not-found"
 
 const BookingDetails = () => {
   const params = useParams()
   const category_id = params?.category_id as string
   const id = params?.id as string
 
-  const { data, isLoading, isError } = useGetBookingId(id);
-  
+  const { data, isLoading } = useGetBookingId(id);
+
   const listingData = data?.marketplaceListingId;
   const { data: user } = useUser();
+
+  const hasValidListing = !listingData?._id;
+
 
   return (
     <div>
@@ -37,8 +40,8 @@ const BookingDetails = () => {
         <div className="mt-6">
           <SkeletonLoader variant="listing" />
         </div>
-      ) : isError ? (
-        <Error />
+      ) : hasValidListing ? (
+        <NotFound type="bookingDetails" />
       ) : (
         <>
           <ImageGalleryLayout

@@ -11,15 +11,15 @@ import { useGetMarketplaceListing } from "@/hooks/useListing"
 import ExploreArea from "@/components/pages/listing-details/explore-area"
 import AboutListing from "@/components/pages/listing-details/about-listing"
 import SkeletonLoader from "@/components/common/skeleton-loader"
-import Error from "@/components/common/error"
+import NotFound from "@/components/common/not-found"
 
 const ListingItems = () => {
   const params = useParams()
   const category_id = params?.category_id as string
   const id = params?.id as string;
 
-  const { data: listingData, isLoading, isError } = useGetMarketplaceListing(id);
-  
+  const { data: listingData, isLoading } = useGetMarketplaceListing(id);
+  const hasValidListing = !listingData?._id;
   return (
     <div>
       <Header title="Rental Details" />
@@ -28,8 +28,8 @@ const ListingItems = () => {
         <div className="mt-4 md:mt-6">
           <SkeletonLoader variant="listing" />
         </div>
-      ) : isError ? (
-        <Error />
+      ) : hasValidListing ? (
+        <NotFound type="listingData" />
       ) : (
         <>
           <ImageGalleryLayout
