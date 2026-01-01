@@ -21,11 +21,11 @@ const Status = ({ status }: { status: string }) => {
   const limit = data?.data?.limit || ITEMS_PER_PAGE;
 
   const totalPages = Math.ceil(totalItems / limit);
-
+  console.log("Data:", data);
   const listings = bookings.map((x: Booking) => ({
     ...(x.marketplaceListingId as Listing),
     bookingId: x._id,
-    totalPrice: x.priceDetails.totalPrice,
+    totalPrice: (x.marketplaceListingId as Listing)?.price || 0,
     bookingStatus: x.status,
     dates: x.dates
   }));

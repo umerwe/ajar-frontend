@@ -9,7 +9,6 @@ import NotFound from "@/components/common/not-found"
 
 const FavouritesPage = () => {
   const { data, isLoading, isError } = useGetFavourite()
-
   const listings =
     data?.favourites
       ?.map((favourite: Favourite) => favourite.listing)
@@ -18,8 +17,6 @@ const FavouritesPage = () => {
   if (isError) {
     return <Error />
   }
-
-  console.log(listings)
 
   return (
     <div>

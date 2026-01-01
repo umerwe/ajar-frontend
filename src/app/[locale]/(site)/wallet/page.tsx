@@ -110,7 +110,7 @@ const WalletPage = () => {
                     <SkeletonLoader
                         variant="wallet"
                     /> :
-                    <div className=" bg-white max-w-md mx-auto font-sans text-slate-900 border rounded-md py-8">
+                    <div className=" bg-white max-w-md mx-auto font-sans text-slate-900 border rounded-md py-8 my-6 md:my-10">
                         {/* Balance Section */}
                         <section className="text-center px-4">
                             <p className="text-gray-900 font-medium mb-2">Your Balance</p>

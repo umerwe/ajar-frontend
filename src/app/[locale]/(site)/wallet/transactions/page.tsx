@@ -33,7 +33,7 @@ const TransactionsPage = () => {
                     <SkeletonLoader
                         variant="transactions"
                     /> :
-                    <div className=" bg-white max-w-md mx-auto font-sans text-slate-900 border rounded-md py-6 px-5">
+                    <div className=" bg-white sm:max-w-md sm:mx-auto font-sans text-slate-900 border rounded-md py-6 px-5 my-6 md:my-10">
                         <div className="space-y-6">
                             {transactions.length > 0 ? (
                                 transactions.map((tx) => (

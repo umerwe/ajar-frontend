@@ -17,6 +17,7 @@ type CardBodyProps = {
 };
 
 const CardBody = ({ property, bookingStatus }: CardBodyProps) => {
+  console.log(property)
   return (
     <CardContent className="-mt-1">
       <div className="flex items-center justify-between">
