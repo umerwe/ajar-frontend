@@ -12,11 +12,14 @@ import { timeAgo } from "@/utils/timeAgo";
 import { useNotification } from "@/hooks/useNotification";
 import { Notification } from "@/types/notification";
 
-const NotificationContent = () => {
+const NotificationContent = (props: React.HTMLAttributes<HTMLDivElement>) => {
   const { data: notifications, isLoading } = useNotification();
 
   return (
-    <div className="absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50 md:w-80">
+    <div
+      {...props} // ✅ THIS IS THE FIX: allow parent Dropdown to auto-close
+      className="absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50 md:w-80"
+    >
       <div className="px-4 py-3 border-b border-gray-100 flex justify-between items-center">
         <p className="text-base font-semibold text-gray-900">Notifications</p>
         <Link
@@ -37,12 +40,17 @@ const NotificationContent = () => {
           notifications.map((item: Notification) => (
             <Link
               key={item._id}
-              href={`#`}
-              className={`block px-4 py-3 transition-colors duration-150 ${item.isRead ? "text-gray-700 hover:bg-gray-50" : "bg-green-50/50 text-gray-900 hover:bg-aqua/10"
-                }`}
+              href="#"
+              className={`block px-4 py-3 transition-colors duration-150 ${
+                item.isRead
+                  ? "text-gray-700 hover:bg-gray-50"
+                  : "bg-green-50/50 text-gray-900 hover:bg-aqua/10"
+              }`}
             >
               <p className="text-sm font-medium leading-snug">{item.title}</p>
-              <p className="text-xs text-gray-500 mt-1 line-clamp-2">{item.message}</p>
+              <p className="text-xs text-gray-500 mt-1 line-clamp-2">
+                {item.message}
+              </p>
               <div className="flex items-center text-xs text-gray-400 mt-1">
                 <ClockIcon className="h-3 w-3 mr-1" />
                 {timeAgo(item?.createdAt?.toString() || "")}
@@ -62,16 +70,11 @@ export default function ProfileDropdown() {
 
   const getInitial = (name = "") => name.charAt(0).toUpperCase();
 
-  const ProfileImage = ({ size = 30 }) => {
+  const ProfileImage = ({ size = 30 }: { size?: number }) => {
     const imageWrapperStyle = { width: size, height: size };
 
     if (isLoading) {
-      return (
-        <Skeleton
-          className="rounded-full"
-          style={imageWrapperStyle}
-        />
-      );
+      return <Skeleton className="rounded-full" style={imageWrapperStyle} />;
     }
 
     if (user?.profilePicture) {
