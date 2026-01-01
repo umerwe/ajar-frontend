@@ -18,7 +18,7 @@ const ExploreArea = ({ property }: { property: Listing }) => {
                 </div>
 
                 <div className="p-3 md:p-4">
-                    <p className="text-sm md:text-base font-medium text-gray-800">{property.address}</p>
+                    <p className="text-sm md:text-base font-medium text-gray-800 capitalize">{property.address}</p>
                     <a
                         href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(property.address)}`}
                         target="_blank"
