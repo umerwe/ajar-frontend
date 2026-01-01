@@ -1,15 +1,15 @@
 import api from "@/lib/axios"
 
 export async function getListing(params: MarketplaceListingsProps) {
-  const { page, limit, subCategory, zone, category } = params
+  const { page, limit, subCategory, zone, category, minPrice, maxPrice } = params
   const requestParams: Record<string, string | number> = {
     zone: zone ?? "",
     page: page ?? "1",
     limit: limit ?? "10",
     category: category ?? "",
     all: "true",
-    minPrice: "0",
-    maxPrice: "1000000",
+    minPrice: minPrice ?? "0",
+    maxPrice: maxPrice ?? "1000000",
   }
 
   if (subCategory) {

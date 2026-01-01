@@ -20,7 +20,7 @@ const CardBody = ({ property, bookingStatus }: CardBodyProps) => {
   return (
     <CardContent className="-mt-1">
       <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-gray-900 text-sm 2xl:text-base truncate mr-2">
+        <h3 className="flex-1 font-semibold text-gray-900 text-sm 2xl:text-base truncate mr-2">
           {capitalizeWords(property?.name)}
         </h3>
 

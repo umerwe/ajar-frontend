@@ -43,7 +43,6 @@ const NotificationPage = () => {
                                             }`}>
                                             <CardContent className="p-4">
                                                 <div className="flex gap-4">
-                                                    {/* Unread Indicator or Icon */}
                                                     <div className="relative">
                                                         <div className={`p-2 rounded-full ${!item.isRead ? 'bg-aqua/10 text-aqua' : 'bg-slate-100 text-slate-400'}`}>
                                                             <Clock className="w-5 h-5" />
@@ -59,7 +58,7 @@ const NotificationPage = () => {
                                                                 {timeAgo(item?.createdAt?.toString() || "")}
                                                             </span>
                                                         </div>
-                                                        <p className="text-xs text-slate-500 leading-relaxed line-clamp-2">
+                                                        <p className="text-xs text-slate-500 leading-relaxed">
                                                             {item.message}
                                                         </p>
                                                     </div>
