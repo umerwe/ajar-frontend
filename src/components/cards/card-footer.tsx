@@ -116,10 +116,10 @@ const CardBottom = ({ property, bookingId, totalPrice, dates }: CardBottomProps)
       {
         dates &&
         <div className="pb-2 flex flex-col gap-3">
-          <div className="flex items-center text-[12px]">
-            <Calendar className="w-4 h-4 mr-1 text-[#8fa3bf]" strokeWidth={1.5} />
-            <div className="pt-0.5">
-              <span className="text-[#90A3BF] mr-2">Dates:</span>
+          <div className="flex items-center text-[10px] sm:text-[12px]">
+            <Calendar className="sm:w-4 sm:h-4 w-3 h-3 mr-1 text-[#8fa3bf]" strokeWidth={1.5} />
+            <div className="pt-[1px]">
+              <span className="text-[#90A3BF] mr-2 hidden sm:inline">Dates:</span>
               <span className="text-[#858585] truncate">
                 {formatDate(dates?.checkIn)} - {formatDate(dates?.checkOut)}
               </span>
