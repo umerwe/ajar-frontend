@@ -130,3 +130,9 @@ interface EditProfileDialogProps  {
     documents: any[];
     isLoading: boolean;
 };
+
+interface ArticleDetailDialogProps {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+    articleId: string | null;
+}

@@ -13,12 +13,6 @@ import {
 import { useGetArticle } from "@/hooks/useArticles";
 import { capitalizeWords } from "@/utils/capitalizeWords";
 
-interface ArticleDetailDialogProps {
-    open: boolean;
-    onOpenChange: (open: boolean) => void;
-    articleId: string | null;
-}
-
 export default function ArticleDetailDialog({
     open,
     onOpenChange,

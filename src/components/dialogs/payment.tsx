@@ -17,7 +17,6 @@ export const PaymentDialog = ({
   open,
   onOpenChange,
   clientSecret,
-  bookingId,
   amount
 }: PaymentDialogProps) => {
   return (
@@ -31,7 +30,6 @@ export const PaymentDialog = ({
           <Elements stripe={stripePromise} options={{ clientSecret }}>
             <StripeCardForm
               clientSecret={clientSecret}
-              bookingId={bookingId}
               amount={amount}
             />
           </Elements>

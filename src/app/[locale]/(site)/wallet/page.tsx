@@ -181,7 +181,7 @@ const WalletPage = () => {
 
                             <div className="space-y-4">
                                 {data?.transactions?.length > 0 ? (
-                                    data?.transactions?.slice(0, 5).map((tx: Transaction) => (
+                                    data?.transactions?.slice(0, 5)?.map((tx: Transaction) => (
                                         <div key={tx._id} className="flex items-center justify-between py-2 group cursor-pointer">
                                             <div className="flex items-center gap-4">
                                                 <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
