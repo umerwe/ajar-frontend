@@ -3,17 +3,15 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Info, Loader2 } from "lucide-react"
+import { Info } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-import { toast } from "@/components/ui/toast"
 import { RatingDialog } from "../../dialogs/rating"
 import { getActionDetails } from "@/lib/getAction"
-import api from "@/lib/axios"
 import { PaymentDialog } from "@/components/dialogs/payment"
 import { PinDialog } from "@/components/dialogs/pin"
 import { useExtendRental, useSubmitPin, useUpdateBookingStatus } from "@/hooks/useBooking"
@@ -314,7 +312,6 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
         open={isPaymentOpen}
         onOpenChange={setIsPaymentOpen}
         clientSecret={clientSecret}
-        bookingId={bookingData?._id as string}
         amount={displayPrice}
       />
 
