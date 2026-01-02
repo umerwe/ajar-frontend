@@ -57,9 +57,14 @@ export const StripeCardForm = ({ clientSecret, bookingId, amount }: StripeCardFo
                 variant: "destructive",
             })
             setIsLoading(false);
-            router.push(`/failed`);
+            
         } else if (paymentIntent && paymentIntent.status === 'succeeded') {
-            router.push(`/success`);
+            if (bookingId) {
+                window.location.href = `/success?bookingId=${bookingId}`
+            }
+            else {
+                window.location.href = `/success`
+            }
         }
     }
 
