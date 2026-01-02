@@ -4,10 +4,9 @@ import Link from 'next/link'
 import { XCircle } from 'lucide-react'
 
 const CancelPage = () => {
-
     return (
-        <div className="min-h-screen flex items-center justify-center p-4">
-            <div className="w-full max-w-md bg-white rounded-2xl shadow-xl border p-12 text-center">
+        <div className="min-h-[calc(100vh-66px)] flex items-center justify-center p-4">
+            <div className="w-full max-w-md bg-white rounded-2xl shadow-xl border py-12 px-7 text-center">
 
                 {/* Error Icon */}
                 <div className="mb-4 flex justify-center">
@@ -18,18 +17,17 @@ const CancelPage = () => {
                 </div>
 
                 {/* Title */}
-                <h1 className="text-2xl font-bold text-gray-900 mb-1">
-                    Payment Canceled
+                <h1 className="text-2xl font-semibold text-gray-900 mb-1">
+                    Payment Failed
                 </h1>
 
                 {/* Description */}
-                <p className="text-gray-600 mb-10 text-vase leading-relaxed">
-                    Your payment was not completed. You can try again or return to browse more listings.
-                </p>
+                <p className="text-gray-600 mb-8 text-base leading-relaxed">
+                    Your payment could not be completed. Please try again.                </p>
 
                 <Link
                     href="/"
-                    className="inline-flex items-center justify-center w-full px-8 py-3 text-white bg-red-600 rounded-full hover:bg-red-700 transition-all duration-200 font-semibold text-base shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                    className="inline-flex items-center justify-center w-full px-8 py-3 text-white bg-red-600 rounded-full hover:bg-red-700 transition-all duration-200 font-medium text-base shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                 >
                     Go to Home
                 </Link>

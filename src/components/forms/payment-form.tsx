@@ -13,10 +13,13 @@ import { Button } from "@/components/ui/button"
 import { toast } from "@/components/ui/toast"
 import { StripeCardFormProps } from "@/types/payment"
 import { inputBaseClasses, stripeElementOptions } from "@/utils/stripe"
+import { useRouter } from "next/navigation"
 
 export const StripeCardForm = ({ clientSecret, bookingId, amount }: StripeCardFormProps) => {
     const stripe = useStripe()
-    const elements = useElements()
+    const elements = useElements();
+    const router = useRouter();
+
     const [isLoading, setIsLoading] = useState(false)
 
     const [name, setName] = useState("")
@@ -53,14 +56,10 @@ export const StripeCardForm = ({ clientSecret, bookingId, amount }: StripeCardFo
                 description: error.message || "Payment failed.",
                 variant: "destructive",
             })
-            setIsLoading(false)
+            setIsLoading(false);
+            router.push(`/failed`);
         } else if (paymentIntent && paymentIntent.status === 'succeeded') {
-            if (bookingId) {
-                window.location.href = `/success?bookingId=${bookingId}`
-            }
-            else {
-                window.location.href = `/success`
-            }
+            router.push(`/success`);
         }
     }
 
