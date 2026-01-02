@@ -134,7 +134,6 @@ const CardBottom = ({ property, bookingId, totalPrice, dates }: CardBottomProps)
           open={isPaymentOpen}
           onOpenChange={setIsPaymentOpen}
           clientSecret={clientSecret}
-          bookingId={bookingId || ""}
           amount={totalPrice || property.price}
         />
       </div>
