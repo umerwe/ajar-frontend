@@ -537,7 +537,7 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: 
       return (
         <div className="animate-pulse">
 
-          <div className="max-w-md mx-auto border py-8 rounded-md">
+          <div className="max-w-md mx-auto border py-8 my-6 md:my-10 rounded-md">
             {/* Balance Section */}
             <section className="flex flex-col items-center px-4">
               <div className="h-4 w-24 bg-gray-200 rounded mb-3" /> {/* Your Balance text */}
@@ -582,7 +582,7 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: 
 
     case "transactions":
       return (
-        <div className="min-h-screen bg-white max-w-md mx-auto border rounded-md py-6 px-5">
+        <div className="min-h-screen bg-white max-w-md mx-auto border rounded-md py-6 px-5 my-6 md:my-10">
           <div className="space-y-6">
             {Array.from({ length: count }).map((_, i) => (
               <div key={i} className="flex items-center justify-between py-2">
