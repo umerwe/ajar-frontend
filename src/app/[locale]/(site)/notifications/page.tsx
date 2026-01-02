@@ -13,7 +13,7 @@ const NotificationPage = () => {
     const { data: notifications, isLoading } = useNotification();
 
     return (
-        <div className="min-h-screen bg-slate-50/30">
+        <div className="min-h-screen">
             <Header title="Notifications" />
 
             {
