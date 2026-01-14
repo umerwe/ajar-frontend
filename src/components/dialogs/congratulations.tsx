@@ -24,8 +24,16 @@ export default function CongratulationsDialog({
     useEffect(() => {
         if (!open) return;
 
+        setTimeLeft(seconds);
+
         const interval = setInterval(() => {
-            setTimeLeft((prev) => prev - 1);
+            setTimeLeft((prev) => {
+                if (prev <= 1) {
+                    clearInterval(interval);
+                    return 0;
+                }
+                return prev - 1;
+            });
         }, 1000);
 
         const timeout = setTimeout(() => {
