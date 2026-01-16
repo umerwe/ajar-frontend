@@ -25,8 +25,7 @@ const CheckoutPage = () => {
     const adminFee = listing?.adminFee || 0;
     const tax = listing?.tax || 0;
 
-    const total =
-        rawPrice + adminFee + tax;
+    const total = rawPrice + adminFee + tax;
 
     const {
         register,
@@ -64,9 +63,7 @@ const CheckoutPage = () => {
             specialRequest: data.specialRequest!,
         }
 
-        await createBooking(
-            { booking: bookingPayload }
-        )
+        await createBooking({ booking: bookingPayload })
     }
 
     const getTodayDate = () => {
@@ -77,12 +74,22 @@ const CheckoutPage = () => {
         return formData.startDate || getTodayDate()
     }
 
+    // Helper to prevent manual typing but allow calendar interaction
+    const handleDateClick = (e: React.MouseEvent<HTMLInputElement>) => {
+        try {
+            e.currentTarget.showPicker();
+        } catch (err) {
+            // Fallback for older browsers
+        }
+    };
+
     return (
         <div className="min-h-screen">
-            <div>
+            <div className="px-4 md:px-0">
                 <Header title="Booking Submission" />
-                {isLoading ?
-                    <SkeletonLoader variant="checkout" /> :
+                {isLoading ? (
+                    <SkeletonLoader variant="checkout" />
+                ) : (
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-6">
 
@@ -91,19 +98,26 @@ const CheckoutPage = () => {
                                 <div>
                                     <h2 className="text-base font-semibold text-gray-900 mb-4">Date</h2>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        
                                         {/* Lease Start Input */}
                                         <div className="space-y-2">
-                                            <div className={`bg-gray-100 rounded-lg p-3 md:p-4 ${errors.startDate ? "border border-red-500" : ""}`}>
+                                            <div 
+                                                className={`bg-gray-100 rounded-lg p-3 md:p-4 cursor-pointer hover:bg-gray-200 transition-colors ${errors.startDate ? "border border-red-500" : ""}`}
+                                                onClick={() => document.getElementById('startDate')?.click()}
+                                            >
                                                 <div className="flex items-center gap-2 mb-1.5 md:mb-2">
                                                     <Calendar className="w-4 h-4 text-gray-600 shrink-0" />
-                                                    <label className="text-xs md:text-sm font-medium text-gray-900 whitespace-nowrap">Lease Start</label>
+                                                    <label className="text-xs md:text-sm font-medium text-gray-900 whitespace-nowrap cursor-pointer">Lease Start</label>
                                                 </div>
                                                 <input
+                                                    id="startDate"
                                                     type="date"
                                                     min={getTodayDate()}
                                                     {...register("startDate")}
+                                                    onKeyDown={(e) => e.preventDefault()} // Block manual typing
+                                                    onClick={handleDateClick} // Trigger calendar
                                                     onChange={handleInputChange}
-                                                    className="w-full bg-transparent border-0 p-0 focus:ring-0 outline-none text-sm text-gray-500 min-w-0"
+                                                    className="w-full bg-transparent border-0 p-0 focus:ring-0 outline-none text-sm text-gray-500 min-w-0 cursor-pointer"
                                                 />
                                             </div>
                                             {errors.startDate && (
@@ -113,17 +127,23 @@ const CheckoutPage = () => {
 
                                         {/* Lease End Input */}
                                         <div className="space-y-2">
-                                            <div className={`bg-gray-100 rounded-lg p-3 md:p-4 ${errors.endDate ? "border border-red-500" : ""}`}>
+                                            <div 
+                                                className={`bg-gray-100 rounded-lg p-3 md:p-4 cursor-pointer hover:bg-gray-200 transition-colors ${errors.endDate ? "border border-red-500" : ""}`}
+                                                onClick={() => document.getElementById('endDate')?.click()}
+                                            >
                                                 <div className="flex items-center gap-2 mb-1.5 md:mb-2">
                                                     <Calendar className="w-4 h-4 text-gray-600 shrink-0" />
-                                                    <label className="text-xs md:text-sm font-medium text-gray-900 whitespace-nowrap">Lease End</label>
+                                                    <label className="text-xs md:text-sm font-medium text-gray-900 whitespace-nowrap cursor-pointer">Lease End</label>
                                                 </div>
                                                 <input
+                                                    id="endDate"
                                                     type="date"
                                                     min={getMinEndDate()}
                                                     {...register("endDate")}
+                                                    onKeyDown={(e) => e.preventDefault()} // Block manual typing
+                                                    onClick={handleDateClick} // Trigger calendar
                                                     onChange={handleInputChange}
-                                                    className="w-full bg-transparent border-0 p-0 focus:ring-0 outline-none text-sm text-gray-500 min-w-0"
+                                                    className="w-full bg-transparent border-0 p-0 focus:ring-0 outline-none text-sm text-gray-500 min-w-0 cursor-pointer"
                                                 />
                                             </div>
                                             {errors.endDate && (
@@ -150,7 +170,6 @@ const CheckoutPage = () => {
                                     </div>
                                 </div>
 
-                                {/* Booking Submission Button */}
                                 <button
                                     type="submit"
                                     disabled={isPending}
@@ -160,9 +179,9 @@ const CheckoutPage = () => {
                                 </button>
                             </div>
 
-                            {/* RIGHT COLUMN: Listing and Price Details (Unchanged) */}
+                            {/* RIGHT COLUMN: Price Details (Unchanged) */}
                             <div className="space-y-6">
-                                <div className="bg-white rounded-lg p-4 md:p-6 shadow-sm">
+                                <div className="bg-white rounded-lg p-4 md:p-6 shadow-sm border border-gray-100">
                                     <div className="flex gap-4 mb-4">
                                         <div className="w-24 h-24 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
                                             {listing?.rentalImages?.[0] && (
@@ -201,9 +220,8 @@ const CheckoutPage = () => {
                                     </div>
                                 </div>
 
-                                <div className="bg-white rounded-2xl p-6 shadow-sm">
+                                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                                     <h2 className="text-lg font-semibold text-gray-900 mb-4">Payment Details</h2>
-
                                     <div className="space-y-3">
                                         <div className="flex justify-between items-center">
                                             <span className="text-base text-gray-600">Base price</span>
@@ -223,7 +241,6 @@ const CheckoutPage = () => {
                                                 ${(tax || 0).toFixed(2)}
                                             </span>
                                         </div>
-
                                         <div className="flex justify-between items-center py-3 border-t">
                                             <span className="text-base font-medium text-gray-900">Total Cost</span>
                                             <span className="text-xl font-bold text-gray-900">
@@ -233,20 +250,19 @@ const CheckoutPage = () => {
                                     </div>
                                 </div>
 
-
-                                <div className="bg-white rounded-2xl p-6 shadow-sm">
+                                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                                     <h2 className="text-lg font-semibold text-gray-900 mb-4">Cancellation Policy</h2>
-                                    <div className="mb-3">
+                                    <div>
                                         <h3 className="text-base font-semibold text-gray-900 mb-2">Non-refundable</h3>
                                         <p className="text-sm text-gray-600 leading-relaxed">
-                                            This booking cannot be modified, and no refund will be given if you cancel it. If you fail to check
-                                            in, a penalty equivalent to the cancellation fee will be charged.
+                                            This booking cannot be modified, and no refund will be given if you cancel it.
                                         </p>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </form>}
+                    </form>
+                )}
             </div>
         </div>
     )

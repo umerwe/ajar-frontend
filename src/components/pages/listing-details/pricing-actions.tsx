@@ -153,11 +153,17 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
         );
 
       case "Extend Rental":
-        return (
-          <Button onClick={() => setIsExtendOpen(true)} variant="destructive">
-            {label}
-          </Button>
-        );
+        return bookingData?.isExtend ?
+          null
+          : (
+            <Button
+              onClick={() => setIsExtendOpen(true)}
+              variant="destructive"
+            >
+              {label}
+            </Button>
+          )
+          ;
 
       case "Proceed to pay":
         return (

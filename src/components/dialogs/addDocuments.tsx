@@ -90,7 +90,7 @@ const AddDocumentDialog = ({ data, documents }: any) => {
                     <div className="space-y-2">
                         <label className="text-sm font-medium">Document Type</label>
                         <Select onValueChange={setSelectedDocType} value={selectedDocType}>
-                            <SelectTrigger className="w-full">
+                            <SelectTrigger className="w-full bg-gray-50">
                                 <SelectValue placeholder="Select type" />
                             </SelectTrigger>
                             <SelectContent>
@@ -104,7 +104,7 @@ const AddDocumentDialog = ({ data, documents }: any) => {
                     <div className="space-y-2">
                         <label className="text-sm font-medium">File</label>
                         {!docFile ? (
-                            <div className="border-2 border-dashed rounded-lg p-10 flex flex-col items-center justify-center hover:bg-gray-50 transition relative">
+                            <div className="rounded-lg p-10 flex flex-col items-center justify-center bg-gray-50 transition relative">
                                 <input
                                     type="file"
                                     className="absolute inset-0 opacity-0 cursor-pointer"

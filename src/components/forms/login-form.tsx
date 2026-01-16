@@ -88,6 +88,14 @@ const LoginForm = () => {
           <div className="flex-grow border-t border-gray-300" />
         </div>
 
+        {/* <Link
+          href="/"
+          className="flex items-center my-4 cursor-pointer">
+          <div className="flex-grow border-t border-gray-300" />
+          <span className="mx-2 text-gray-500 hover:text-gray-900 text-sm">Continue as Guest</span>
+          <div className="flex-grow border-t border-gray-300" />
+        </Link> */}
+
         <button
           type="button"
           onClick={() => signIn("google", { callbackUrl: "/" })}
