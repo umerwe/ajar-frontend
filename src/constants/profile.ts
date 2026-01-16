@@ -1,4 +1,4 @@
-import { Heart, Flag, ShieldCheck, Pencil, CalendarCheck, Lock, Wallet,Landmark } from "lucide-react"
+import { Heart, Flag, ShieldCheck, Pencil, CalendarCheck, Lock, Wallet, Landmark } from "lucide-react"
 
 export const profileMenuItems = [
     { label: "View Profile", href: "/profile" },
@@ -33,6 +33,10 @@ export const profileItems = [
         icon: Heart,
         label: "Favorites",
         href: "/favourites",
+    },
+    {
+        icon: Pencil,
+        label: "Add Documents"
     },
     {
         icon: Lock,

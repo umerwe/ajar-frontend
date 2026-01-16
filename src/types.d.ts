@@ -131,6 +131,11 @@ interface EditProfileDialogProps  {
     isLoading: boolean;
 };
 
+interface Document {
+  name : string;
+  value : string;
+}
+
 interface ArticleDetailDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;

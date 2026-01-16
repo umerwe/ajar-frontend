@@ -14,6 +14,7 @@ import { useGetUserDocument } from "@/hooks/useDocument";
 import { profileItems } from "@/constants/profile";
 import ChangePasswordDialog from "@/components/dialogs/changePassword";
 import EditProfileDialog from "@/components/dialogs/editProfile";
+import AddDocumentDialog from "@/components/dialogs/addDocuments";
 
 export default function ProfilePage() {
     const { data: user = [], isLoading, isError } = useUser();
@@ -81,6 +82,16 @@ export default function ProfilePage() {
                                     />
                                 );
                             }
+                            if (item.label === "Add Documents") {
+                                return (
+                                    <AddDocumentDialog
+                                        key={index}
+                                        data={item}
+                                        documents={documents}
+                                    />
+                                );
+                            }
+
 
                             if (item.label === "Change Password") {
                                 return (

@@ -46,7 +46,7 @@ const EditProfileDialog = ({
                 </DialogHeader>
 
                 <div className="overflow-y-auto flex-1 px-1">
-                    
+
                     <div className="flex justify-center mb-4">
                         <div className="relative group h-24 w-24 rounded-full overflow-hidden bg-header flex items-center justify-center text-white text-2xl font-semibold">
                             {file ? (
