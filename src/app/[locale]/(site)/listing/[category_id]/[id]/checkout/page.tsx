@@ -36,7 +36,7 @@ const CheckoutPage = () => {
     } = useForm<BookingFormData>({
         resolver: zodResolver(bookingSchema),
         defaultValues: {
-            startDate: "", // Empty initially to show "Select Date"
+            startDate: "",
             endDate: "",
             specialRequest: "",
         },

@@ -19,7 +19,7 @@ const ListingItems = () => {
   const id = params?.id as string;
 
   const { data: listingData, isLoading } = useGetMarketplaceListing(id);
-  console.log(listingData)
+  
   const hasValidListing = !listingData?._id;
   return (
     <div>
