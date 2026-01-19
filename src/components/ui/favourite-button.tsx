@@ -5,9 +5,10 @@ import { useState } from "react";
 import { useToggleFavourite, useIsFavourite } from "@/hooks/useFavourite";
 import { cn } from "@/lib/utils";
 import { LoginDialog } from "../dialogs/login-dialog";
+import { useUser } from "@/hooks/useAuth";
 
 interface FavouriteButtonProps {
-  listingId?: string; // 👈 optional for guest
+  listingId?: string;
   className?: string;
   size?: "sm" | "md" | "lg";
   variant?: "default" | "card" | "minimal";
@@ -19,6 +20,7 @@ export const FavouriteButton = ({
   size = "md",
   variant = "default",
 }: FavouriteButtonProps) => {
+  const { data } = useUser();
   const [isGuestDialogOpen, setIsGuestDialogOpen] = useState(false);
 
   const toggleFavourite = useToggleFavourite();
@@ -28,13 +30,13 @@ export const FavouriteButton = ({
     e.preventDefault();
     e.stopPropagation();
 
-    // 👇 Guest user → show login dialog
-    if (!listingId) {
+    if (!data) {
       setIsGuestDialogOpen(true);
       return;
     }
-
-    toggleFavourite.mutate(listingId);
+    else {
+      toggleFavourite.mutate(listingId as string);
+    }
   };
 
   return (
@@ -48,11 +50,11 @@ export const FavouriteButton = ({
           size === "md" && "p-2 w-9 h-9",
           size === "lg" && "p-3 w-12 h-12",
           variant === "default" &&
-            "bg-white/90 backdrop-blur-sm hover:bg-white shadow-sm",
+          "bg-white/90 backdrop-blur-sm hover:bg-white shadow-sm",
           variant === "card" &&
-            "bg-white/90 backdrop-blur-sm hover:bg-white",
+          "bg-white/90 backdrop-blur-sm hover:bg-white",
           variant === "minimal" &&
-            "bg-transparent hover:bg-white/20",
+          "bg-transparent hover:bg-white/20",
           className
         )}
       >

@@ -41,7 +41,13 @@ const CardTop = ({ property, showRemoveButton = false, type }: CardTopProps) => 
   }, [emblaApi])
 
   return (
-    <CardHeader className="p-0 relative">
+    <CardHeader
+      className="p-0 relative"
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
+    >
       <div className="absolute top-2 sm:top-3 left-4 right-2 sm:right-4 flex justify-between items-center z-10">
         <div>
           {property.isGuestFavorite && (
@@ -54,7 +60,7 @@ const CardTop = ({ property, showRemoveButton = false, type }: CardTopProps) => 
           showRemoveButton ? (
             <RemoveFavouriteButton listingId={property._id} />
           ) : (
-            <FavouriteButton listingId={property._id} />
+            <FavouriteButton listingId={property?._id} />
           )
         )}
 
