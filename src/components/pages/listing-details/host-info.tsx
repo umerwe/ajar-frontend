@@ -1,3 +1,4 @@
+import { LoginDialog } from '@/components/dialogs/login-dialog'
 import { useCreateChat, useGetChatList } from '@/hooks/useChat'
 import { Chat, Participant } from '@/types/chat'
 import { Listing } from '@/types/listing'
@@ -5,11 +6,13 @@ import { capitalizeWords } from '@/utils/capitalizeWords'
 import { MessageCircleMore } from 'lucide-react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 
 const HostInfo = ({ property }: { property: Listing }) => {
     const router = useRouter();
     const { mutate } = useCreateChat();
     const { data } = useGetChatList();
+    const [isGuestDialogOpen, setIsGuestDialogOpen] = useState(false);
 
     const receiverId = property.leaser._id;
 
@@ -20,6 +23,10 @@ const HostInfo = ({ property }: { property: Listing }) => {
     const chatExists = Boolean(existingChat?._id);
 
     function handleClick() {
+        if (!data) {
+            setIsGuestDialogOpen(true);
+            return;
+        }
         try {
             if (chatExists) {
                 router.push(`/chat?id=${existingChat._id}`);
@@ -87,6 +94,10 @@ const HostInfo = ({ property }: { property: Listing }) => {
                     <MessageCircleMore className="w-5.5 h-5.5 text-aqua" />
                 </div>
             </div>
+            <LoginDialog
+                open={isGuestDialogOpen}
+                onOpenChange={setIsGuestDialogOpen}
+            />
         </div>
     );
 }

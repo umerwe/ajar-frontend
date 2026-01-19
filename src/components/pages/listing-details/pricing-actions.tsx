@@ -20,17 +20,19 @@ import { useUser } from "@/hooks/useAuth"
 import Loader from "@/components/common/loader"
 import Document from "./document"
 import { useDeductWallet } from "@/hooks/useWallet"
+import { LoginDialog } from "@/components/dialogs/login-dialog"
 
 const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const { mutate, isPending } = useSubmitPin();
   const { mutate: sendExtendRental, isPending: isExtendRentalPending } = useExtendRental();
   const { mutate: updateStatus, isPending: isStatusLoading } = useUpdateBookingStatus();
-  const { mutate: deductWallet, isPending: isDeductPending } = useDeductWallet();
+  const { mutate: deductWallet } = useDeductWallet();
   const { data } = useUser();
   const [isRateOpen, setIsRateOpen] = useState(false)
   const [isPaymentOpen, setIsPaymentOpen] = useState(false)
   const [loadingPayment, setLoadingPayment] = useState(false)
   const [clientSecret, setClientSecret] = useState<string | null>(null)
+  const [isGuestDialogOpen, setIsGuestDialogOpen] = useState(false);
 
   const [isPriceOpen, setIsPriceOpen] = useState(false)
   const [isPinOpen, setIsPinOpen] = useState(false);
@@ -110,16 +112,24 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
     )
   }
 
+  const handleProtectedAction = () => {
+    if (!data?.name) {
+      setIsGuestDialogOpen(true);
+      return;
+    }
+    router.push(`/listing/${category_id}/${id}/checkout`)
+  };
+
   const minExtensionDate = bookingData?.dates?.checkOut
     ? new Date(bookingData.dates.checkOut).toISOString().split("T")[0]
     : undefined;
 
   const renderActionButton = () => {
     if (!bookingData) {
-      if (data._id !== property.leaser._id) {
+      if (data?._id !== property.leaser._id) {
         return (
           <Button
-            onClick={() => router.push(`/listing/${category_id}/${id}/checkout`)}
+            onClick={handleProtectedAction}
             variant="destructive"
           >
             Checkout
@@ -335,6 +345,11 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
         onSubmit={handleExtensionSubmit}
         minDate={minExtensionDate}
         isPending={isExtendRentalPending}
+      />
+
+      <LoginDialog
+        open={isGuestDialogOpen}
+        onOpenChange={setIsGuestDialogOpen}
       />
 
     </div>

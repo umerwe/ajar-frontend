@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { Calendar, Star } from "lucide-react"
+import { Calendar, Clock, Star } from "lucide-react"
 import { useParams } from "next/navigation"
 import Image from "next/image"
 import { useForm } from "react-hook-form"
@@ -24,7 +24,6 @@ const CheckoutPage = () => {
     const rawPrice = listing?.price || 0;
     const adminFee = listing?.adminFee || 0;
     const tax = listing?.tax || 0;
-
     const total = rawPrice + adminFee + tax;
 
     const {
@@ -37,13 +36,32 @@ const CheckoutPage = () => {
     } = useForm<BookingFormData>({
         resolver: zodResolver(bookingSchema),
         defaultValues: {
-            startDate: "",
+            startDate: "", // Empty initially to show "Select Date"
             endDate: "",
             specialRequest: "",
         },
     })
 
-    const formData = watch()
+    const watchedStartDate = watch("startDate")
+    const watchedEndDate = watch("endDate")
+
+    // Helper: Formats the display text (Shows time only if date is selected)
+    const formatDisplayDateTime = (dateTimeString: string, placeholder: string) => {
+        if (!dateTimeString) return placeholder;
+
+        const dateObj = new Date(dateTimeString);
+
+        // Check if user has actually interacted/selected a time
+        // datetime-local inputs usually include time by default once picked
+        return dateObj.toLocaleString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+    };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target
@@ -57,31 +75,21 @@ const CheckoutPage = () => {
         const bookingPayload: BookingRequest = {
             marketplaceListingId: listing._id,
             dates: {
-                checkIn: data.startDate,
-                checkOut: data.endDate,
+                // Formats to "2037-01-01T10:00:00.000Z"
+                checkIn: new Date(data.startDate).toISOString(),
+                checkOut: new Date(data.endDate).toISOString(),
             },
-            specialRequest: data.specialRequest!,
+            specialRequest: data.specialRequest || "",
         }
 
         await createBooking({ booking: bookingPayload })
     }
 
-    const getTodayDate = () => {
-        return new Date().toISOString().split("T")[0]
+    const getTodayDateTime = () => {
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        return now.toISOString().slice(0, 16);
     }
-
-    const getMinEndDate = () => {
-        return formData.startDate || getTodayDate()
-    }
-
-    // Helper to prevent manual typing but allow calendar interaction
-    const handleDateClick = (e: React.MouseEvent<HTMLInputElement>) => {
-        try {
-            e.currentTarget.showPicker();
-        } catch (err) {
-            // Fallback for older browsers
-        }
-    };
 
     return (
         <div className="min-h-screen">
@@ -93,31 +101,36 @@ const CheckoutPage = () => {
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-6">
 
-                            {/* LEFT COLUMN: Booking Details/Submit Button */}
+                            {/* LEFT COLUMN */}
                             <div className="space-y-6">
                                 <div>
-                                    <h2 className="text-base font-semibold text-gray-900 mb-4">Date</h2>
+                                    <h2 className="text-base font-semibold text-gray-900 mb-4">Reservation Dates</h2>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        
+
                                         {/* Lease Start Input */}
                                         <div className="space-y-2">
-                                            <div 
-                                                className={`bg-gray-100 rounded-lg p-3 md:p-4 cursor-pointer hover:bg-gray-200 transition-colors ${errors.startDate ? "border border-red-500" : ""}`}
-                                                onClick={() => document.getElementById('startDate')?.click()}
+                                            <div
+                                                className={`relative bg-gray-100 rounded-lg p-3 md:p-4 cursor-pointer hover:bg-gray-200 transition-colors ${errors.startDate ? "border border-red-500" : ""}`}
+                                                onClick={() => (document.getElementById('startDate') as any)?.showPicker()}
                                             >
-                                                <div className="flex items-center gap-2 mb-1.5 md:mb-2">
+                                                <div className="flex items-center gap-2 mb-1">
                                                     <Calendar className="w-4 h-4 text-gray-600 shrink-0" />
-                                                    <label className="text-xs md:text-sm font-medium text-gray-900 whitespace-nowrap cursor-pointer">Lease Start</label>
+                                                    <label className="text-xs md:text-sm font-medium text-gray-900 cursor-pointer">Lease Start</label>
                                                 </div>
+
+                                                {/* Visual Display */}
+                                                <p className="text-sm text-gray-500">
+                                                    {formatDisplayDateTime(watchedStartDate, "Select Date & Time")}
+                                                </p>
+
+                                                {/* Hidden Native Input */}
                                                 <input
                                                     id="startDate"
-                                                    type="date"
-                                                    min={getTodayDate()}
+                                                    type="datetime-local"
+                                                    min={getTodayDateTime()}
                                                     {...register("startDate")}
-                                                    onKeyDown={(e) => e.preventDefault()} // Block manual typing
-                                                    onClick={handleDateClick} // Trigger calendar
                                                     onChange={handleInputChange}
-                                                    className="w-full bg-transparent border-0 p-0 focus:ring-0 outline-none text-sm text-gray-500 min-w-0 cursor-pointer"
+                                                    className="absolute inset-0 opacity-0 cursor-pointer"
                                                 />
                                             </div>
                                             {errors.startDate && (
@@ -127,23 +140,27 @@ const CheckoutPage = () => {
 
                                         {/* Lease End Input */}
                                         <div className="space-y-2">
-                                            <div 
-                                                className={`bg-gray-100 rounded-lg p-3 md:p-4 cursor-pointer hover:bg-gray-200 transition-colors ${errors.endDate ? "border border-red-500" : ""}`}
-                                                onClick={() => document.getElementById('endDate')?.click()}
+                                            <div
+                                                className={`relative bg-gray-100 rounded-lg p-3 md:p-4 cursor-pointer hover:bg-gray-200 transition-colors ${errors.endDate ? "border border-red-500" : ""}`}
+                                                onClick={() => (document.getElementById('endDate') as any)?.showPicker()}
                                             >
-                                                <div className="flex items-center gap-2 mb-1.5 md:mb-2">
-                                                    <Calendar className="w-4 h-4 text-gray-600 shrink-0" />
-                                                    <label className="text-xs md:text-sm font-medium text-gray-900 whitespace-nowrap cursor-pointer">Lease End</label>
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <Clock className="w-4 h-4 text-gray-600 shrink-0" />
+                                                    <label className="text-xs md:text-sm font-medium text-gray-900 cursor-pointer">Lease End</label>
                                                 </div>
+
+                                                {/* Visual Display */}
+                                                <p className="text-sm text-gray-500">
+                                                    {formatDisplayDateTime(watchedEndDate, "Select Date & Time")}
+                                                </p>
+
                                                 <input
                                                     id="endDate"
-                                                    type="date"
-                                                    min={getMinEndDate()}
+                                                    type="datetime-local"
+                                                    min={watchedStartDate || getTodayDateTime()}
                                                     {...register("endDate")}
-                                                    onKeyDown={(e) => e.preventDefault()} // Block manual typing
-                                                    onClick={handleDateClick} // Trigger calendar
                                                     onChange={handleInputChange}
-                                                    className="w-full bg-transparent border-0 p-0 focus:ring-0 outline-none text-sm text-gray-500 min-w-0 cursor-pointer"
+                                                    className="absolute inset-0 opacity-0 cursor-pointer"
                                                 />
                                             </div>
                                             {errors.endDate && (
@@ -153,21 +170,16 @@ const CheckoutPage = () => {
                                     </div>
                                 </div>
 
-                                {/* Comments Input Field */}
+                                {/* Comments Section */}
                                 <div>
                                     <h2 className="text-base font-semibold text-gray-900 mb-4">Comments</h2>
-                                    <div className="space-y-2">
-                                        <textarea
-                                            {...register("specialRequest")}
-                                            onChange={handleInputChange}
-                                            rows={6}
-                                            className="w-full px-4 py-4 bg-gray-100 border-0 rounded-lg focus:ring-1 focus:ring-aqua outline-none transition resize-none text-sm text-gray-500 placeholder:text-gray-500"
-                                            placeholder="Enter comments"
-                                        ></textarea>
-                                        {errors.specialRequest && (
-                                            <p className="text-red-500 text-sm font-medium px-2">{errors.specialRequest.message}</p>
-                                        )}
-                                    </div>
+                                    <textarea
+                                        {...register("specialRequest")}
+                                        onChange={handleInputChange}
+                                        rows={6}
+                                        className="w-full px-4 py-4 bg-gray-100 border-0 rounded-lg focus:ring-1 focus:ring-aqua outline-none transition resize-none text-sm text-gray-500 placeholder:text-gray-500"
+                                        placeholder="Enter any special requests"
+                                    ></textarea>
                                 </div>
 
                                 <button
@@ -179,7 +191,7 @@ const CheckoutPage = () => {
                                 </button>
                             </div>
 
-                            {/* RIGHT COLUMN: Price Details (Unchanged) */}
+                            {/* RIGHT COLUMN: Summary */}
                             <div className="space-y-6">
                                 <div className="bg-white rounded-lg p-4 md:p-6 shadow-sm border border-gray-100">
                                     <div className="flex gap-4 mb-4">
@@ -202,10 +214,7 @@ const CheckoutPage = () => {
                                                 {[...Array(5)].map((_, i) => (
                                                     <Star
                                                         key={i}
-                                                        className={`w-4 h-4 ${i < Math.floor(listing?.ratings?.average || 0)
-                                                            ? "fill-yellow-400 text-yellow-400"
-                                                            : "text-gray-300"
-                                                            }`}
+                                                        className={`w-4 h-4 ${i < Math.floor(listing?.ratings?.average || 0) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
                                                     />
                                                 ))}
                                             </div>
@@ -213,7 +222,6 @@ const CheckoutPage = () => {
                                                 <span className="bg-teal-500 text-white px-3 py-1 rounded-l-2xl rounded-b-2xl text-sm font-medium">
                                                     {(listing?.ratings?.average || 0).toFixed(1)}/5
                                                 </span>
-                                                <span className="text-sm font-medium text-teal-600">Excellent</span>
                                                 <span className="text-sm text-gray-500">{listing?.ratings?.count || 0} reviews</span>
                                             </div>
                                         </div>
@@ -225,38 +233,20 @@ const CheckoutPage = () => {
                                     <div className="space-y-3">
                                         <div className="flex justify-between items-center">
                                             <span className="text-base text-gray-600">Base price</span>
-                                            <span className="text-base font-medium text-gray-900">
-                                                ${(rawPrice || 0).toFixed(2)}
-                                            </span>
+                                            <span className="text-base font-medium text-gray-900">${(rawPrice || 0).toFixed(2)}</span>
                                         </div>
                                         <div className="flex justify-between items-center">
                                             <span className="text-base text-gray-600">Admin Fee</span>
-                                            <span className="text-base font-medium text-gray-900">
-                                                ${(adminFee || 0).toFixed(2)}
-                                            </span>
+                                            <span className="text-base font-medium text-gray-900">${(adminFee || 0).toFixed(2)}</span>
                                         </div>
                                         <div className="flex justify-between items-center">
                                             <span className="text-base text-gray-600">Tax</span>
-                                            <span className="text-base font-medium text-gray-900">
-                                                ${(tax || 0).toFixed(2)}
-                                            </span>
+                                            <span className="text-base font-medium text-gray-900">${(tax || 0).toFixed(2)}</span>
                                         </div>
                                         <div className="flex justify-between items-center py-3 border-t">
                                             <span className="text-base font-medium text-gray-900">Total Cost</span>
-                                            <span className="text-xl font-bold text-gray-900">
-                                                ${(total || 0).toFixed(2)}
-                                            </span>
+                                            <span className="text-xl font-bold text-gray-900">${(total || 0).toFixed(2)}</span>
                                         </div>
-                                    </div>
-                                </div>
-
-                                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                                    <h2 className="text-lg font-semibold text-gray-900 mb-4">Cancellation Policy</h2>
-                                    <div>
-                                        <h3 className="text-base font-semibold text-gray-900 mb-2">Non-refundable</h3>
-                                        <p className="text-sm text-gray-600 leading-relaxed">
-                                            This booking cannot be modified, and no refund will be given if you cancel it.
-                                        </p>
                                     </div>
                                 </div>
                             </div>

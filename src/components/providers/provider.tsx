@@ -11,12 +11,12 @@ export default function Providers({ children, messages, locale }: ProviderProps)
     <ReactQueryProvider>
       <ThemeProvider>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <AuthGuard>
+          {/* <AuthGuard> */}
             <SocketProvider>
               {children}
               <Toaster />
             </SocketProvider>
-          </AuthGuard>
+          {/* </AuthGuard> */}
         </NextIntlClientProvider>
       </ThemeProvider>
     </ReactQueryProvider>
