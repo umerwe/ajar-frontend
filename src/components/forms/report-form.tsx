@@ -103,9 +103,9 @@ export default function ReportForm() {
                                 <option value="">Select Booking</option>
 
                                 {bookings?.map((b: { _id: string; marketplaceListingId: Listing }) => (
-                                    <option key={b._id} value={b._id}>
-                                        {typeof b.marketplaceListingId === "object"
-                                            ? capitalizeWords(b.marketplaceListingId.name)
+                                    <option key={b?._id} value={b?._id}>
+                                        {typeof b?.marketplaceListingId === "object"
+                                            ? capitalizeWords(b?.marketplaceListingId?.name)
                                             : ""}
                                     </option>
                                 ))}
