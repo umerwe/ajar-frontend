@@ -21,6 +21,9 @@ const CheckoutPage = () => {
     const { data: listing, isLoading } = useGetMarketplaceListing(id)
     const { mutateAsync: createBooking, isPending } = useCreateBooking()
 
+    // Helper to determine if we should show time
+    const isHourly = listing?.priceUnit === "hour"
+
     const rawPrice = listing?.price || 0;
     const adminFee = listing?.adminFee || 0;
     const tax = listing?.tax || 0;
@@ -45,21 +48,20 @@ const CheckoutPage = () => {
     const watchedStartDate = watch("startDate")
     const watchedEndDate = watch("endDate")
 
-    // Helper: Formats the display text (Shows time only if date is selected)
     const formatDisplayDateTime = (dateTimeString: string, placeholder: string) => {
         if (!dateTimeString) return placeholder;
-
         const dateObj = new Date(dateTimeString);
 
-        // Check if user has actually interacted/selected a time
-        // datetime-local inputs usually include time by default once picked
+        // Conditional formatting based on priceUnit
         return dateObj.toLocaleString('en-US', {
             month: 'short',
             day: 'numeric',
             year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true
+            ...(isHourly && {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            })
         });
     };
 
@@ -75,7 +77,6 @@ const CheckoutPage = () => {
         const bookingPayload: BookingRequest = {
             marketplaceListingId: listing._id,
             dates: {
-                // Formats to "2037-01-01T10:00:00.000Z"
                 checkIn: new Date(data.startDate).toISOString(),
                 checkOut: new Date(data.endDate).toISOString(),
             },
@@ -85,10 +86,11 @@ const CheckoutPage = () => {
         await createBooking({ booking: bookingPayload })
     }
 
-    const getTodayDateTime = () => {
+    const getMinDateTime = () => {
         const now = new Date();
         now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-        return now.toISOString().slice(0, 16);
+        // Returns YYYY-MM-DDTHH:mm for hourly, or just YYYY-MM-DD for others
+        return isHourly ? now.toISOString().slice(0, 16) : now.toISOString().split('T')[0];
     }
 
     return (
@@ -118,16 +120,15 @@ const CheckoutPage = () => {
                                                     <label className="text-xs md:text-sm font-medium text-gray-900 cursor-pointer">Lease Start</label>
                                                 </div>
 
-                                                {/* Visual Display */}
                                                 <p className="text-sm text-gray-500">
-                                                    {formatDisplayDateTime(watchedStartDate, "Select Date & Time")}
+                                                    {formatDisplayDateTime(watchedStartDate, isHourly ? "Select Date & Time" : "Select Date")}
                                                 </p>
 
-                                                {/* Hidden Native Input */}
                                                 <input
                                                     id="startDate"
-                                                    type="datetime-local"
-                                                    min={getTodayDateTime()}
+                                                    // DYNAMIC TYPE
+                                                    type={isHourly ? "datetime-local" : "date"}
+                                                    min={getMinDateTime()}
                                                     {...register("startDate")}
                                                     onChange={handleInputChange}
                                                     className="absolute inset-0 opacity-0 cursor-pointer"
@@ -149,15 +150,15 @@ const CheckoutPage = () => {
                                                     <label className="text-xs md:text-sm font-medium text-gray-900 cursor-pointer">Lease End</label>
                                                 </div>
 
-                                                {/* Visual Display */}
                                                 <p className="text-sm text-gray-500">
-                                                    {formatDisplayDateTime(watchedEndDate, "Select Date & Time")}
+                                                    {formatDisplayDateTime(watchedEndDate, isHourly ? "Select Date & Time" : "Select Date")}
                                                 </p>
 
                                                 <input
                                                     id="endDate"
-                                                    type="datetime-local"
-                                                    min={watchedStartDate || getTodayDateTime()}
+                                                    // DYNAMIC TYPE
+                                                    type={isHourly ? "datetime-local" : "date"}
+                                                    min={watchedStartDate || getMinDateTime()}
                                                     {...register("endDate")}
                                                     onChange={handleInputChange}
                                                     className="absolute inset-0 opacity-0 cursor-pointer"
