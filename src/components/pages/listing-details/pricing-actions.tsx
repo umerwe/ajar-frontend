@@ -123,7 +123,7 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const minExtensionDate = bookingData?.dates?.checkOut
     ? new Date(bookingData.dates.checkOut).toISOString().split("T")[0]
     : undefined;
-
+    
   const renderActionButton = () => {
     if (!bookingData) {
       if (data?._id !== property.leaser._id) {
@@ -345,6 +345,7 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
         onSubmit={handleExtensionSubmit}
         minDate={minExtensionDate}
         isPending={isExtendRentalPending}
+        pricingUnit={bookingData?.pricingMeta?.unit}
       />
 
       <LoginDialog

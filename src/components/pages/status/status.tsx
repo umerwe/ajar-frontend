@@ -16,12 +16,12 @@ const Status = ({ status }: { status: string }) => {
   const { data, isLoading } = useBooking(status === "all" ? undefined : status, currentPage);
 
   const bookings = data?.data?.bookings || [];
-
+  
   const totalItems = data?.data?.total || 0;
   const limit = data?.data?.limit || ITEMS_PER_PAGE;
 
   const totalPages = Math.ceil(totalItems / limit);
-  console.log("Data:", data);
+
   const listings = bookings.map((x: Booking) => ({
     ...(x.marketplaceListingId as Listing),
     bookingId: x._id,
