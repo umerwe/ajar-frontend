@@ -43,10 +43,6 @@ const CardTop = ({ property, showRemoveButton = false, type }: CardTopProps) => 
   return (
     <CardHeader
       className="p-0 relative"
-      onClick={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-      }}
     >
       <div className="absolute top-2 sm:top-3 left-4 right-2 sm:right-4 flex justify-between items-center z-10">
         <div>
@@ -56,13 +52,23 @@ const CardTop = ({ property, showRemoveButton = false, type }: CardTopProps) => 
             </div>
           )}
         </div>
-        {type !== "booking" && (
-          showRemoveButton ? (
-            <RemoveFavouriteButton listingId={property._id} />
-          ) : (
-            <FavouriteButton listingId={property?._id} />
-          )
-        )}
+        <div
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+        >
+          {type !== "booking" && (
+            showRemoveButton ? (
+              <RemoveFavouriteButton
+                listingId={property._id}
+              />
+            ) : (
+              <FavouriteButton listingId={property?._id} />
+            )
+          )}
+        </div>
+
 
       </div>
 
