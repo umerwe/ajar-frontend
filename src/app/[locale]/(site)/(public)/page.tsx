@@ -1,4 +1,5 @@
 "use client"
+
 import ListingContent from "@/components/listing-content";
 import FilterPage from "@/components/pages/filterPage";
 import { useSearchParams } from "next/navigation";

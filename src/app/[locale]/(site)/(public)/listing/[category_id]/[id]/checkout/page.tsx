@@ -13,6 +13,7 @@ import Header from "@/components/ui/header"
 import type { BookingRequest } from "@/types/booking"
 import { type BookingFormData, bookingSchema } from "@/validations/booking"
 import SkeletonLoader from "@/components/common/skeleton-loader"
+import PrivateComponent from "@/components/private-component"
 
 const CheckoutPage = () => {
     const params = useParams()
@@ -21,7 +22,6 @@ const CheckoutPage = () => {
     const { data: listing, isLoading } = useGetMarketplaceListing(id)
     const { mutateAsync: createBooking, isPending } = useCreateBooking()
 
-    // Helper to determine if we should show time
     const isHourly = listing?.priceUnit === "hour"
 
     const rawPrice = listing?.price || 0;
@@ -52,7 +52,6 @@ const CheckoutPage = () => {
         if (!dateTimeString) return placeholder;
         const dateObj = new Date(dateTimeString);
 
-        // Conditional formatting based on priceUnit
         return dateObj.toLocaleString('en-US', {
             month: 'short',
             day: 'numeric',
@@ -89,11 +88,11 @@ const CheckoutPage = () => {
     const getMinDateTime = () => {
         const now = new Date();
         now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-        // Returns YYYY-MM-DDTHH:mm for hourly, or just YYYY-MM-DD for others
         return isHourly ? now.toISOString().slice(0, 16) : now.toISOString().split('T')[0];
     }
 
     return (
+       <PrivateComponent>
         <div className="min-h-screen">
             <div className="px-4 md:px-0">
                 <Header title="Booking Submission" />
@@ -256,6 +255,7 @@ const CheckoutPage = () => {
                 )}
             </div>
         </div>
+       </PrivateComponent>
     )
 }
 
