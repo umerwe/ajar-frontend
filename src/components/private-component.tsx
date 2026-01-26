@@ -15,7 +15,7 @@ const PrivateComponent: React.FC<PrivateComponentProps> = ({ children }) => {
 
   useEffect(() => {
     if (!isLoading) {
-      if (!user || user.length === 0) {
+      if (!user || user?.length === 0) {
         router.back();
       }
     }
@@ -28,8 +28,9 @@ const PrivateComponent: React.FC<PrivateComponentProps> = ({ children }) => {
       </div>
     );
   }
-
-  return <>{children}</>;
+  else if (user?.email) {
+    return <>{children}</>;
+  }
 };
 
 export default PrivateComponent;

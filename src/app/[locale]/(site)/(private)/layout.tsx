@@ -1,6 +1,5 @@
 import PrivateComponent from "@/components/private-component";
 
-
 export default function PrivateLayout({
   children,
 }: {
