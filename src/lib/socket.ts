@@ -6,7 +6,7 @@ export const getSocket = (): Socket => {
     if (!socket) {
         const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
-        socket = io("http://104.128.190.131:5000", {
+        socket = io(NEXT_PUBLIC_API_BASE_URL, {
             transports: ["websocket"],
             withCredentials: true,
             auth: {
