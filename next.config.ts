@@ -35,6 +35,18 @@ const nextConfig: NextConfig = {
         pathname: '/chat/**',
       },
       {
+        protocol: 'http',
+        hostname: '173.249.13.76',
+        port: '5000',
+        pathname: '/uploads/**',
+      },
+      {
+        protocol: 'http',
+        hostname: '173.249.13.76',
+        port: '5000',
+        pathname: '/chat/**',
+      },
+      {
         protocol: 'https',
         hostname: 'sj61d7kn-5000.inc1.devtunnels.ms',
         pathname: '/uploads/**',

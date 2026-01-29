@@ -30,14 +30,16 @@ const CardBottom = ({ property, bookingId, totalPrice, dates }: CardBottomProps)
   }
 
   const formatDate = (dateStr?: string) => {
-    if (!dateStr) return "--"
-    const date = new Date(dateStr)
+    if (!dateStr) return "--";
+    const date = new Date(dateStr);
     return date.toLocaleDateString("en-GB", {
       day: "2-digit",
       month: "short",
       year: "numeric",
-    })
+      timeZone: "UTC",
+    });
   }
+
 
   const handlePayClick = async () => {
     if (!bookingId) return
@@ -89,28 +91,28 @@ const CardBottom = ({ property, bookingId, totalPrice, dates }: CardBottomProps)
           //     )}
           //   </Button>
           // ) : (
-            !dates ?
-              <Link
-                href={
-                  bookingId
-                    ? `/booking/details/${bookingId}`
-                    : `/listing/${property.subCategory?._id}/${property._id}`
-                }
-                onClick={(e) => {
-                  e.stopPropagation();
-                  scrollToTop();
-                }}
+          !dates ?
+            <Link
+              href={
+                bookingId
+                  ? `/booking/details/${bookingId}`
+                  : `/listing/${property.subCategory?._id}/${property._id}`
+              }
+              onClick={(e) => {
+                e.stopPropagation();
+                scrollToTop();
+              }}
+            >
+              <Button
+                variant="outline"
+                className={buttonStyles}
               >
-                <Button
-                  variant="outline"
-                  className={buttonStyles}
-                >
-                  View Details
-                </Button>
-              </Link>
-              :
-              null
-          }
+                View Details
+              </Button>
+            </Link>
+            :
+            null
+        }
       </CardFooter>
 
       {
