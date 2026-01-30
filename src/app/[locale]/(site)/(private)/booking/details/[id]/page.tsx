@@ -1,19 +1,16 @@
 "use client"
 
-import CoreDetails from "@/components/pages/listing-details/core-details"
 import Header from "@/components/ui/header"
 import ImageGalleryLayout from "@/components/pages/listing-details/image-gallery-layout"
 import PricingActions from "@/components/pages/listing-details/pricing-actions"
-import Rating from "@/components/pages/listing-details/rating"
 import HostInfo from "@/components/pages/listing-details/host-info"
 import { useParams } from "next/navigation"
 import ExploreArea from "@/components/pages/listing-details/explore-area"
 import AboutListing from "@/components/pages/listing-details/about-listing"
 import SkeletonLoader from "@/components/common/skeleton-loader"
-import Document from "@/components/pages/listing-details/document"
-import { useUser } from "@/hooks/useAuth"
 import { useGetBookingId } from "@/hooks/useBooking"
 import NotFound from "@/components/common/not-found"
+import Timeline from "@/components/pages/listing-details/time-line"
 
 const BookingDetails = () => {
   const params = useParams()
@@ -23,13 +20,12 @@ const BookingDetails = () => {
   const { data, isLoading } = useGetBookingId(id);
 
   const listingData = data?.marketplaceListingId;
-  const { data: user } = useUser();
 
   const hasValidListing = !listingData?._id;
 
 
   return (
-    <div>
+    <div className="space-y-[25px]">
       <Header
         status={data?.status}
         title="Booking Details"
@@ -50,20 +46,7 @@ const BookingDetails = () => {
 
           <div className="flex flex-col md:flex-row gap-6 md:gap-8 lg:gap-10">
             {/* LEFT COLUMN */}
-            <div className="w-full md:w-3/5 lg:w-2/3 flex flex-col gap-4">
-              <CoreDetails
-                property={listingData}
-              />
-
-              <Rating
-                property={listingData}
-              />
-
-              {
-                listingData.leaser._id === user?._id &&
-                <Document property={listingData}
-                />}
-
+            <div className="w-full md:w-3/5 lg:w-2/3 flex flex-col gap-[40px]">
               <AboutListing
                 property={listingData}
               />
@@ -87,6 +70,10 @@ const BookingDetails = () => {
               />
             </div>
           </div>
+
+          <Timeline
+            property={data}
+          />
         </>
       )}
     </div>

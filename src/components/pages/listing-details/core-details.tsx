@@ -1,26 +1,28 @@
 import { Button } from "@/components/ui/button"
 import { Listing } from "@/types/listing"
 import { capitalizeWords } from "@/utils/capitalizeWords"
-import { MapPin, Star } from "lucide-react"
+import { ChevronRight, MapPin, Star } from "lucide-react"
 
 const CoreDetails = ({ property }: { property: Listing }) => {
     return (
         <div>
-            <h1 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-2 md:mb-1 flex flex-col sm:flex-row sm:items-center gap-2">
+            <h1 className="text-xl font-semibold text-gray-800 flex flex-col sm:flex-row sm:items-center gap-2">
                 <span>{capitalizeWords(property.name)}</span>
                 <div className="flex gap-0.5">
                     {[...Array(5)].map((_, i) => (
                         <Star
                             key={i}
-                            className="w-4 h-4 sm:w-4.5 sm:h-4.5 fill-yellow-400 text-yellow-400"
+                            className="w-4 h-4 fill-yellow-400 text-yellow-400"
                         />
                     ))}
                 </div>
             </h1>
 
-            <div className="text-xs sm:text-sm text-gray-600 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 md:gap-20">
+            <h2 className="text-sm mb-1">{capitalizeWords(property.subTitle)}</h2>
+
+            <div className="text-xs sm:text-sm text-gray-900 font-medium flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 md:gap-20">
                 <div className="flex gap-1 items-center">
-                    <MapPin color="black" className="w-4 h-4" />
+                    <MapPin className="w-4 h-4 text-aqua" />
                     <span>{capitalizeWords(property?.zone?.name)}</span>
                 </div>
 
@@ -35,7 +37,8 @@ const CoreDetails = ({ property }: { property: Listing }) => {
                         variant="link"
                         className="p-0 h-auto text-aqua font-medium cursor-pointer"
                     >
-                        Show on Map
+                        Show on map
+                         <ChevronRight className="w-4 h-4 ml-1" />
                     </Button>
                 </a>
             </div>

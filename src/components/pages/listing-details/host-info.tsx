@@ -56,8 +56,8 @@ const HostInfo = ({ property }: { property: Listing }) => {
             : profilePicture
 
     return (
-        <div className="mt-3">
-            <div className="flex items-center mb-2">
+        <div>
+            <div className="flex items-center mb-[20px]">
                 <h2 className="text-lg md:text-xl font-semibold text-gray-800">Hosted by</h2>
             </div>
             <div className="flex items-center justify-between max-w-100 space-x-3">

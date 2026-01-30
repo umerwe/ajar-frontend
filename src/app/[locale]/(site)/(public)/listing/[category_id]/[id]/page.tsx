@@ -1,10 +1,8 @@
 "use client"
 
-import CoreDetails from "@/components/pages/listing-details/core-details"
 import Header from "@/components/ui/header"
 import ImageGalleryLayout from "@/components/pages/listing-details/image-gallery-layout"
 import PricingActions from "@/components/pages/listing-details/pricing-actions"
-import Rating from "@/components/pages/listing-details/rating"
 import HostInfo from "@/components/pages/listing-details/host-info"
 import { useParams } from "next/navigation"
 import { useGetMarketplaceListing } from "@/hooks/useListing"
@@ -21,8 +19,9 @@ const ListingItems = () => {
   const { data: listingData, isLoading } = useGetMarketplaceListing(id);
   
   const hasValidListing = !listingData?._id;
+
   return (
-    <div>
+    <div className="space-y-[25px]">
       <Header title="Rental Details" />
 
       {isLoading ? (
@@ -39,14 +38,7 @@ const ListingItems = () => {
 
           <div className="flex flex-col md:flex-row gap-6 md:gap-8 lg:gap-10">
             {/* LEFT COLUMN */}
-            <div className="w-full md:w-3/5 lg:w-2/3 flex flex-col gap-4">
-              <CoreDetails
-                property={listingData}
-              />
-
-              <Rating
-                property={listingData}
-              />
+            <div className="w-full md:w-3/5 lg:w-2/3 flex flex-col gap-[40px]">
 
               <AboutListing
                 property={listingData}

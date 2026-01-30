@@ -2,116 +2,129 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { Images } from "lucide-react";
+import { MapPin, Star, ChevronRight } from "lucide-react";
+import { Listing } from "@/types/listing";
+import { capitalizeWords } from "@/utils/capitalizeWords";
 import Lightbox from "yet-another-react-lightbox";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
-import Captions from "yet-another-react-lightbox/plugins/captions";
 import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
-import "yet-another-react-lightbox/plugins/captions.css";
+import CoreDetails from "./core-details";
+import Rating from "./rating";
 
-interface ImageProps {
-  rentalImages: string[];
+interface PropertyHeaderProps {
+  property: Listing;
 }
 
-const ImageGalleryLayout = ({ property }: { property: ImageProps }) => {
-  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+// Using your provided static images for demonstration
+const staImg = [
+  "/appartments-img1.webp",
+  "/appartments-img2.webp",
+  "/appartments-img3.webp",
+  "/appartments-img4.webp",
+  "/appartments-img5.webp",
+  "/appartments-img6.webp",
+  "/appartments-img7.jpg",
+  "/appartments-img8.jpg",
+  "/appartments-img1.webp",
+]
 
-  const openLightbox = (index: number) => setLightboxIndex(index);
-  const closeLightbox = () => setLightboxIndex(null);
+const PropertyHeader = ({ property }: PropertyHeaderProps) => {
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  // const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || ""; // Not needed if using local staImg
 
   return (
-    <div className="py-4 md:py-6">
-      <div className="flex flex-col md:flex-row gap-2 h-auto">
-        {/* Big Left Image */}
-        <div className="w-full md:w-[45%] lg:w-[45%] h-[250px] sm:h-[280px] md:h-auto xl:h-[340px] min-h-[250px] relative rounded-lg overflow-hidden">
-          <Image
-            src={process.env.NEXT_PUBLIC_API_BASE_URL + property.rentalImages[0]}
-            alt="Main image"
-            fill
-            className="object-cover cursor-pointer"
-            onClick={() => openLightbox(0)}
-          />
-        </div>
+    <div className="bg-white rounded-lg border border-gray-100 p-4 shadow-sm">
+      <div className="flex flex-col lg:flex-row gap-4">
 
-        {/* Right Side Grid */}
-        <div className="w-full md:w-[55%] lg:w-[55%] h-auto md:h-[280px] xl:h-[340px]">
-          <div className="md:hidden">
-            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-              {property.rentalImages.slice(1, 7).map((img, index) => (
-                <div
-                  key={index}
-                  className="relative flex-shrink-0 w-[120px] h-[120px] sm:w-[140px] sm:h-[140px] rounded-lg overflow-hidden group"
-                >
-                  <Image
-                    src={process.env.NEXT_PUBLIC_API_BASE_URL + img}
-                    alt={`Gallery image ${index + 1}`}
-                    fill
-                    className="object-cover cursor-pointer"
-                    onClick={() => openLightbox(index + 1)}
-                  />
-                  {index === 5 && (
-                    <div
-                      className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-white cursor-pointer"
-                      onClick={() => openLightbox(index + 1)}
-                    >
-                      <Images />
-                      <span className="text-xs font-medium mt-1">
-                        See All {property.rentalImages.length}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+        {/* LEFT: IMAGE GALLERY SECTION */}
+        <div className="flex gap-2 w-full lg:w-[600px] h-[200px] shrink-0">
+          {/* Main Large Image */}
+          <div
+            className="relative w-[50%] h-full rounded-sm overflow-hidden cursor-pointer hover:opacity-95 transition"
+            onClick={() => setLightboxIndex(0)}
+          >
+            <Image
+              src={staImg[0]}
+              alt="Main"
+              fill
+              className="object-cover"
+            />
           </div>
 
-          {/* Desktop Grid */}
-          <div className="hidden md:grid grid-cols-3 grid-rows-2 gap-2 h-full">
-            {property.rentalImages.slice(1, 7).map((img, index) => (
+          {/* 2x2 Small Grid */}
+          <div className="grid grid-cols-2 grid-rows-2 gap-2 w-[50%] h-full">
+            {staImg.slice(1, 5).map((img, index) => (
               <div
                 key={index}
-                className="relative w-full h-full rounded-lg overflow-hidden group"
+                className="relative rounded-sm overflow-hidden cursor-pointer hover:opacity-90 transition"
+                onClick={() => setLightboxIndex(index + 1)}
               >
                 <Image
-                  src={process.env.NEXT_PUBLIC_API_BASE_URL + img}
-                  alt={`Gallery image ${index + 1}`}
+                  src={img}
+                  alt={`Gallery ${index}`}
                   fill
-                  className="object-cover cursor-pointer"
-                  onClick={() => openLightbox(index + 1)}
+                  className="object-cover"
                 />
-
-                {index === 5 && (
-                  <div
-                    className="absolute inset-0 bg-black/50 flex flex-col gap-2 items-center justify-center text-white cursor-pointer"
-                    onClick={() => openLightbox(index + 1)}
-                  >
-                    <Images />
-                    <span className="text-xs font-medium">
-                      See All {property.rentalImages.length} Photos
-                    </span>
+                {/* Overlay on the last visible image if there are more */}
+                {/* UPDATED: Switched to checking staImg length for consistency */}
+                {index === 3 && staImg.length > 5 && (
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-sm font-bold">
+                    +{staImg.length - 5}
                   </div>
                 )}
               </div>
             ))}
           </div>
         </div>
+
+        {/* RIGHT: CONTENT SECTION */}
+        <div className="flex-1 flex flex-col justify-between py-1">
+          <div className="space-y-2">
+            <CoreDetails
+              property={property}
+            />
+
+            <Rating
+              property={property}
+            />
+          </div>
+
+          {/* INFO GRID (Bottom Row) */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-gray-50">
+            <div>
+              <p className="text-gray-400 text-xs mb-1">Booking ID</p>
+              <p className="font-semibold text-gray-800 text-sm">RBK-2025</p>
+            </div>
+            <div>
+              <p className="text-gray-400 text-xs mb-1">Renter</p>
+              <p className="font-semibold text-gray-800 text-sm">Jhone Doe</p>
+            </div>
+            <div>
+              <p className="text-gray-400 text-xs mb-1">Guests</p>
+              <p className="font-semibold text-gray-800 text-sm">2 Adults</p>
+            </div>
+            <div>
+              <p className="text-gray-400 text-xs mb-1">Type</p>
+              <p className="font-semibold text-gray-800 text-sm">Long-Term</p>
+            </div>
+          </div>
+        </div>
       </div>
 
+      {/* LIGHTBOX */}
       {lightboxIndex !== null && (
         <Lightbox
-          open
-          close={closeLightbox}
+          open={lightboxIndex !== null}
+          close={() => setLightboxIndex(null)}
           index={lightboxIndex}
-          slides={property.rentalImages.map((src, i) => ({
-            src: process.env.NEXT_PUBLIC_API_BASE_URL + src,
-            title: `Photo ${i + 1}`,
-          }))}
-          plugins={[Thumbnails, Captions]}
+          // UPDATED: Use staImg for the lightbox slides so it matches what is clicked
+          slides={staImg.map((src) => ({ src: src }))}
+          plugins={[Thumbnails]}
         />
       )}
     </div>
   );
 };
 
-export default ImageGalleryLayout;
+export default PropertyHeader;
