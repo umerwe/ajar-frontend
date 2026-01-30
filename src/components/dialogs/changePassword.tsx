@@ -8,7 +8,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { ChangePasswordForm } from "../forms/changePassword";
+import ChangePasswordForm from "../forms/changePassword";
 import { ChevronRight } from "lucide-react";
 
 type ChangePasswordDialogProps = {

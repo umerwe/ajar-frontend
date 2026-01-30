@@ -1,75 +1,69 @@
 "use client";
 
-import { useChangePassword } from "@/hooks/useAuth";
-import { DialogFooter } from "@/components/ui/dialog";
-import React, { Dispatch, SetStateAction } from "react";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import Loader from "@/components/common/loader";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Input from "@/components/ui/auth-input";
+import Button from "../auth/button";
+import { useChangePassword } from "@/hooks/useAuth";
+import { ChangePassword, ChangePasswordSchema } from "@/validations/auth";
 
 interface ChangePasswordFormProps {
-    setOpen: Dispatch<SetStateAction<boolean>>;
+    setOpen: (open: boolean) => void;
 }
 
-export const ChangePasswordForm = ({ setOpen }: ChangePasswordFormProps) => {
-    const { mutate, isPending } = useChangePassword();
+const ChangePasswordForm = ({ setOpen }: ChangePasswordFormProps) => {
+    const { mutateAsync, isPending } = useChangePassword();
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<ChangePassword>({
+        resolver: zodResolver(ChangePasswordSchema),
+        defaultValues: {
+            oldPassword: "",
+            newPassword: "",
+            confirmPassword: "",
+        },
+    });
 
-        const form = e.currentTarget;
-
-        const formData = {
-            oldPassword: (form.oldPassword as HTMLInputElement).value,
-            newPassword: (form.newPassword as HTMLInputElement).value,
-            confirmPassword: (form.confirmPassword as HTMLInputElement).value,
-        };
-
-        mutate(formData, {
-            onSuccess: () => {
-                setOpen(false);
-            },
-        });
+    const onSubmit = async (formData: ChangePassword) => {
+        await mutateAsync(formData);
+        setOpen(false);
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4 pt-4">
-            <div className="space-y-2">
-                <Label htmlFor="oldPassword">Old Password</Label>
+        <div className="bg-white rounded-md py-2 w-full lg:w-[400px]">
+
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <Input
-                    id="oldPassword"
-                    name="oldPassword"
+                    label="Old Password"
                     type="password"
                     placeholder="Enter Old Password"
-                    required
+                    register={register("oldPassword")}
+                    error={errors.oldPassword?.message}
                 />
-            </div>
-            <div className="space-y-2">
-                <Label htmlFor="newPassword">New Password</Label>
+
                 <Input
-                    id="newPassword"
-                    name="newPassword"
+                    label="New Password"
                     type="password"
                     placeholder="Enter New Password"
-                    required
+                    register={register("newPassword")}
+                    error={errors.newPassword?.message}
                 />
-            </div>
-            <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm New Password</Label>
+
                 <Input
-                    id="confirmPassword"
-                    name="confirmPassword"
+                    label="Confirm Password"
                     type="password"
                     placeholder="Confirm Password"
-                    required
+                    register={register("confirmPassword")}
+                    error={errors.confirmPassword?.message}
                 />
-            </div>
-            <DialogFooter className="pt-4">
-                <Button type="submit" variant="destructive" className="w-full" disabled={isPending}>
-                    {isPending ? <Loader /> : "Change Password"}
-                </Button>
-            </DialogFooter>
-        </form>
+
+                <Button isPending={isPending} text="Submit" className="text-base" />
+            </form>
+        </div>
     );
 };
+
+export default ChangePasswordForm;
