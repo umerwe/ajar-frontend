@@ -13,14 +13,14 @@ const ExploreArea = ({ property }: { property: Listing }) => {
                         height="100%"
                         style={{ border: 0 }}
                         referrerPolicy="no-referrer-when-downgrade"
-                        src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(property.address)}`}
+                        src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(property.zone.name)}`}
                     ></iframe>
                 </div>
 
                 <div className="p-3 md:p-4">
-                    <p className="text-sm md:text-base font-medium text-gray-800 capitalize">{property.address}</p>
+                    <p className="text-sm md:text-base font-medium text-gray-800 capitalize">{property.zone.name}</p>
                     <a
-                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(property.address)}`}
+                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(property.zone.name)}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-aqua text-sm flex items-center cursor-pointer"
