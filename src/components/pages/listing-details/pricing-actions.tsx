@@ -123,7 +123,7 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const minExtensionDate = bookingData?.dates?.checkOut
     ? new Date(bookingData.dates.checkOut).toISOString().split("T")[0]
     : undefined;
-    
+
   const renderActionButton = () => {
     if (!bookingData) {
       if (data?._id !== property.leaser._id) {
@@ -229,10 +229,10 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
                 className="flex items-center gap-2 cursor-pointer group"
                 onClick={() => setIsPriceOpen(!isPriceOpen)}
               >
-                <span className="text-xl sm:text-2xl font-semibold border-b border-dotted border-gray-400 pb-1 group-hover:border-gray-800 transition-colors">
-                  ${displayPrice.toFixed(2)}
-                </span>
-                <Info className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+                 <h1 className="text-xl sm:text-2xl border-b border-dotted border-gray-400 pb-1 group-hover:border-gray-800 transition-colors">
+                  <span className="font-semibold">${basePrice.toFixed(2)} </span>
+                  <span className="text-gray-800 text-lg">/per {bookingData ? bookingData?.pricingMeta?.unit : property.priceUnit}</span>
+                </h1>
               </div>
             </HoverCardTrigger>
 
@@ -278,10 +278,11 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
                 className="flex items-center gap-2 cursor-pointer group"
                 onClick={() => setIsPriceOpen(!isPriceOpen)}
               >
-                <span className="text-xl sm:text-2xl font-semibold border-b border-dotted border-gray-400 pb-1 group-hover:border-gray-800 transition-colors">
-                  ${totalNoBookingPrice.toFixed(2)}
-                </span>
-                <Info className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+                <h1 className="text-xl sm:text-2xl border-b border-dotted border-gray-400 pb-1 group-hover:border-gray-800 transition-colors">
+                  <span className="font-semibold">${rawPrice.toFixed(2)} </span>
+                  <span className="text-gray-800 text-lg">/per {bookingData ? bookingData?.pricingMeta?.unit : property.priceUnit}</span>
+                </h1>
+                {/* <Info className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" /> */}
               </div>
             </HoverCardTrigger>
 

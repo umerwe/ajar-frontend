@@ -52,5 +52,10 @@ export const profileItems = [
         icon: Flag,
         label: "Report",
         href: "/report",
+    },
+    {
+        icon: Pencil,
+        label: "Refund Request",
+        href: "/refund",
     }
 ];

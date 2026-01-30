@@ -1,4 +1,4 @@
-export const formatStatus = (status: string) =>
+export const formatText = (status: string) =>
     status
         .replace(/_/g, " ")
         .split(" ")

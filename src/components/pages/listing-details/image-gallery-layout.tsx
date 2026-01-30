@@ -11,6 +11,7 @@ import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 import CoreDetails from "./core-details";
 import Rating from "./rating";
+import { removeFields } from "@/utils/removeFields"
 
 interface PropertyHeaderProps {
   property: Listing;
@@ -32,6 +33,34 @@ const staImg = [
 const PropertyHeader = ({ property }: PropertyHeaderProps) => {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   // const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || ""; // Not needed if using local staImg
+  const cleanedData = removeFields(property as any, [
+    "_id",
+    "leaser",
+    "subCategory",
+    "zone",
+    "ratings",
+    "name",
+    "subTitle",
+    "images",
+    "rentalImages",
+    "description",
+    "price",
+    "isActive",
+    "language",
+    "documents",
+    "isAvailable",
+    "currentBookingId",
+    "status",
+    "priceUnit",
+    "createdAt",
+    "updatedAt",
+    "__v",
+    "userDocuments",
+    "leaserDocuments",
+    "adminFee",
+    "tax",
+    "languages"
+  ]);
 
   return (
     <div className="bg-white rounded-lg border border-gray-100 p-4 shadow-sm">
@@ -90,24 +119,15 @@ const PropertyHeader = ({ property }: PropertyHeaderProps) => {
             />
           </div>
 
-          {/* INFO GRID (Bottom Row) */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-gray-50">
-            <div>
-              <p className="text-gray-400 text-xs mb-1">Booking ID</p>
-              <p className="font-semibold text-gray-800 text-sm">RBK-2025</p>
-            </div>
-            <div>
-              <p className="text-gray-400 text-xs mb-1">Renter</p>
-              <p className="font-semibold text-gray-800 text-sm">Jhone Doe</p>
-            </div>
-            <div>
-              <p className="text-gray-400 text-xs mb-1">Guests</p>
-              <p className="font-semibold text-gray-800 text-sm">2 Adults</p>
-            </div>
-            <div>
-              <p className="text-gray-400 text-xs mb-1">Type</p>
-              <p className="font-semibold text-gray-800 text-sm">Long-Term</p>
-            </div>
+            {cleanedData.map((item, index) =>
+              Object.entries(item).map(([key, value]) => (
+                <div key={`${index}-${key}`}>
+                  <p className="text-gray-400 text-sm capitalize truncate">{key}</p>
+                  <p className="font-semibold text-gray-800 text-sm truncate">{value}</p>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>

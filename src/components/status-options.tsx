@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import Dropdown from "@/components/ui/dropdown";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
-import { formatStatus } from "@/utils/formatStatus";
+import { formatText } from "@/utils/formatText";
 import { statusOptions } from "../constants/booking";
 
 const StatusOptions = () => {
@@ -24,7 +24,7 @@ const StatusOptions = () => {
 
     const getCurrentLabel = () => {
         if (!statusParam || slugify(statusParam) === "all") return "All Status";
-        return formatStatus(statusParam);
+        return formatText(statusParam);
     };
 
     const mobileButton = (

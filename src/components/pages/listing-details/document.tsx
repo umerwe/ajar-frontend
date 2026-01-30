@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { FileIcon } from "lucide-react";
 import { Listing } from "@/types/listing";
 import {
     Dialog,
@@ -12,6 +11,7 @@ import {
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import Image from "next/image";
+import { formatText } from "@/utils/formatText";
 
 const Document = ({ property }: { property: Listing }) => {
     const [open, setOpen] = useState(false);
@@ -46,7 +46,7 @@ const Document = ({ property }: { property: Listing }) => {
                             <div className="flex justify-between items-center">
                                 <span className="text-sm text-gray-500">Name</span>
                                 <span className="text-sm font-medium text-gray-900 capitalize">
-                                    {document.name}
+                                    {formatText(document.name)}
                                 </span>
                             </div>
 
@@ -78,8 +78,7 @@ const Document = ({ property }: { property: Listing }) => {
                     close={() => setLightboxOpen(false)}
                     slides={[
                         {
-                            src: imageUrl,
-                            title: document?.name,
+                            src: imageUrl
                         },
                     ]}
                     carousel={{ finite: true }}
