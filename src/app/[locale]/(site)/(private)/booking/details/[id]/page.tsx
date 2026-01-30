@@ -1,16 +1,16 @@
 "use client"
 
 import Header from "@/components/ui/header"
-import ImageGalleryLayout from "@/components/pages/listing-details/image-gallery-layout"
-import PricingActions from "@/components/pages/listing-details/pricing-actions"
-import HostInfo from "@/components/pages/listing-details/host-info"
+import ImageGalleryLayout from "@/components/pages/details/image-gallery-layout"
+import PricingActions from "@/components/pages/details/pricing-actions"
+import HostInfo from "@/components/pages/details/host-info"
 import { useParams } from "next/navigation"
-import ExploreArea from "@/components/pages/listing-details/explore-area"
-import AboutListing from "@/components/pages/listing-details/about-listing"
+import ExploreArea from "@/components/pages/details/explore-area"
+import AboutListing from "@/components/pages/details/about-listing"
 import SkeletonLoader from "@/components/common/skeleton-loader"
 import { useGetBookingId } from "@/hooks/useBooking"
 import NotFound from "@/components/common/not-found"
-import Timeline from "@/components/pages/listing-details/time-line"
+import Timeline from "@/components/pages/details/time-line"
 
 const BookingDetails = () => {
   const params = useParams()
