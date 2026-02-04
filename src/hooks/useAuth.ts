@@ -19,7 +19,7 @@ export const useUpdateUser = () => {
     return useMutation({
         mutationFn: updateUser,
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["user"] })
+            queryClient.invalidateQueries({ queryKey: ["user"] });
         },
         onError: (error) => {
             const err = error as AxiosError<ErrorResponse>;

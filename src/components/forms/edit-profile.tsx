@@ -10,6 +10,7 @@ import { capitalizeWords } from "@/utils/capitalizeWords";
 import Loader from "../common/loader";
 import { formatFileSize } from "@/utils/formatFileSize";
 import { EditProfileFormValues, EditProfileSchema } from "@/validations/profile";
+import { toast } from "../ui/toast";
 
 
 export default function EditProfileForm({
@@ -50,6 +51,10 @@ export default function EditProfileForm({
         mutate(formData, {
             onSuccess: () => {
                 setOpen(false);
+                toast({
+                title: "User Updated Successfully",
+                variant: "default",
+            });
             },
         });
     };
@@ -84,6 +89,7 @@ export default function EditProfileForm({
                 type="date"
                 register={register("dob")}
                 error={errors.dob?.message}
+                onKeyDown={(e) => e.preventDefault()}
             />
 
             <Input
@@ -118,13 +124,13 @@ export default function EditProfileForm({
                                     <div className="mb-2">
                                         <div className="flex gap-2 overflow-x-auto scrollbar-thin">
                                             {doc.filesUrl?.map((url: string, index: number) => (
-                                                <a key={index} href={process.env.NEXT_PUBLIC_API_BASE_URL + url} target="_blank" rel="noopener noreferrer" className="relative w-24 h-24 rounded-lg overflow-hidden border flex-shrink-0">
+                                                <div key={index} className="relative w-24 h-24 rounded-lg overflow-hidden border flex-shrink-0">
                                                     {url.endsWith(".pdf") ? (
                                                         <div className="flex items-center justify-center h-full bg-gray-200 text-sm text-gray-600">PDF</div>
                                                     ) : (
                                                         <Image src={process.env.NEXT_PUBLIC_API_BASE_URL + url} alt="preview" fill className="object-cover" />
                                                     )}
-                                                </a>
+                                                </div>
                                             ))}
                                         </div>
                                     </div>
