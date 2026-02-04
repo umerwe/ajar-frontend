@@ -21,6 +21,14 @@ export const useUpdateUser = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["user"] })
         },
+        onError: (error) => {
+            const err = error as AxiosError<ErrorResponse>;
+            toast({
+                title: "Update Failed",
+                description: err.response?.data?.message || "Unable to update user. Please try again.",
+                variant: "destructive",
+            });
+        },
     })
 }
 
@@ -62,7 +70,7 @@ export const useLogin = () => {
                 localStorage.setItem("email", data?.user?.email);
                 router.push("/auth/verification");
             }
-             else if (data?.require2FA) {
+            else if (data?.require2FA) {
                 toast({
                     title: `6 Digit Code Sent to Email`,
                     variant: "default",

@@ -75,7 +75,8 @@ interface Favourite {
 type User = {
   _id: string
   name: string
-  email: string
+  email: string;
+  dob : string;
   role: "user" | "admin" | "superadmin"
   status: "active" | "inactive" | "banned"
   profilePicture: string

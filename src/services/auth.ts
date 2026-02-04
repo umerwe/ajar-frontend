@@ -11,9 +11,10 @@ export const updateUser = async (formData: FormData) => {
     headers: {
       "Content-Type": "multipart/form-data",
     },
-  })
-  return data.data.user
-}
+  });
+
+  return data.data.user;
+};
 
 export const loginUser = async (credentials: Login) => {
   const { data } = await api.post("/api/users/login", credentials);
