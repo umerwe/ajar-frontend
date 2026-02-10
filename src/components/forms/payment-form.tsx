@@ -8,11 +8,12 @@ import {
     CardExpiryElement,
     CardCvcElement
 } from "@stripe/react-stripe-js"
-import { CreditCard, Lock, Loader2 } from "lucide-react"
+import { CreditCard, Lock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { toast } from "@/components/ui/toast"
 import { StripeCardFormProps } from "@/types/payment"
 import { inputBaseClasses, stripeElementOptions } from "@/utils/stripe"
+import Loader from "../common/loader"
 
 export const StripeCardForm = ({ clientSecret, amount }: StripeCardFormProps) => {
     const stripe = useStripe()
@@ -49,15 +50,21 @@ export const StripeCardForm = ({ clientSecret, amount }: StripeCardFormProps) =>
             },
         })
 
+        // ✅ Show toast if there's an error
         if (error) {
             toast({
                 description: error.message || "Payment failed.",
                 variant: "destructive",
             })
-            setIsLoading(false);
-            
-        } else if (paymentIntent && paymentIntent.status === 'succeeded') {
-                window.location.href = `/success`   
+        }
+
+        // ✅ If paymentIntent exists, let processing page handle all statuses
+        if (paymentIntent?.id) {
+            window.location.href = `/processing/${paymentIntent.id}`
+        } else {
+            // ✅ No payment intent - direct failure
+            setIsLoading(false)
+            window.location.href = `/failed`
         }
     }
 
@@ -128,7 +135,7 @@ export const StripeCardForm = ({ clientSecret, amount }: StripeCardFormProps) =>
             >
                 {isLoading ? (
                     <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Processing...
+                        <Loader />
                     </>
                 ) : (
                     `Pay $${Math.round(amount)}.00`

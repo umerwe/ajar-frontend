@@ -10,9 +10,6 @@ const PaymentProcessing = () => {
     const { id } = useParams();
     const paymentIntentId = id as string;
 
-    const [status, setStatus] = useState<"pending" | "succeeded" | "failed">(
-        "pending"
-    )
     const [message, setMessage] = useState("Confirming your payment...")
 
     useEffect(() => {
@@ -20,27 +17,23 @@ const PaymentProcessing = () => {
 
         const verifyPayment = async () => {
             try {
-
                 const res = await api.post("/api/payments/stripe/verify", {
                     paymentIntentId,
                 })
                 const data = res.data
 
-                if (data.verified === true) {
-                    setStatus("succeeded")
+                if (data.status === "succeeded") {
+                    setMessage(data.message || "Payment successful!")
                     router.replace("/success")
-                } else if (data.verified === false) {
-                    setStatus("failed")
+                } else if (data.status === "failed") {
+                    setMessage(data.message || "Payment failed")
                     router.replace("/failed")
-                } else {
-                    setStatus("pending")
+                } else if (data.status === "pending") {
                     setMessage(
-                        "Payment is still being confirmed. Please wait a moment..."
+                        data.message || "Payment is still being confirmed. Please wait a moment..."
                     )
-                    setTimeout(verifyPayment, 3000)
                 }
             } catch (err) {
-                console.error(err)
                 setMessage(
                     "Error verifying payment. Please wait a moment or refresh the page."
                 )
