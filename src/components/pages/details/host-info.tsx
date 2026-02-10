@@ -1,4 +1,5 @@
 import { LoginDialog } from '@/components/dialogs/login-dialog'
+import { useUser } from '@/hooks/useAuth'
 import { useCreateChat, useGetChatList } from '@/hooks/useChat'
 import { Chat, Participant } from '@/types/chat'
 import { Listing } from '@/types/listing'
@@ -10,6 +11,7 @@ import { useState } from 'react'
 
 const HostInfo = ({ property }: { property: Listing }) => {
     const router = useRouter();
+    const { data: user } = useUser();
     const { mutate } = useCreateChat();
     const { data } = useGetChatList();
     const [isGuestDialogOpen, setIsGuestDialogOpen] = useState(false);
@@ -88,11 +90,15 @@ const HostInfo = ({ property }: { property: Listing }) => {
                         </p>
                     </div>
                 </div>
-                <div
-                    onClick={handleClick}
-                    className="border-2 border-t-aqua border-r-aqua border-b-blue border-l-blue flex items-center justify-center mb-2 w-10 h-10 rounded-md cursor-pointer">
-                    <MessageCircleMore className="w-5.5 h-5.5 text-aqua" />
-                </div>
+                {
+                    user?.email !== property?.leaser?.email &&
+                    <div
+                        onClick={handleClick}
+                        className="border-2 border-t-aqua border-r-aqua border-b-blue border-l-blue flex items-center justify-center mb-2 w-10 h-10 rounded-md cursor-pointer">
+                        <MessageCircleMore className="w-5.5 h-5.5 text-aqua" />
+                    </div>
+                }
+
             </div>
             <LoginDialog
                 open={isGuestDialogOpen}

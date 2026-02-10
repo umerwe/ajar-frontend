@@ -6,7 +6,7 @@ export async function getListing(params: MarketplaceListingsProps) {
     zone: zone ?? "",
     page: page ?? "1",
     limit: limit ?? "10",
-    category: category ?? "",
+    subCategory: category ?? "",
     all: "true",
     minPrice: minPrice ?? "0",
     maxPrice: maxPrice ?? "1000000",
