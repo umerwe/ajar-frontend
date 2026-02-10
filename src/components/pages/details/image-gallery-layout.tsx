@@ -74,7 +74,7 @@ const PropertyHeader = ({ property }: PropertyHeaderProps) => {
             onClick={() => setLightboxIndex(0)}
           >
             <Image
-              src={process.env.NEXT_PUBLIC_API_BASE_URL + staImg[0]}
+              src={process.env.NEXT_PUBLIC_API_BASE_URL + property.rentalImages[0]}
               alt="Main"
               fill
               className="object-cover"
@@ -83,7 +83,7 @@ const PropertyHeader = ({ property }: PropertyHeaderProps) => {
 
           {/* 2x2 Small Grid */}
           <div className="grid grid-cols-2 grid-rows-2 gap-2 w-[50%] h-full">
-            {staImg.slice(1, 5).map((img, index) => (
+            {property.rentalImages.slice(1, 5).map((img, index) => (
               <div
                 key={index}
                 className="relative rounded-sm overflow-hidden cursor-pointer hover:opacity-90 transition"
@@ -97,9 +97,9 @@ const PropertyHeader = ({ property }: PropertyHeaderProps) => {
                 />
                 {/* Overlay on the last visible image if there are more */}
                 {/* UPDATED: Switched to checking staImg length for consistency */}
-                {index === 3 && staImg.length > 5 && (
+                {index === 3 && property.rentalImages.length > 5 && (
                   <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-sm font-bold">
-                    +{staImg.length - 5}
+                    +{property.rentalImages.length - 5}
                   </div>
                 )}
               </div>
