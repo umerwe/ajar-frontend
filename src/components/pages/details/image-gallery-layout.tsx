@@ -124,7 +124,7 @@ const PropertyHeader = ({ property }: PropertyHeaderProps) => {
               Object.entries(item).map(([key, value]) => (
                 <div key={`${index}-${key}`}>
                   <p className="text-gray-400 text-sm capitalize truncate">{key}</p>
-                  <p className="font-semibold text-gray-800 text-sm truncate">{value}</p>
+                  <p className="font-semibold text-gray-800 text-sm truncate capitalize">{value}</p>
                 </div>
               ))
             )}
