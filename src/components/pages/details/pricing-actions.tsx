@@ -28,6 +28,7 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const { mutate: updateStatus, isPending: isStatusLoading } = useUpdateBookingStatus();
   const { mutate: deductWallet } = useDeductWallet();
   const { data } = useUser();
+  console.log(bookingData)
   const [isRateOpen, setIsRateOpen] = useState(false)
   const [isPaymentOpen, setIsPaymentOpen] = useState(false)
   const [loadingPayment, setLoadingPayment] = useState(false)
@@ -41,7 +42,6 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const router = useRouter()
   const { label, link } = getActionDetails(bookingData?.status);
 
-  // Price when NO booking exists (use property data)
   const rawPrice = property?.price || 0;
   const adminFeeNoBooking = property?.adminFee || 0;
   const taxNoBooking = property?.tax || 0;
@@ -49,8 +49,6 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const totalNoBookingPrice =
     rawPrice + adminFeeNoBooking + taxNoBooking;
 
-
-  // Price Calculation
   const priceDetails = bookingData?.priceDetails || 0
   const basePrice = priceDetails?.price || property?.price || 0
   const adminFee = priceDetails?.adminFee || 0
@@ -71,22 +69,6 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
           router.replace(`/success/${bookingData._id}`)
         }
       })
-    // setLoadingPayment(true)
-    // try {
-    //   const response = await api.post("/api/payments/stripe/intent", {
-    //     bookingId: bookingData._id,
-    //   })
-    //   const secret = response.data?.clientSecret
-
-    //   if (secret) {
-    //     setClientSecret(secret)
-    //     setIsPaymentOpen(true)
-    //   }
-    // } catch {
-    //   toast({ description: "Failed to initialize payment.", variant: "destructive" })
-    // } finally {
-    //   setLoadingPayment(false)
-    // }
   }
 
   const handlePinSubmit = (pin: string) => {
@@ -189,24 +171,6 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
             )}
           </Button>
         );
-      // // if (bookingData.paymentStatus === "succeeded") {
-
-      // // } 
-      // // else {
-      // //   return (
-      // //     <Button
-      // //       onClick={handlePaymentClick}
-      // //       disabled={isDeductPending}
-      // //       variant="destructive"
-      // //     >
-      // //       {isDeductPending ? (
-      // //         <Loader />
-      // //       ) : (
-      // //         label === "Approved" ? "Pay Now" : label
-      // //       )}
-      // //     </Button>
-      // //   );
-      // }
 
       default:
         return (
@@ -266,6 +230,50 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
                   <span>Total</span>
                   <span>${displayPrice.toFixed(2)}</span>
                 </div>
+
+                {bookingData?.extensions && bookingData.extensions.length > 0 && (
+                  <>
+                    <div className="border-t pt-3 mt-3">
+                      <h4 className="font-medium leading-none mb-3">Extensions</h4>
+                      {bookingData.extensions.map((extension: any, index: number) => (
+                        <div key={extension._id} className="mb-3 space-y-2">
+                          <p className="text-sm font-medium text-muted-foreground">{extension.name}</p>
+                          
+                          <div className="flex justify-between text-sm text-muted-foreground">
+                            <span>Base Price</span>
+                            <span>${extension.priceDetails?.price?.toFixed(2) || '0.00'}</span>
+                          </div>
+
+                          <div className="flex justify-between text-sm text-muted-foreground">
+                            <span>Admin Fee</span>
+                            <span>${extension.priceDetails?.adminFee?.toFixed(2) || '0.00'}</span>
+                          </div>
+
+                          <div className="flex justify-between text-sm text-muted-foreground">
+                            <span>Tax</span>
+                            <span>${extension.priceDetails?.tax?.toFixed(2) || '0.00'}</span>
+                          </div>
+
+                          {extension.extraRequestCharges?.additionalCharges > 0 && (
+                            <div className="flex justify-between text-sm text-muted-foreground">
+                              <span>Extra Charges</span>
+                              <span>${extension.extraRequestCharges.additionalCharges.toFixed(2)}</span>
+                            </div>
+                          )}
+
+                          <div className="flex justify-between font-medium text-sm">
+                            <span>Extension Total</span>
+                            <span>${extension.priceDetails?.totalPrice?.toFixed(2) || '0.00'}</span>
+                          </div>
+
+                          {index < bookingData.extensions.length - 1 && (
+                            <div className="border-b mt-2"></div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
             </HoverCardContent>
           </HoverCard>
@@ -282,7 +290,6 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
                   <span className="font-semibold">${rawPrice.toFixed(2)} </span>
                   <span className="text-gray-800 text-lg">/per {bookingData ? bookingData?.pricingMeta?.unit : property.priceUnit}</span>
                 </h1>
-                {/* <Info className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" /> */}
               </div>
             </HoverCardTrigger>
 
