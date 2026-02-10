@@ -138,8 +138,9 @@ const PropertyHeader = ({ property }: PropertyHeaderProps) => {
           open={lightboxIndex !== null}
           close={() => setLightboxIndex(null)}
           index={lightboxIndex}
-          // UPDATED: Use staImg for the lightbox slides so it matches what is clicked
-          slides={staImg.map((src) => ({ src: src }))}
+          slides={property.rentalImages.map((img) => ({
+            src: process.env.NEXT_PUBLIC_API_BASE_URL + img,
+          }))}
           plugins={[Thumbnails]}
         />
       )}
