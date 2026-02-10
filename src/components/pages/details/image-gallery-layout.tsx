@@ -74,7 +74,7 @@ const PropertyHeader = ({ property }: PropertyHeaderProps) => {
             onClick={() => setLightboxIndex(0)}
           >
             <Image
-              src={staImg[0]}
+              src={process.env.NEXT_PUBLIC_API_BASE_URL + staImg[0]}
               alt="Main"
               fill
               className="object-cover"
@@ -90,7 +90,7 @@ const PropertyHeader = ({ property }: PropertyHeaderProps) => {
                 onClick={() => setLightboxIndex(index + 1)}
               >
                 <Image
-                  src={img}
+                  src={process.env.NEXT_PUBLIC_API_BASE_URL + img}
                   alt={`Gallery ${index}`}
                   fill
                   className="object-cover"
