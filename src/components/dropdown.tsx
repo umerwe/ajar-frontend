@@ -9,21 +9,26 @@ import { useUser } from "@/hooks/useAuth";
 import { Skeleton } from "./ui/skeleton";
 import { capitalizeWords } from "@/utils/capitalizeWords";
 import { timeAgo } from "@/utils/timeAgo";
-import { useNotification } from "@/hooks/useNotification";
+import { useGetUnreadCount, useMarkAllRead, useNotification } from "@/hooks/useNotification";
 import { Notification } from "@/types/notification";
+import { getNotificationLink } from "@/utils/getNotificationLink";
 
 const NotificationContent = (props: React.HTMLAttributes<HTMLDivElement>) => {
-  const { data: notifications, isLoading } = useNotification();
+  const { data, isLoading } = useNotification({});
+  const { mutate } = useMarkAllRead();
+
+  const notifications = data?.data
 
   return (
     <div
-      {...props} // ✅ THIS IS THE FIX: allow parent Dropdown to auto-close
+      {...props}
       className="absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50 md:w-80"
     >
       <div className="px-4 py-3 border-b border-gray-100 flex justify-between items-center">
         <p className="text-base font-semibold text-gray-900">Notifications</p>
         <Link
           href="/notifications"
+          onClick={() => mutate()}
           className="text-xs text-aqua cursor-pointer"
         >
           Show All
@@ -40,12 +45,11 @@ const NotificationContent = (props: React.HTMLAttributes<HTMLDivElement>) => {
           notifications.map((item: Notification) => (
             <Link
               key={item._id}
-              href="#"
-              className={`block px-4 py-3 transition-colors duration-150 ${
-                item.isRead
-                  ? "text-gray-700 hover:bg-gray-50"
-                  : "bg-green-50/50 text-gray-900 hover:bg-aqua/10"
-              }`}
+              href={getNotificationLink(item)}
+              className={`block px-4 py-3 transition-colors duration-150 ${item.isRead
+                ? "text-gray-700 hover:bg-gray-50"
+                : "bg-green-50/50 text-gray-900 hover:bg-aqua/10"
+                }`}
             >
               <p className="text-sm font-medium leading-snug">{item.title}</p>
               <p className="text-xs text-gray-500 mt-1 line-clamp-2">
@@ -67,6 +71,9 @@ const NotificationContent = (props: React.HTMLAttributes<HTMLDivElement>) => {
 
 export default function ProfileDropdown() {
   const { data: user = {}, isLoading } = useUser();
+
+  const { data: unreadData } = useGetUnreadCount();
+  const unreadCount = unreadData?.data?.count || 0;
 
   const getInitial = (name = "") => name.charAt(0).toUpperCase();
 
@@ -106,10 +113,15 @@ export default function ProfileDropdown() {
 
   const notificationButton = (
     <button
-      className="relative p-1 rounded-full text-green-500 hover:bg-gray-200 transition-colors"
+      className="relative p-1 rounded-full text-aqua hover:bg-gray-200 transition-colors"
       aria-label="Notifications"
     >
-      <BellIcon className="h-5 w-5" />
+      <BellIcon className="h-6 w-5.5 pt-0.5" />
+      {unreadCount > 0 && (
+        <span className="absolute top-0.5 -right-1 flex h-4 w-4 p-2 items-center justify-center rounded-full bg-red-500 text-[10px] font-medium text-white ring-white">
+          {unreadCount > 9 ? "9+" : unreadCount}
+        </span>
+      )}
     </button>
   );
 
@@ -118,7 +130,7 @@ export default function ProfileDropdown() {
       className="p-0.5 rounded-full bg-white hover:bg-gray-200 transition-shadow duration-200"
       aria-label="User Profile Menu"
     >
-      <ProfileImage size={28} />
+      <ProfileImage size={26} />
     </button>
   );
 
@@ -166,7 +178,7 @@ export default function ProfileDropdown() {
   );
 
   return (
-    <div className="flex items-center space-x-1 bg-white rounded-full pl-2 pr-1 pt-0.5 w-fit hover:shadow-md transition-shadow duration-200">
+    <div className="flex items-center space-x-1 bg-white rounded-full pl-1 pr-1 w-fit hover:shadow-md transition-shadow duration-200">
       <Dropdown button={notificationButton}>
         <NotificationContent />
       </Dropdown>

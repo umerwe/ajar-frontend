@@ -3,7 +3,6 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Info } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   HoverCard,
@@ -28,7 +27,7 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const { mutate: updateStatus, isPending: isStatusLoading } = useUpdateBookingStatus();
   const { mutate: deductWallet } = useDeductWallet();
   const { data } = useUser();
-  console.log(bookingData)
+  
   const [isRateOpen, setIsRateOpen] = useState(false)
   const [isPaymentOpen, setIsPaymentOpen] = useState(false)
   const [loadingPayment, setLoadingPayment] = useState(false)
@@ -49,27 +48,20 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const totalNoBookingPrice =
     rawPrice + adminFeeNoBooking + taxNoBooking;
 
+  // Pricing variables extraction update
+  const pricingMeta = bookingData?.pricingMeta;
+
+  const unitPrice = pricingMeta?.priceFromListing || property?.price || 0;
+  const duration = pricingMeta?.duration || 0;
+  const unit = pricingMeta?.unit || property?.priceUnit;
+
   const priceDetails = bookingData?.priceDetails || 0
   const basePrice = priceDetails?.price || property?.price || 0
   const adminFee = priceDetails?.adminFee || 0
   const tax = priceDetails?.tax || 0
   const additionalCharges = bookingData?.extraRequestCharges?.additionalCharges || 0
-  const displayPrice = priceDetails?.totalPrice || basePrice
-
-  const handlePaymentClick = async () => {
-    if (!bookingData?._id) return
-
-    deductWallet({
-      amount: displayPrice,
-      description: "Booking payment",
-      bookingId: bookingData._id
-    },
-      {
-        onSuccess: () => {
-          router.replace(`/success/${bookingData._id}`)
-        }
-      })
-  }
+  const displayPrice = priceDetails?.totalPrice || basePrice;
+  const displayTotal = priceDetails?.totalPrice || 0;
 
   const handlePinSubmit = (pin: string) => {
     mutate({ bookingId: bookingData._id, otp: pin },
@@ -193,9 +185,9 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
                 className="flex items-center gap-2 cursor-pointer group"
                 onClick={() => setIsPriceOpen(!isPriceOpen)}
               >
-                 <h1 className="text-xl sm:text-2xl border-b border-dotted border-gray-400 pb-1 group-hover:border-gray-800 transition-colors">
-                  <span className="font-semibold">${basePrice.toFixed(2)} </span>
-                  <span className="text-gray-800 text-lg">/per {bookingData ? bookingData?.pricingMeta?.unit : property.priceUnit}</span>
+                <h1 className="text-xl sm:text-2xl border-b border-dotted border-gray-400 pb-1 group-hover:border-gray-800 transition-colors">
+                  <span className="font-semibold">${unitPrice.toFixed(2)} </span>
+                  <span className="text-gray-800 text-lg">/per {unit}</span>
                 </h1>
               </div>
             </HoverCardTrigger>
@@ -204,8 +196,13 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
               <div className="space-y-2">
                 <h4 className="font-medium leading-none mb-3">Price Breakdown</h4>
 
+                <div className="flex justify-between text-sm text-muted-foreground mb-1">
+                  <span>Duration</span>
+                  <span>{duration} {unit}{duration > 1 ? 's' : ''}</span>
+                </div>
+
                 <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>Base Price</span>
+                  <span>Subtotal ({duration} × ${unitPrice.toFixed(2)})</span>
                   <span>${basePrice.toFixed(2)}</span>
                 </div>
 
@@ -226,54 +223,10 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
                   </div>
                 )}
 
-                <div className="border-t pt-2 mt-2 flex justify-between font-semibold">
+                <div className="border-t pt-2 mt-2 flex justify-between font-semibold text-base">
                   <span>Total</span>
-                  <span>${displayPrice.toFixed(2)}</span>
+                  <span>${displayTotal.toFixed(2)}</span>
                 </div>
-
-                {bookingData?.extensions && bookingData.extensions.length > 0 && (
-                  <>
-                    <div className="border-t pt-3 mt-3">
-                      <h4 className="font-medium leading-none mb-3">Extensions</h4>
-                      {bookingData.extensions.map((extension: any, index: number) => (
-                        <div key={extension._id} className="mb-3 space-y-2">
-                          <p className="text-sm font-medium text-muted-foreground">{extension.name}</p>
-                          
-                          <div className="flex justify-between text-sm text-muted-foreground">
-                            <span>Base Price</span>
-                            <span>${extension.priceDetails?.price?.toFixed(2) || '0.00'}</span>
-                          </div>
-
-                          <div className="flex justify-between text-sm text-muted-foreground">
-                            <span>Admin Fee</span>
-                            <span>${extension.priceDetails?.adminFee?.toFixed(2) || '0.00'}</span>
-                          </div>
-
-                          <div className="flex justify-between text-sm text-muted-foreground">
-                            <span>Tax</span>
-                            <span>${extension.priceDetails?.tax?.toFixed(2) || '0.00'}</span>
-                          </div>
-
-                          {extension.extraRequestCharges?.additionalCharges > 0 && (
-                            <div className="flex justify-between text-sm text-muted-foreground">
-                              <span>Extra Charges</span>
-                              <span>${extension.extraRequestCharges.additionalCharges.toFixed(2)}</span>
-                            </div>
-                          )}
-
-                          <div className="flex justify-between font-medium text-sm">
-                            <span>Extension Total</span>
-                            <span>${extension.priceDetails?.totalPrice?.toFixed(2) || '0.00'}</span>
-                          </div>
-
-                          {index < bookingData.extensions.length - 1 && (
-                            <div className="border-b mt-2"></div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </>
-                )}
               </div>
             </HoverCardContent>
           </HoverCard>

@@ -14,6 +14,8 @@ import type { BookingRequest } from "@/types/booking"
 import { type BookingFormData, bookingSchema } from "@/validations/booking"
 import SkeletonLoader from "@/components/common/skeleton-loader"
 import PrivateComponent from "@/components/private-component"
+import { calculateFrontendPrice } from "@/utils/priceCalculator"
+import { useMemo } from "react"
 
 const CheckoutPage = () => {
     const params = useParams()
@@ -21,13 +23,7 @@ const CheckoutPage = () => {
 
     const { data: listing, isLoading } = useGetMarketplaceListing(id)
     const { mutateAsync: createBooking, isPending } = useCreateBooking()
-
     const isHourly = listing?.priceUnit === "hour"
-
-    const rawPrice = listing?.price || 0;
-    const adminFee = listing?.adminFee || 0;
-    const tax = listing?.tax || 0;
-    const total = rawPrice + adminFee + tax;
 
     const {
         register,
@@ -45,8 +41,26 @@ const CheckoutPage = () => {
         },
     })
 
-    const watchedStartDate = watch("startDate")
-    const watchedEndDate = watch("endDate")
+    const watchedStartDate = watch("startDate");
+    const watchedEndDate = watch("endDate");
+
+    const priceBreakdown = useMemo(() => {
+        if (!listing || !watchedStartDate || !watchedEndDate) return null;
+
+        return calculateFrontendPrice({
+            basePrice: listing.price,
+            unit: listing.priceUnit,
+            startDate: watchedStartDate,
+            endDate: watchedEndDate,
+            adminCommissionRate: listing.adminFee,
+            taxRate: listing.tax,
+        });
+    }, [listing, watchedStartDate, watchedEndDate]);
+
+    const displayBasePrice = priceBreakdown?.basePrice ?? listing?.price ?? 0;
+    const displayAdminFee = priceBreakdown?.adminFee ?? listing?.adminFee ?? 0;
+    const displayTax = priceBreakdown?.tax ?? listing?.tax ?? 0;
+    const displayTotal = priceBreakdown?.totalPrice ?? (displayBasePrice + displayAdminFee + displayTax);
 
     const formatDisplayDateTime = (dateTimeString: string, placeholder: string) => {
         if (!dateTimeString) return placeholder;
@@ -233,20 +247,25 @@ const CheckoutPage = () => {
                                         <h2 className="text-lg font-semibold text-gray-900 mb-4">Payment Details</h2>
                                         <div className="space-y-3">
                                             <div className="flex justify-between items-center">
-                                                <span className="text-base text-gray-600">Base price</span>
-                                                <span className="text-base font-medium text-gray-900">${(rawPrice || 0).toFixed(2)}</span>
+                                                <span className="text-base text-gray-600">
+                                                    Base price {priceBreakdown ? `(${priceBreakdown.duration} ${listing?.priceUnit}${priceBreakdown.duration > 1 ? 's' : ''})` : ""}
+                                                </span>
+                                                <span className="text-base font-medium text-gray-900">${displayBasePrice.toFixed(2)}</span>
                                             </div>
                                             <div className="flex justify-between items-center">
                                                 <span className="text-base text-gray-600">Admin Fee</span>
-                                                <span className="text-base font-medium text-gray-900">${(adminFee || 0).toFixed(2)}</span>
+                                                <span className="text-base font-medium text-gray-900">${displayAdminFee.toFixed(2)}</span>
                                             </div>
                                             <div className="flex justify-between items-center">
                                                 <span className="text-base text-gray-600">Tax</span>
-                                                <span className="text-base font-medium text-gray-900">${(tax || 0).toFixed(2)}</span>
+                                                <span className="text-base font-medium text-gray-900">${displayTax.toFixed(2)}</span>
                                             </div>
                                             <div className="flex justify-between items-center py-3 border-t">
                                                 <span className="text-base font-medium text-gray-900">Total Cost</span>
-                                                <span className="text-xl font-bold text-gray-900">${(total || 0).toFixed(2)}</span>
+                                                <span className="text-xl font-semibold text-gray-900">
+                                                    ${displayTotal.toFixed(2)}
+                                                    <span className="text-sm font-normal text-gray-500">/{listing?.priceUnit}</span>
+                                                </span>
                                             </div>
                                         </div>
                                     </div>

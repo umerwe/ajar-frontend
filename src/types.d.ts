@@ -142,3 +142,12 @@ interface ArticleDetailDialogProps {
     onOpenChange: (open: boolean) => void;
     articleId: string | null;
 }
+
+interface PriceCalculationInput {
+    basePrice: number;
+    unit: "hour" | "day" | "month" | "year";
+    startDate: string;
+    endDate: string;
+    adminCommissionRate: number;
+    taxRate: number;
+}
