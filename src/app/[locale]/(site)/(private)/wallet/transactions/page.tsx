@@ -8,7 +8,8 @@ import SkeletonLoader from '@/components/common/skeleton-loader';
 
 const TransactionsPage = () => {
     const { data, isLoading } = useGetWallet();
-    
+    const transactions = data?.transactions;
+
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleString('en-GB', {
             day: '2-digit',
@@ -33,8 +34,8 @@ const TransactionsPage = () => {
                     /> :
                     <div className=" bg-white sm:max-w-md sm:mx-auto font-sans text-slate-900 border rounded-md py-6 px-5 my-6 md:my-10">
                         <div className="space-y-4">
-                            {data?.transactions?.length > 0 ? (
-                                data?.transactions?.map((tx: Transaction) => (
+                            {transactions?.length > 0 ? (
+                                transactions?.slice(0, 5)?.map((tx: Transaction) => (
                                     <div key={tx._id} className="flex items-center justify-between py-2 group cursor-pointer">
                                         <div className="flex items-center gap-4">
                                             <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
@@ -44,10 +45,13 @@ const TransactionsPage = () => {
                                                 <h3 className="font-medium text-slate-800 text-base">
                                                     {tx.status === 'failed'
                                                         ? 'Transaction Failed'
-                                                        : tx.type === 'credit'
-                                                            ? 'Wallet Credited'
-                                                            : 'Wallet Debited'}
+                                                        : tx.source === 'withdraw'
+                                                            ? 'Withdrawal'
+                                                            : tx.type === 'credit'
+                                                                ? 'Wallet Credited'
+                                                                : 'Wallet Debited'}
                                                 </h3>
+
                                                 <p className="text-xs text-slate-400 font-medium">
                                                     {formatDate(tx.createdAt)}
                                                 </p>

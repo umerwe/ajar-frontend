@@ -49,3 +49,17 @@ export const deleteBankAccount = async (id: string) => {
   const { data } = await api.delete(`/api/users/bank-account/${id}`);
   return data.data;
 };
+
+export const createPaymentIntent = async (amount: number) => {
+  const { data } = await api.post("/api/payments/stripe/intent", {
+    userAmount: amount,
+  });
+  return data;
+};
+
+export const withdraw = async (amount: number) => {
+  const { data } = await api.post("/api/payments/withdraw", {
+    amount,
+  });
+  return data;
+};

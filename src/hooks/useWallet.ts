@@ -2,6 +2,8 @@ import {
     deductWallet, getBankAccountDetails, getWallet, addBankAccount,
     updateBankAccount,
     deleteBankAccount,
+    createPaymentIntent,
+    withdraw,
 } from "@/services/wallet";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -56,6 +58,23 @@ export const useDeleteBankAccount = () => {
         mutationFn: deleteBankAccount,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["bank-account"] });
+        },
+    });
+};
+
+export const useCreatePaymentIntent = () => {
+    return useMutation({
+        mutationFn: createPaymentIntent,
+    });
+};
+
+export const useWithdraw = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: withdraw,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["wallet"] });
         },
     });
 };

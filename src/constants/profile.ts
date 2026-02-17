@@ -30,6 +30,11 @@ export const profileItems = [
         href: "/bank-account",
     },
     {
+        icon: Landmark,
+        label: "Connect Bank Account",
+        href: "/connect-bank-account",
+    },
+    {
         icon: Heart,
         label: "Favorites",
         href: "/favourites",

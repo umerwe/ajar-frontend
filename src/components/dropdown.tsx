@@ -15,9 +15,8 @@ import { getNotificationLink } from "@/utils/getNotificationLink";
 
 const NotificationContent = (props: React.HTMLAttributes<HTMLDivElement>) => {
   const { data, isLoading } = useNotification({});
-  const { mutate } = useMarkAllRead();
 
-  const notifications = data?.data
+  const notifications = data?.data;
 
   return (
     <div
@@ -28,7 +27,6 @@ const NotificationContent = (props: React.HTMLAttributes<HTMLDivElement>) => {
         <p className="text-base font-semibold text-gray-900">Notifications</p>
         <Link
           href="/notifications"
-          onClick={() => mutate()}
           className="text-xs text-aqua cursor-pointer"
         >
           Show All
@@ -71,6 +69,7 @@ const NotificationContent = (props: React.HTMLAttributes<HTMLDivElement>) => {
 
 export default function ProfileDropdown() {
   const { data: user = {}, isLoading } = useUser();
+  const { mutate } = useMarkAllRead();
 
   const { data: unreadData } = useGetUnreadCount();
   const unreadCount = unreadData?.data?.count || 0;
@@ -115,6 +114,7 @@ export default function ProfileDropdown() {
     <button
       className="relative p-1 rounded-full text-aqua hover:bg-gray-200 transition-colors"
       aria-label="Notifications"
+      onClick={() => mutate()}
     >
       <BellIcon className="h-6 w-5.5 pt-0.5" />
       {unreadCount > 0 && (
