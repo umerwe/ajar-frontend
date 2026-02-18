@@ -102,18 +102,31 @@ export default function BankAccountStatusPage() {
               )}
 
               {bankAttached ? (
-                <div className="text-center py-2">
-                  <p className="text-gray-800 font-semibold text-lg flex items-center justify-center gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-aqua" /> Account Verified
-                  </p>
-                  <p className="text-gray-500 text-sm mt-1">
-                    Your bank details are securely linked and ready for payouts.
-                  </p>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-4 bg-green-50 border border-green-100 rounded-xl px-4 py-4">
+                    <div className="p-2.5 bg-green-100 rounded-full shrink-0">
+                      <CheckCircle2 className="w-5 h-5 text-green-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-green-700">Payouts Enabled</p>
+                      <p className="text-xs text-green-600 mt-0.5">Withdrawals will reflect in your bank within 2–5 business days.</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-4 bg-blue-50 border border-blue-100 rounded-xl px-4 py-4">
+                    <div className="p-2.5 bg-blue-100 rounded-full shrink-0">
+                      <BanknoteIcon className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-blue-700">Ready to Withdraw</p>
+                      <p className="text-xs text-blue-600 mt-0.5">Go to your wallet to initiate a withdrawal anytime.</p>
+                    </div>
+                  </div>
                 </div>
               ) : (
                 <Button
                   onClick={handleConnectBank}
-                  className="w-full py-6 text-base rounded-xl bg-header hover:bg-teal-600 transition-all"
+                  className="w-full py-6 text-base rounded-xl"
                   variant="destructive"
                   disabled={isConnecting}
                 >

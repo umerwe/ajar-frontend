@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useConfirmConnectedAccount } from "@/hooks/useWallet";
-import Loader from "@/components/common/loader";
 import { Button } from "@/components/ui/button";
+import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 
 export default function BankSuccessPage() {
     const searchParams = useSearchParams();
@@ -37,29 +37,48 @@ export default function BankSuccessPage() {
     }, [searchParams]);
 
     return (
-        <div className="min-h-[calc(100vh-40px)] flex items-center justify-center">
-            <div className="bg-white p-8 rounded-lg shadow-sm border max-w-md w-full text-center space-y-4">
+        <div className="min-h-[calc(100vh-40px)] flex items-center justify-center px-4">
+            <div className="max-w-md w-full bg-white rounded-2xl border shadow-lg p-8 text-center">
+
                 {status === "loading" && (
                     <>
-                        <Loader />
-                        <p className="text-gray-600">Verifying your bank account...</p>
+                        <div className="flex justify-center mb-6">
+                            <div className="p-4 bg-gray-100 rounded-full">
+                                <Loader2 className="w-10 h-10 text-gray-500 animate-spin" />
+                            </div>
+                        </div>
+                        <h1 className="text-xl font-bold text-gray-900 mb-2">Verifying Account</h1>
+                        <p className="text-gray-500 text-sm">Please wait while we confirm your bank account with Stripe...</p>
                     </>
                 )}
-                {status === "success" && (
+
+                {status == "success" && (
                     <>
-                        <p className="text-4xl">✅</p>
-                        <h2 className="text-xl font-semibold text-gray-900">Account Connected!</h2>
-                        <p className="text-gray-500 text-sm">{message}</p>
-                        <p className="text-gray-400 text-xs">Redirecting you back...</p>
+                        <div className="flex justify-center mb-6">
+                            <div className="p-4 bg-green-100 rounded-full">
+                                <CheckCircle2 className="w-10 h-10 text-green-600" />
+                            </div>
+                        </div>
+                        <h1 className="text-2xl font-bold text-gray-900 mb-2">Account Connected!</h1>
+                        <p className="text-gray-500 text-sm mb-6">{message}</p>
+                        <div className="bg-gray-50 rounded-xl px-4 py-3">
+                            <p className="text-xs text-gray-400">Redirecting you back in a moment...</p>
+                        </div>
                     </>
                 )}
-                {status === "error" && (
+
+                {status == "error" && (
                     <>
-                        <p className="text-4xl">❌</p>
-                        <h2 className="text-xl font-semibold text-gray-900">Something went wrong</h2>
-                        <p className="text-red-500 text-sm">{message}</p>
+                        <div className="flex justify-center mb-6">
+                            <div className="p-4 bg-red-100 rounded-full">
+                                <XCircle className="w-10 h-10 text-red-600" />
+                            </div>
+                        </div>
+                        <h1 className="text-2xl font-bold text-gray-900 mb-2">Something Went Wrong</h1>
+                        <p className="text-gray-500 text-sm mb-6">{message}</p>
                         <Button
                             onClick={() => router.replace("/connect-bank-account")}
+                            className="w-full rounded-xl py-6"
                             variant="destructive"
                         >
                             Go Back

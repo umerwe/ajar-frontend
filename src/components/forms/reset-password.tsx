@@ -36,6 +36,7 @@ const ResetPasswordForm = () => {
                 open={dialogOpen}
                 title="Password Updated!"
                 description="Your password has been changed successfully."
+                redirectTo="/auth/login"
             />
 
             <div className="bg-white rounded-md shadow-2xl px-4 py-8 sm:px-6 w-full lg:w-[330px]">
