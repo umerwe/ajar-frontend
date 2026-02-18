@@ -63,3 +63,25 @@ export const withdraw = async (amount: number) => {
   });
   return data;
 };
+
+export const checkBankConnectionStatus = async () => {
+  const { data } = await api.get("/api/payments/connected-account");
+  return data;
+};
+
+export const createConnectedAccount = async (payload: {
+  userId: string;
+  email: string;
+  country: string;
+}) => {
+  const { data } = await api.post("/api/payments/create-connected-account", payload);
+  return data;
+};
+
+export const confirmConnectedAccount = async (payload: {
+  accountId: string;
+  userId: string;
+}) => {
+  const { data } = await api.post("/api/payments/confirm-connected-account", payload);
+  return data;
+};

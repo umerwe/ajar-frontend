@@ -56,9 +56,9 @@ export default function CongratulationsDialog({
                 onInteractOutside={(e) => e.preventDefault()}
                 onEscapeKeyDown={(e) => e.preventDefault()}
             >
-                <div className="mb-8 flex justify-center">
+                <div className="flex justify-center">
                     <Image
-                        src="/congratulations-img.png"
+                        src="/congratulations.png"
                         alt="Congratulations"
                         width={200}
                         height={200}

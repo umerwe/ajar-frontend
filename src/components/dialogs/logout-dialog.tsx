@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -8,36 +8,29 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { useRouter } from "next/navigation"
+} from "@/components/ui/dialog";
 
-interface LoginDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
+interface LogoutDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: () => void;
 }
 
-export const LoginDialog = ({
+export const LogoutDialog = ({
   open,
   onOpenChange,
-}: LoginDialogProps) => {
-  const router = useRouter()
-
-  const handleLoginRedirect = () => {
-    router.push("/auth/login")
-    onOpenChange(false)
-  }
-
+  onConfirm,
+}: LogoutDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[400px]">
         <DialogHeader className="text-left">
-          <DialogTitle className="text-xl font-semibold">Login Required</DialogTitle>
+          <DialogTitle className="text-xl font-semibold">Confirm Logout</DialogTitle>
           <DialogDescription className="text-gray-600">
-            You need to login before this.
+            Are you sure you want to log out? You will need to login again to access your account.
           </DialogDescription>
         </DialogHeader>
 
-        {/* grid-cols-2 ensures equal width, sm:justify-start aligns them to the left */}
         <DialogFooter className="grid grid-cols-2 gap-3 sm:justify-start mt-4">
           <Button
             variant="outline"
@@ -47,13 +40,13 @@ export const LoginDialog = ({
             Cancel
           </Button>
           <Button
-            onClick={handleLoginRedirect}
+            onClick={onConfirm}
             className="w-full bg-header hover:bg-teal-600 text-white rounded-full"
           >
-            Login
+            Logout
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};

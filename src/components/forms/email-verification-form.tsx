@@ -38,7 +38,7 @@ const EmailVerificationForm = ({ type, title, description, buttonText }: { type?
                             title: "Two Factor Authentication Enabled",
                             variant: "default",
                         });
-                        router.push("/two-factor");
+                        router.replace("/two-factor");
                     },
                 }
             )
@@ -100,7 +100,7 @@ const EmailVerificationForm = ({ type, title, description, buttonText }: { type?
                 open={dialogOpen}
             />
 
-            <div className={`bg-white rounded-md shadow-2xl px-4 py-8 sm:py-10 sm:px-6 w-full ${title ? "lg:w-[400px]" : "lg:w-[333px]"}`}>
+            <div className={`bg-white rounded-md shadow-md border border-gray-100 px-4 py-8 sm:py-10 sm:px-6 w-full ${title ? "lg:w-[400px]" : "lg:w-[333px]"}`}>
                 <Header
                     title={`${title ? title : "Email Verification"}`}
                     description={`${description ? description : "Enter OTP to get your account verified"}`}

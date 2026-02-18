@@ -4,6 +4,9 @@ import {
     deleteBankAccount,
     createPaymentIntent,
     withdraw,
+    checkBankConnectionStatus,
+    createConnectedAccount,
+    confirmConnectedAccount,
 } from "@/services/wallet";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -77,4 +80,24 @@ export const useWithdraw = () => {
             queryClient.invalidateQueries({ queryKey: ["wallet"] });
         },
     });
+};
+
+export const useCheckBankConnectionStatus = () => {
+    return useQuery({
+        queryKey: ["bank-connection-status"],
+        queryFn: checkBankConnectionStatus,
+        retry: false,
+    });
+};
+
+export const useCreateConnectedAccount = () => {
+    return useMutation({
+        mutationFn: createConnectedAccount,
+    });
+};
+
+export const useConfirmConnectedAccount = () => {
+  return useMutation({
+    mutationFn: confirmConnectedAccount,
+  });
 };

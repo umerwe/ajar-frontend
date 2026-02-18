@@ -1,13 +1,12 @@
 "use client";
 
 import Header from "@/components/ui/header";
-import { Checkbox } from "@/components/ui/checkbox";
-import React from "react";
 import { useUser } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useDisableTwoFactor, useEnableTwoFactor, useTwoFactorStart } from "@/hooks/useTwoFactor";
 import Loader from "@/components/common/loader";
+import { ShieldCheck, ShieldOff } from "lucide-react";
 
 export default function TwoFactorAuthPage() {
     const { data: user, isLoading } = useUser();
@@ -22,7 +21,7 @@ export default function TwoFactorAuthPage() {
         if (!is2FAVerified) {
             await enableTwoFactor();
             await startTwoFactor();
-            router.push("/two-factor/verify");
+            router.replace("/two-factor/verify");
         } else {
             await disableTwoFactor();
         }
@@ -34,57 +33,69 @@ export default function TwoFactorAuthPage() {
                 <Header title="Two-Factor Authentication" />
             </div>
 
-            {/* 🔥 Loader below header */}
             {isLoading ? (
-                <div className="mx-auto max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl">
-                    <div className="bg-white mt-2 p-6 rounded-lg shadow-sm animate-pulse">
-                        <div className="h-5 bg-gray-200 rounded w-1/3 mb-4"></div>
-                        <div className="h-10 bg-gray-200 rounded mb-4"></div>
-                        <div className="h-10 bg-gray-200 rounded mb-4"></div>
-                        <div className="h-10 bg-gray-200 rounded"></div>
+                <div className="mx-auto max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl mt-6 px-4">
+                    <div className="bg-white p-6 rounded-2xl shadow-sm animate-pulse space-y-4">
+                        <div className="h-24 bg-gray-100 rounded-xl" />
+                        <div className="h-16 bg-gray-100 rounded-xl" />
+                        <div className="h-10 bg-gray-100 rounded-xl" />
                     </div>
                 </div>
             ) : (
-                <div className="mx-auto max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl">
-                    <div className="bg-white mt-2 p-6">
-                        <div className="space-y-4">
-                            {/* Enable Option */}
-                            <div className="flex items-center space-x-3 p-4 rounded-lg border border-gray-200">
-                                <Checkbox checked={is2FAVerified} disabled />
-                                <label className="text-gray-900 font-medium">Enable</label>
+                <div className="mx-auto max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl mt-6 px-4">
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+
+                        {/* Status Banner */}
+                        <div className={`px-6 py-5 flex items-center gap-4 ${is2FAVerified ? "bg-aqua/10" : "bg-gray-50"}`}>
+                            <div className={`p-3 rounded-full ${is2FAVerified ? "bg-header" : "bg-gray-200"}`}>
+                                {is2FAVerified ? (
+                                    <ShieldCheck className="w-6 h-6 text-white" />
+                                ) : (
+                                    <ShieldOff className="w-6 h-6 text-gray-400" />
+                                )}
+                            </div>
+                            <div>
+                                <p className={`font-semibold text-base ${is2FAVerified ? "text-gray-800" : "text-gray-700"}`}>
+                                    {is2FAVerified ? "2FA is Enabled" : "2FA is Disabled"}
+                                </p>
+                                <p className="text-sm text-gray-500 mt-0.5">
+                                    {is2FAVerified
+                                        ? "Your account is protected with two-factor authentication."
+                                        : "Add an extra layer of security to your account."}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="border-t border-gray-100" />
+
+                        {/* Info + Action */}
+                        <div className="px-6 py-5 space-y-4">
+                            <div className={`rounded-xl p-4 text-sm ${is2FAVerified ? "bg-amber-50 text-amber-700" : "bg-blue-50 text-blue-700"}`}>
+                                {is2FAVerified
+                                    ? "⚠️ Disabling 2FA will make your account less secure. Anyone with your password can access your account."
+                                    : "🔒 When enabled, you'll be asked for a verification code each time you log in."}
                             </div>
 
-                            {/* Disable Option */}
-                            <div className="flex items-center space-x-3 p-4 rounded-lg border border-gray-200">
-                                <Checkbox checked={!is2FAVerified} disabled />
-                                <label className="text-gray-900 font-medium">Disable</label>
-                            </div>
-
-                            {/* Continue Button */}
                             {is2FAVerified ? (
-                                <div className="pt-4">
-                                    <Button
-                                        onClick={handleContinue}
-                                        className="w-full"
-                                        variant="destructive"
-                                        disabled={isDisableTwoFactorPending}
-                                    >
-                                        {isDisableTwoFactorPending ? "Loading..." : "Disable 2FA"}
-                                    </Button>
-                                </div>
+                                <Button
+                                    onClick={handleContinue}
+                                    className="w-full py-6 text-base rounded-xl"
+                                    variant="destructive"
+                                    disabled={isDisableTwoFactorPending}
+                                >
+                                    {isDisableTwoFactorPending ? "Disabling..." : "Disable 2FA"}
+                                </Button>
                             ) : (
-                                <div className="pt-4">
-                                    <Button
-                                        onClick={handleContinue}
-                                        className="w-full"
-                                        variant="destructive"
-                                        disabled={isEnableTwoFactorPending || isStartTwoFactorPending}
-                                    >
-                                        {isEnableTwoFactorPending || isStartTwoFactorPending
-                                            ? <Loader />
-                                            : "Enable 2FA"}
-                                    </Button>
-                                </div>
+                                <Button
+                                    onClick={handleContinue}
+                                    className="w-full py-6 text-base rounded-xl"
+                                    variant="destructive"
+                                    disabled={isEnableTwoFactorPending || isStartTwoFactorPending}
+                                >
+                                    {isEnableTwoFactorPending || isStartTwoFactorPending
+                                        ? <Loader />
+                                        : "Enable 2FA"}
+                                </Button>
                             )}
                         </div>
                     </div>
