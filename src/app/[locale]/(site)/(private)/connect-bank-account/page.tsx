@@ -61,16 +61,16 @@ export default function BankAccountStatusPage() {
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
 
             {/* Status Banner */}
-            <div className={`px-6 py-5 flex items-center gap-4 ${bankAttached ? "bg-green-50" : "bg-gray-50"}`}>
-              <div className={`p-3 rounded-full ${bankAttached ? "bg-green-100" : "bg-gray-200"}`}>
+            <div className={`px-6 py-5 flex items-center gap-4 ${bankAttached ? "bg-aqua/10" : "bg-gray-50"}`}>
+              <div className={`p-3 rounded-full ${bankAttached ? "bg-header" : "bg-gray-200"}`}>
                 {bankAttached ? (
-                  <CheckCircle2 className="w-6 h-6 text-green-600" />
+                  <CheckCircle2 className="w-6 h-6 text-white" />
                 ) : (
                   <XCircle className="w-6 h-6 text-gray-400" />
                 )}
               </div>
               <div>
-                <p className={`font-semibold text-base ${bankAttached ? "text-green-700" : "text-gray-700"}`}>
+                <p className={`font-semibold text-base ${bankAttached ? "text-gray-800" : "text-gray-700"}`}>
                   {bankAttached ? "Bank Account Connected" : "No Bank Account Linked"}
                 </p>
                 <p className="text-sm text-gray-500 mt-0.5">
@@ -102,13 +102,18 @@ export default function BankAccountStatusPage() {
               )}
 
               {bankAttached ? (
-                <Button className="w-full rounded-xl" variant="outline" disabled>
-                  ✅ Account Verified
-                </Button>
+                <div className="text-center py-2">
+                  <p className="text-gray-800 font-semibold text-lg flex items-center justify-center gap-2">
+                    <CheckCircle2 className="w-5 h-5 text-aqua" /> Account Verified
+                  </p>
+                  <p className="text-gray-500 text-sm mt-1">
+                    Your bank details are securely linked and ready for payouts.
+                  </p>
+                </div>
               ) : (
                 <Button
                   onClick={handleConnectBank}
-                  className="w-full py-6 text-base rounded-xl"
+                  className="w-full py-6 text-base rounded-xl bg-header hover:bg-teal-600 transition-all"
                   variant="destructive"
                   disabled={isConnecting}
                 >
