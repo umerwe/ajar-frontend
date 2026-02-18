@@ -24,6 +24,7 @@ const LoginForm = () => {
       email: "",
       password: "",
       role: "user",
+      isWeb : true
     },
   })
 

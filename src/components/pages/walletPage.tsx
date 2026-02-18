@@ -37,7 +37,7 @@ export const WalletPageComponent: React.FC<WalletPageProps> = ({
     };
 
     const handleWithdrawSuccess = () => {
-        window.location.reload();
+        // window.location.reload();
     };
 
     if (isLoading) {

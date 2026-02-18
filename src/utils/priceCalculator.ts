@@ -26,19 +26,27 @@ export const calculateFrontendPrice = ({
         case "day":
             duration = Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24));
             break;
-        case "month":
+        case "month": {
+            const inDay = isDateOnly(startDate) ? checkIn.getUTCDate() : checkIn.getDate();
+            const outDay = isDateOnly(endDate) ? checkOut.getUTCDate() : checkOut.getDate();
             duration = (checkOut.getFullYear() - checkIn.getFullYear()) * 12 + (checkOut.getMonth() - checkIn.getMonth());
-            if (checkOut.getDate() < checkIn.getDate()) duration -= 1;
-            else if (checkOut.getDate() > checkIn.getDate()) duration += 1;
+            if (outDay < inDay) duration -= 1;
+            else if (outDay > inDay) duration += 1;
             duration = Math.max(duration, 1);
             break;
+        }
         case "year": {
             let years = checkOut.getFullYear() - checkIn.getFullYear();
 
             const anniversaryDate = new Date(checkIn);
             anniversaryDate.setFullYear(checkIn.getFullYear() + years);
 
-            if (checkOut.getTime() > anniversaryDate.getTime()) {
+            const outDay = isDateOnly(endDate) ? checkOut.getUTCDate() : checkOut.getDate();
+            const outMonth = checkOut.getUTCMonth();
+            const annDay = anniversaryDate.getUTCDate();
+            const annMonth = anniversaryDate.getUTCMonth();
+
+            if (outMonth > annMonth || (outMonth === annMonth && outDay > annDay)) {
                 years += 1;
             }
 

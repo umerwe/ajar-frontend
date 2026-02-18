@@ -24,11 +24,11 @@ export const profileItems = [
         label: "Bookings",
         href: "/booking/pending",
     },
-    {
-        icon: Landmark,
-        label: "Bank Account",
-        href: "/bank-account",
-    },
+    // {
+    //     icon: Landmark,
+    //     label: "Bank Account",
+    //     href: "/bank-account",
+    // },
     {
         icon: Landmark,
         label: "Connect Bank Account",
