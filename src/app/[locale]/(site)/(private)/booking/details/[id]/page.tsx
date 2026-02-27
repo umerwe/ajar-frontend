@@ -19,7 +19,7 @@ const BookingDetails = () => {
 
   const { data, isLoading } = useGetBookingId(id);
 
-  const listingData = data?.marketplaceListingId;
+  const listingData = { ...data?.marketplaceListingId, totalReviews: data?.totalReviews, averageRating: data?.averageRating };
 
   const hasValidListing = !listingData?._id;
 

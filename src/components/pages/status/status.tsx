@@ -27,7 +27,9 @@ const Status = ({ status }: { status: string }) => {
     bookingId: x._id,
     totalPrice: (x.marketplaceListingId as Listing)?.price || 0,
     bookingStatus: x.status,
-    dates: x.dates
+    dates: x.dates,
+    averageRating: x.averageRating || 0,
+    totalReviews: x.totalReviews || 0
   }));
 
   const handlePageChange = useCallback((page: number) => {

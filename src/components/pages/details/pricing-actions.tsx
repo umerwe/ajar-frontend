@@ -18,16 +18,15 @@ import { ExtensionDialog } from "@/components/dialogs/extenstion"
 import { useUser } from "@/hooks/useAuth"
 import Loader from "@/components/common/loader"
 import Document from "./document"
-import { useDeductWallet } from "@/hooks/useWallet"
 import { LoginDialog } from "@/components/dialogs/login-dialog"
 
 const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const { mutate, isPending } = useSubmitPin();
   const { mutate: sendExtendRental, isPending: isExtendRentalPending } = useExtendRental();
   const { mutate: updateStatus, isPending: isStatusLoading } = useUpdateBookingStatus();
-  const { mutate: deductWallet } = useDeductWallet();
   const { data } = useUser();
-  
+  console.log(bookingData)
+
   const [isRateOpen, setIsRateOpen] = useState(false)
   const [isPaymentOpen, setIsPaymentOpen] = useState(false)
   const [loadingPayment, setLoadingPayment] = useState(false)
@@ -131,9 +130,13 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
 
       case "Rate Owner":
         return (
-          <Button onClick={() => setIsRateOpen(true)} variant="destructive" className="w-full sm:w-auto px-7">
-            {label}
-          </Button>
+          bookingData.isReviewSubmitted ?
+            <Button variant="destructive" className="w-full sm:w-auto px-7">
+              Review Submitted
+            </Button> :
+            <Button onClick={() => setIsRateOpen(true)} variant="destructive" className="w-full sm:w-auto px-7">
+              {label}
+            </Button>
         );
 
       case "Extend Rental":

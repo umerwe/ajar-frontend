@@ -17,7 +17,6 @@ type CardBodyProps = {
 };
 
 const CardBody = ({ property, bookingStatus }: CardBodyProps) => {
-  console.log(property)
   return (
     <CardContent className="-mt-1">
       <div className="flex items-center justify-between">
@@ -36,9 +35,9 @@ const CardBody = ({ property, bookingStatus }: CardBodyProps) => {
         ) : (
           <div className="flex items-center gap-1 text-xs">
             <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-400 text-yellow-400" />
-            <span className="text-header">{property.ratings?.count || 0}</span>
+            <span className="text-header">{property.totalReviews || 0}</span>
             <span className="text-header">
-              ({property.ratings?.average || 0})
+              ({property.averageRating?.toFixed(1) || 0})
             </span>
           </div>
         )}
@@ -48,9 +47,9 @@ const CardBody = ({ property, bookingStatus }: CardBodyProps) => {
         bookingStatus && 
         <div className="flex items-center gap-1 text-xs my-1">
         <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-400 text-yellow-400" />
-        <span className="text-header">{property.ratings?.count || 0}</span>
+        <span className="text-header">{property.totalReviews || 0}</span>
         <span className="text-header">
-          ({property.ratings?.average || 0})
+          ({property.averageRating?.toFixed(1) || 0})
         </span>
       </div>
       }

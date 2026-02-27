@@ -18,7 +18,7 @@ export async function getBooking(status?: string, currentPage?: number) {
 
 
 export async function getBookingId(id?: string) {
-  const { data } = await api.get(`/api/bookings/${id}`);
+  const { data } = await api.get(`/api/bookings/user/booking/${id}`);
   return data.data;
 }
 

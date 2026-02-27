@@ -2,9 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { MapPin, Star, ChevronRight } from "lucide-react";
 import { Listing } from "@/types/listing";
-import { capitalizeWords } from "@/utils/capitalizeWords";
 import Lightbox from "yet-another-react-lightbox";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import "yet-another-react-lightbox/styles.css";
@@ -17,22 +15,9 @@ interface PropertyHeaderProps {
   property: Listing;
 }
 
-// Using your provided static images for demonstration
-const staImg = [
-  "/appartments-img1.webp",
-  "/appartments-img2.webp",
-  "/appartments-img3.webp",
-  "/appartments-img4.webp",
-  "/appartments-img5.webp",
-  "/appartments-img6.webp",
-  "/appartments-img7.jpg",
-  "/appartments-img8.jpg",
-  "/appartments-img1.webp",
-]
-
 const PropertyHeader = ({ property }: PropertyHeaderProps) => {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-  // const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || ""; // Not needed if using local staImg
+
   const cleanedData = removeFields(property as any, [
     "_id",
     "leaser",
@@ -95,8 +80,7 @@ const PropertyHeader = ({ property }: PropertyHeaderProps) => {
                   fill
                   className="object-cover"
                 />
-                {/* Overlay on the last visible image if there are more */}
-                {/* UPDATED: Switched to checking staImg length for consistency */}
+
                 {index === 3 && property.rentalImages.length > 5 && (
                   <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-sm font-bold">
                     +{property.rentalImages.length - 5}

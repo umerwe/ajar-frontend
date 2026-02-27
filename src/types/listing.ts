@@ -1,9 +1,5 @@
 export interface Listing  {
   bookingId : string;
-    ratings: {
-      count: number;
-      average: number;
-    };
     _id: string;
     leaser: {
       _id: string;
@@ -45,5 +41,7 @@ export interface Listing  {
     updatedAt: string; 
     adminFee : number;
     tax : number;
+    totalReviews : number;
+    averageRating : number;
     __v: number;
   };

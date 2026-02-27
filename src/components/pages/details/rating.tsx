@@ -4,13 +4,13 @@ import { ChevronRight } from "lucide-react"
 import { getRatingText } from "@/utils/getRatingText"
 
 const Rating = ({ property }: { property: Listing }) => {
-    const ratingLabel = getRatingText(property.ratings.average);
+    const ratingLabel = getRatingText(property.averageRating);
 
     return (
         <div className="flex flex-row sm:items-center gap-2 sm:gap-4">
             <div className="flex items-center space-x-2">
                 <span className="bg-aqua text-white px-2 py-1 rounded text-sm">
-                    {property.ratings.average}
+                    {property.averageRating ? property.averageRating.toFixed(1) : 0}
                 </span>
                 <span className="font-medium text-base text-gray-800">
                     {ratingLabel}
@@ -21,7 +21,7 @@ const Rating = ({ property }: { property: Listing }) => {
                 variant="link"
                 className="p-0 h-auto text-aqua font-medium cursor-pointer hover:no-underline"
             >
-                See all {property.ratings.count} reviews
+                See all {property.totalReviews} reviews
                 <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
         </div>

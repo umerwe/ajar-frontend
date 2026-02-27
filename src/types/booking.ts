@@ -1,7 +1,7 @@
 export type Booking = {
   _id: string;
   status: "completed" | "pending" | "cancelled" | "active" | string;
-  
+
   // Updated to match the populated renter object in your JSON
   renter: {
     _id: string;
@@ -33,7 +33,7 @@ export type Booking = {
   priceDetails: {
     price: number;
     adminFee: number;
-    tax?: number; 
+    tax?: number;
     totalPrice: number;
   };
 
@@ -51,7 +51,7 @@ export type Booking = {
 
   specialRequest?: string;
   isExtend?: boolean;
-  
+
   // Other fields from your original type
   actualReturnedAt?: string | null;
   noOfGuests?: number;
@@ -67,9 +67,11 @@ export type Booking = {
     _id: string;
   }[];
   otp?: string;
-  paymentStatus : string;
+  paymentStatus: string;
   createdAt: string;
   updatedAt: string;
+  totalReviews: number;
+  averageRating: number;
   __v: number;
 };
 
