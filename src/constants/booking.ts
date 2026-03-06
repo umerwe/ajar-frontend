@@ -5,6 +5,7 @@ export const rawOptions = [
     "Rejected",
     "Completed",
     "Cancelled",
+    "Expired",
 ];
 
 export const statusOptions = ["All", ...rawOptions];

@@ -11,6 +11,7 @@ import Loader from "../common/loader";
 import { formatFileSize } from "@/utils/formatFileSize";
 import { EditProfileFormValues, EditProfileSchema } from "@/validations/profile";
 import { toast } from "../ui/toast";
+import { useRemoveDocumentFile } from "@/hooks/useDocument"; // ← add this import
 
 
 export default function EditProfileForm({
@@ -20,6 +21,7 @@ export default function EditProfileForm({
     user
 }: ProfileProps) {
     const { mutate, isPending } = useUpdateUser();
+    const { mutate: removeFile, isPending: isRemoving } = useRemoveDocumentFile(); // ← add this
 
     const { register, handleSubmit, formState: { errors } } = useForm<EditProfileFormValues>({
         resolver: zodResolver(EditProfileSchema),
@@ -52,9 +54,9 @@ export default function EditProfileForm({
             onSuccess: () => {
                 setOpen(false);
                 toast({
-                title: "User Updated Successfully",
-                variant: "default",
-            });
+                    title: "User Updated Successfully",
+                    variant: "default",
+                });
             },
         });
     };
@@ -64,6 +66,18 @@ export default function EditProfileForm({
             ...prev,
             [value]: selectedFile,
         }));
+    };
+
+    // ← only new function added
+    const handleRemoveFile = (fileUrl: string) => {
+        removeFile(fileUrl, {
+            onSuccess: () => {
+                toast({ title: "File removed successfully", variant: "default" });
+            },
+            onError: () => {
+                toast({ title: "Failed to remove file", variant: "destructive" });
+            },
+        });
     };
 
     return (
@@ -113,8 +127,8 @@ export default function EditProfileForm({
                                         {doc.name.replace("_", " ").toUpperCase()}
                                     </span>
                                     <span className={`text-xs font-semibold px-2 py-1 rounded-full ${doc.status === "approved" ? "bg-green-100 text-green-700" :
-                                            doc.status === "rejected" ? "bg-red-100 text-red-700" :
-                                                "bg-yellow-100 text-yellow-700"
+                                        doc.status === "rejected" ? "bg-red-100 text-red-700" :
+                                            "bg-yellow-100 text-yellow-700"
                                         }`}>
                                         {capitalizeWords(doc?.status as string)}
                                     </span>
@@ -122,13 +136,25 @@ export default function EditProfileForm({
 
                                 {doc?.filesUrl?.length !== 0 && (
                                     <div className="mb-2">
-                                        <div className="flex gap-2 overflow-x-auto scrollbar-thin">
+                                        <div className="flex gap-2 overflow-x-auto scrollbar-thin p-2">
                                             {doc.filesUrl?.map((url: string, index: number) => (
-                                                <div key={index} className="relative w-24 h-24 rounded-lg overflow-hidden border flex-shrink-0">
-                                                    {url.endsWith(".pdf") ? (
-                                                        <div className="flex items-center justify-center h-full bg-gray-200 text-sm text-gray-600">PDF</div>
-                                                    ) : (
-                                                        <Image src={process.env.NEXT_PUBLIC_API_BASE_URL + url} alt="preview" fill className="object-cover" />
+                                                <div key={index} className="relative w-24 h-24 flex-shrink-0 group">
+                                                    <div className="w-full h-full rounded-lg overflow-hidden border">
+                                                        {url.endsWith(".pdf") ? (
+                                                            <div className="flex items-center justify-center h-full bg-gray-200 text-sm text-gray-600">PDF</div>
+                                                        ) : (
+                                                            <Image src={process.env.NEXT_PUBLIC_API_BASE_URL + url} alt="preview" fill className="object-cover" />
+                                                        )}
+                                                    </div>
+                                                    {doc.status !== "approved" && (
+                                                        <button
+                                                            type="button"
+                                                            disabled={isRemoving}
+                                                            onClick={() => handleRemoveFile(url)}
+                                                            className="absolute -top-1.5 -right-1.5 bg-red-500 hover:bg-red-600 text-white rounded-full p-0.5 shadow transition-opacity opacity-0 group-hover:opacity-100"
+                                                        >
+                                                            <X className="w-3 h-3" />
+                                                        </button>
                                                     )}
                                                 </div>
                                             ))}

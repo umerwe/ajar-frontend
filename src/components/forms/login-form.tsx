@@ -23,8 +23,7 @@ const LoginForm = () => {
     defaultValues: {
       email: "",
       password: "",
-      role: "user",
-      isWeb : true
+      role: "user"
     },
   })
 

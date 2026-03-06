@@ -112,7 +112,7 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
       return <Document property={property} />
     }
 
-    if (label === "Cancelled" || label === "Rejected") {
+    if (label === "Cancelled" || label === "Rejected" || label === "Expired") {
       return null;
     }
 

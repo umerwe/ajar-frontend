@@ -76,7 +76,7 @@ export default function ProfileDropdown() {
 
   const getInitial = (name = "") => name.charAt(0).toUpperCase();
 
-  const ProfileImage = ({ size = 30 }: { size?: number }) => {
+  const ProfileImage = ({ size = 26 }: { size?: number }) => {
     const imageWrapperStyle = { width: size, height: size };
 
     if (isLoading) {
@@ -87,10 +87,10 @@ export default function ProfileDropdown() {
       return (
         <div
           style={imageWrapperStyle}
-          className="relative rounded-full overflow-hidden flex-shrink-0"
+          className="relative rounded-full overflow-hidden"
         >
           <Image
-            src={process.env.NEXT_PUBLIC_API_BASE_URL + user.profilePicture}
+            src={user.profilePicture.startsWith("http") ? user.profilePicture : process.env.NEXT_PUBLIC_API_BASE_URL + user.profilePicture}
             alt={user?.name || "User Avatar"}
             width={size}
             height={size}
@@ -112,27 +112,20 @@ export default function ProfileDropdown() {
 
   const notificationButton = (
     <button
-      className="relative p-1 rounded-full text-aqua hover:bg-gray-200 transition-colors"
+      className="rounded-full text-aqua hover:bg-gray-200 transition-colors flex"
       aria-label="Notifications"
       onClick={() => mutate()}
     >
-      <BellIcon className="h-6 w-5.5 pt-0.5" />
+      <BellIcon className="h-6 w-6" />
       {unreadCount > 0 && (
-        <span className="absolute top-0.5 -right-1 flex h-4 w-4 p-2 items-center justify-center rounded-full bg-red-500 text-[10px] font-medium text-white ring-white">
+        <span className="absolute -top-1 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-medium text-white ring-white">
           {unreadCount > 9 ? "9+" : unreadCount}
         </span>
       )}
     </button>
   );
 
-  const profileButton = (
-    <button
-      className="p-0.5 rounded-full bg-white hover:bg-gray-200 transition-shadow duration-200"
-      aria-label="User Profile Menu"
-    >
-      <ProfileImage size={26} />
-    </button>
-  );
+  const profileButton = <ProfileImage size={26} />;
 
   const profileContent = (
     <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50 md:w-64">
@@ -178,7 +171,7 @@ export default function ProfileDropdown() {
   );
 
   return (
-    <div className="flex items-center space-x-1 bg-white rounded-full pl-1 pr-1 w-fit hover:shadow-md transition-shadow duration-200">
+    <div className="flex items-center gap-2 bg-white rounded-full px-2 py-1 w-fit hover:shadow-md transition-shadow duration-200">
       <Dropdown button={notificationButton}>
         <NotificationContent />
       </Dropdown>

@@ -6,8 +6,18 @@ import Brand from "../brand";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useUser } from "@/hooks/useAuth";
 import { Button } from "../ui/button";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 
 export default function Navbar() {
+  const { data: session } = useSession()
+
+  useEffect(() => {
+    if (session?.backendToken) {
+      localStorage.setItem("token", session.backendToken)
+    }
+  }, [session])
+
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();

@@ -93,7 +93,7 @@ const SignUpForm = () => {
         >
           <FcGoogle className="text-2xl" />
           <span className="text-gray-700 text-sm font-medium">
-            Sign up with Google
+            Sign in with Google
           </span>
         </button>
       </form>

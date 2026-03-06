@@ -20,6 +20,9 @@ export function getActionDetails(status?: string) {
 
     case "rejected":
       return { label: "Rejected", link: "#" };
+      
+    case "expired":
+      return { label: "Expired", link: "#" };
 
     default:
       return { label: "Unknown", link: "/" };

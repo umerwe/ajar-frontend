@@ -5,3 +5,10 @@ export const getUserDocument = async () => {
     return data.data.values;
 };
 
+export const removeDocumentFile = async (fileUrl: string) => {
+    const { data } = await api.delete("/api/users/documents/file", {
+        data: { fileUrl },
+    });
+    return data;
+};
+

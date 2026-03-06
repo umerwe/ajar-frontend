@@ -43,8 +43,7 @@ export default function ProfilePage() {
                                 <div className="relative h-20 w-20 rounded-full overflow-hidden">
                                     {user?.profilePicture ? (
                                         <Image
-                                            src={process.env.NEXT_PUBLIC_API_BASE_URL + user?.profilePicture}
-                                            alt="user-img"
+                                            src={user.profilePicture.startsWith("http") ? user.profilePicture : process.env.NEXT_PUBLIC_API_BASE_URL + user.profilePicture} alt="user-img"
                                             fill
                                             className="object-cover object-center"
                                         />

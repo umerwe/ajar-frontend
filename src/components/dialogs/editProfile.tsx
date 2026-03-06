@@ -58,8 +58,7 @@ const EditProfileDialog = ({
                                 />
                             ) : user?.profilePicture ? (
                                 <Image
-                                    src={process.env.NEXT_PUBLIC_API_BASE_URL + user?.profilePicture}
-                                    alt={user?.name || "User"}
+                                    src={user.profilePicture.startsWith("http") ? user.profilePicture : process.env.NEXT_PUBLIC_API_BASE_URL + user.profilePicture} alt={user?.name || "User"}
                                     fill
                                     className="object-cover object-center"
                                 />
