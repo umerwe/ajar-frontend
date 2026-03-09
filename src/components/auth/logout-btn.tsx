@@ -7,19 +7,20 @@ import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LogoutButtonProps } from "@/types/auth";
 import { LogoutDialog } from "../dialogs/logout-dialog";
+import { signOut } from "next-auth/react";
 
 const LogoutButton = ({ variant = "menu", isPending }: LogoutButtonProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const handleLogout = () => {
-    // Cleanup logic
+  const handleLogout = async () => {
     queryClient.clear();
     localStorage.clear();
     sessionStorage.clear();
 
-    // Final Redirect
+    await signOut({ redirect: false });
+
     router.replace("/auth/login");
     setIsDialogOpen(false);
   };

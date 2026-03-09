@@ -18,6 +18,8 @@ export default function Navbar() {
     }
   }, [session])
 
+  console.log(session)
+
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
