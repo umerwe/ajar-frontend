@@ -1,12 +1,12 @@
 "use client"
 
 import type React from "react"
-import { Calendar, Clock, Star } from "lucide-react"
+import { Star } from "lucide-react"
 import { useParams } from "next/navigation"
 import Image from "next/image"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useGetMarketplaceListing } from "@/hooks/useListing"
+import { useGetListingBookedDates, useGetMarketplaceListing } from "@/hooks/useListing"
 import { useCreateBooking } from "@/hooks/useBooking"
 import { capitalizeWords } from "@/utils/capitalizeWords"
 import Header from "@/components/ui/header"
@@ -15,7 +15,9 @@ import { type BookingFormData, bookingSchema } from "@/validations/booking"
 import SkeletonLoader from "@/components/common/skeleton-loader"
 import PrivateComponent from "@/components/private-component"
 import { calculateFrontendPrice } from "@/utils/priceCalculator"
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
+import DateRangeCalendar from "@/components/DateRangeCalendar"
+
 
 const CheckoutPage = () => {
     const params = useParams()
@@ -23,7 +25,19 @@ const CheckoutPage = () => {
 
     const { data: listing, isLoading } = useGetMarketplaceListing(id)
     const { mutateAsync: createBooking, isPending } = useCreateBooking()
-    const isHourly = listing?.priceUnit === "hour"
+    const isHourly = listing?.priceUnit === "hour";
+
+    const [visibleMonth, setVisibleMonth] = useState(() => {
+        const now = new Date();
+        return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+    });
+
+    const { data: bookedDatesData, isLoading: isLoadingDates } = useGetListingBookedDates({
+        id,
+        month: visibleMonth,
+    });
+    const blockedDates: string[] = bookedDatesData?.blockedDates ?? [];
+    const blockedSlots = bookedDatesData?.blockedSlots ?? [];
 
     const {
         register,
@@ -57,25 +71,14 @@ const CheckoutPage = () => {
         });
     }, [listing, watchedStartDate, watchedEndDate]);
 
+
     const displayBasePrice = priceBreakdown?.basePrice ?? listing?.price ?? 0;
     const displayAdminFee = priceBreakdown?.adminFee ?? listing?.adminFee ?? 0;
     const displayTax = priceBreakdown?.tax ?? listing?.tax ?? 0;
     const displayTotal = priceBreakdown?.totalPrice ?? (displayBasePrice + displayAdminFee + displayTax);
 
-    const formatDisplayDateTime = (dateTimeString: string, placeholder: string) => {
-        if (!dateTimeString) return placeholder;
-        const dateObj = new Date(dateTimeString);
-
-        return dateObj.toLocaleString('en-US', {
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric',
-            ...(isHourly && {
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true
-            })
-        });
+    const isDateBlocked = (dateStr: string) => {
+        return blockedDates.includes(dateStr);
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -85,7 +88,23 @@ const CheckoutPage = () => {
     }
 
     const onSubmit = async (data: BookingFormData) => {
-        if (!listing?._id) return
+        if (!listing?._id) return;
+
+        // Block submission if selected dates are blocked
+        if (!isHourly) {
+            const checkIn = new Date(data.startDate);
+            const checkOut = new Date(data.endDate);
+            const current = new Date(checkIn);
+
+            while (current <= checkOut) {
+                const dateStr = current.toISOString().split("T")[0];
+                if (isDateBlocked(dateStr)) {
+                    alert(`Date ${dateStr} is already booked. Please select different dates.`);
+                    return;
+                }
+                current.setDate(current.getDate() + 1);
+            }
+        }
 
         const bookingPayload: BookingRequest = {
             marketplaceListingId: listing._id,
@@ -96,15 +115,8 @@ const CheckoutPage = () => {
             specialRequest: data.specialRequest || "",
         };
 
-
-        await createBooking({ booking: bookingPayload })
-    }
-
-    const getMinDateTime = () => {
-        const now = new Date();
-        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-        return isHourly ? now.toISOString().slice(0, 16) : now.toISOString().split('T')[0];
-    }
+        await createBooking({ booking: bookingPayload });
+    };
 
     return (
         <PrivateComponent>
@@ -122,67 +134,24 @@ const CheckoutPage = () => {
                                     <div>
                                         <h2 className="text-base font-semibold text-gray-900 mb-4">Reservation Dates</h2>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-                                            {/* Lease Start Input */}
-                                            <div className="space-y-2">
-                                                <div
-                                                    className={`relative bg-gray-100 rounded-lg p-3 md:p-4 cursor-pointer hover:bg-gray-200 transition-colors ${errors.startDate ? "border border-red-500" : ""}`}
-                                                    onClick={() => (document.getElementById('startDate') as any)?.showPicker()}
-                                                >
-                                                    <div className="flex items-center gap-2 mb-1">
-                                                        <Calendar className="w-4 h-4 text-gray-600 shrink-0" />
-                                                        <label className="text-xs md:text-sm font-medium text-gray-900 cursor-pointer">Lease Start</label>
-                                                    </div>
-
-                                                    <p className="text-sm text-gray-500">
-                                                        {formatDisplayDateTime(watchedStartDate, isHourly ? "Select Date & Time" : "Select Date")}
-                                                    </p>
-
-                                                    <input
-                                                        id="startDate"
-                                                        // DYNAMIC TYPE
-                                                        type={isHourly ? "datetime-local" : "date"}
-                                                        min={getMinDateTime()}
-                                                        {...register("startDate")}
-                                                        onChange={handleInputChange}
-                                                        className="absolute inset-0 opacity-0 cursor-pointer"
-                                                    />
-                                                </div>
-                                                {errors.startDate && (
-                                                    <p className="text-red-500 text-sm font-medium px-2">{errors.startDate.message}</p>
-                                                )}
-                                            </div>
-
-                                            {/* Lease End Input */}
-                                            <div className="space-y-2">
-                                                <div
-                                                    className={`relative bg-gray-100 rounded-lg p-3 md:p-4 cursor-pointer hover:bg-gray-200 transition-colors ${errors.endDate ? "border border-red-500" : ""}`}
-                                                    onClick={() => (document.getElementById('endDate') as any)?.showPicker()}
-                                                >
-                                                    <div className="flex items-center gap-2 mb-1">
-                                                        <Clock className="w-4 h-4 text-gray-600 shrink-0" />
-                                                        <label className="text-xs md:text-sm font-medium text-gray-900 cursor-pointer">Lease End</label>
-                                                    </div>
-
-                                                    <p className="text-sm text-gray-500">
-                                                        {formatDisplayDateTime(watchedEndDate, isHourly ? "Select Date & Time" : "Select Date")}
-                                                    </p>
-
-                                                    <input
-                                                        id="endDate"
-                                                        // DYNAMIC TYPE
-                                                        type={isHourly ? "datetime-local" : "date"}
-                                                        min={watchedStartDate || getMinDateTime()}
-                                                        {...register("endDate")}
-                                                        onChange={handleInputChange}
-                                                        className="absolute inset-0 opacity-0 cursor-pointer"
-                                                    />
-                                                </div>
-                                                {errors.endDate && (
-                                                    <p className="text-red-500 text-sm font-medium px-2">{errors.endDate.message}</p>
-                                                )}
-                                            </div>
+                                            <DateRangeCalendar
+                                                isHourly={isHourly}
+                                                blockedDates={blockedDates}
+                                                blockedSlots={blockedSlots}
+                                                startDate={watchedStartDate}
+                                                endDate={watchedEndDate}
+                                                isLoadingDates={isLoadingDates} // ✅ loader
+                                                onMonthChange={(month) => setVisibleMonth(month)} // ✅ month change → refetch
+                                                onRangeChange={(start, end) => {
+                                                    setValue("startDate", start)
+                                                    setValue("endDate", end)
+                                                    trigger(["startDate", "endDate"])
+                                                    if (start) setVisibleMonth(start.substring(0, 7))
+                                                }}
+                                            />
                                         </div>
+                                        {errors.startDate && <p className="text-red-500 text-sm px-2">{errors.startDate.message}</p>}
+                                        {errors.endDate && <p className="text-red-500 text-sm px-2">{errors.endDate.message}</p>}
                                     </div>
 
                                     {/* Comments Section */}
@@ -234,10 +203,10 @@ const CheckoutPage = () => {
                                                     ))}
                                                 </div>
                                                 <div className="flex flex-wrap items-center gap-2">
-                                                    <span className="bg-teal-500 text-white px-3 py-1 rounded-l-2xl rounded-b-2xl text-sm font-medium">
-                                                        {(listing?.ratings?.average || 0).toFixed(1)}/5
+                                                    <span className="bg-aqua text-white px-3 py-1 rounded-l-2xl rounded-b-2xl text-sm font-medium">
+                                                        {(listing?.averageRating ? listing.averageRating.toFixed(1) : 0 || 0).toFixed(1)}/5
                                                     </span>
-                                                    <span className="text-sm text-gray-500">{listing?.ratings?.count || 0} reviews</span>
+                                                    <span className="text-sm text-gray-500">{listing?.totalReviews || 0} reviews</span>
                                                 </div>
                                             </div>
                                         </div>

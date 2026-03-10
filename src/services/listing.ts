@@ -25,3 +25,17 @@ export async function getList(id: string) {
   const { data } = await api.get(`/api/marketplace-listings/${id}`);
   return data.data
 }
+
+export async function getListingBookedDates({
+  id,
+  month,
+}: {
+  id: string;
+  month?: string;
+}) {
+  const params: Record<string, string> = {};
+  if (month) params.month = month;
+
+  const { data } = await api.get(`/api/marketplace-listings/${id}/booked-dates`, { params });
+  return data.data;
+}

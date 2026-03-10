@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { getList, getListing } from "@/services/listing"
+import { getList, getListing, getListingBookedDates } from "@/services/listing"
 
 export function useGetMarketplaceListings(params: MarketplaceListingsProps) {
   return useQuery({
@@ -24,5 +24,19 @@ export function useGetMarketplaceListing(id?: string) {
   return useQuery({
     queryKey: ["marketplacelisting", id],
     queryFn: () => getList(id as string),
+  });
+}
+
+export function useGetListingBookedDates({
+  id,
+  month
+}: {
+  id?: string;
+  month?: string
+}) {
+  return useQuery({
+    queryKey: ["listingBookedDates", id, month],
+    queryFn: () => getListingBookedDates({ id: id!, month }),
+    enabled: !!id,
   });
 }

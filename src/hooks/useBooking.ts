@@ -29,6 +29,9 @@ export function useCreateBooking() {
       queryClient.invalidateQueries({
         queryKey: ["bookings"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["listingBookedDates"],
+      });
 
       toast({ description: "Booking request submitted successfully." })
       router.replace(`/booking/pending`);
