@@ -13,7 +13,7 @@ const ExploreArea = ({ property }: { property: Listing }) => {
                         height="100%"
                         style={{ border: 0 }}
                         referrerPolicy="no-referrer-when-downgrade"
-                        src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(property.zone.name)}`}
+                        src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent("Qatar")}`}
                     ></iframe>
                 </div>
 
