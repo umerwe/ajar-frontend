@@ -4,7 +4,7 @@ import Input from "../ui/auth-input";
 import { Button } from "@/components/ui/button";
 import { useUpdateUser } from "@/hooks/useAuth";
 import React from "react";
-import Image from "next/image";
+import Image from "@/components/MyImage";
 import { Upload, File, X, CheckCircle2 } from "lucide-react";
 import { capitalizeWords } from "@/utils/capitalizeWords";
 import Loader from "../common/loader";

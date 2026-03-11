@@ -1,6 +1,5 @@
 "use client"
 
-import Image from "next/image"
 import { CardHeader } from "@/components/ui/card"
 import { FavouriteButton } from "@/components/ui/favourite-button"
 import { RemoveFavouriteButton } from "@/components/ui/remove-favourite-button"
@@ -8,6 +7,7 @@ import useEmblaCarousel from "embla-carousel-react"
 import Autoplay from "embla-carousel-autoplay"
 import { useState, useEffect } from "react"
 import { Listing } from "@/types/listing"
+import Image from "../MyImage"
 
 interface CardTopProps {
   property: Listing

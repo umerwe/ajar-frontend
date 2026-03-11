@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Image from "@/components/MyImage";
 import { useState } from "react";
 import { Listing } from "@/types/listing";
 import Lightbox from "yet-another-react-lightbox";

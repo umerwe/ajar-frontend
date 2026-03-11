@@ -4,7 +4,7 @@ import Header from "@/components/ui/header";
 import { Search } from "lucide-react";
 import { Input } from "../ui/input";
 import { useGetChatList, useMessageSeen } from "@/hooks/useChat";
-import Image from "next/image";
+import Image from "@/components/MyImage";
 import { useUser } from "@/hooks/useAuth";
 import { capitalizeWords } from "@/utils/capitalizeWords";
 import Link from "next/link";

@@ -18,7 +18,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ChevronRight, FileUp, X, FileText } from "lucide-react";
 import { toast } from "../ui/toast";
-import Image from "next/image";
+import Image from "@/components/MyImage";
 import { useUpdateUser } from "@/hooks/useAuth";
 
 const AddDocumentDialog = ({ data, documents }: any) => {

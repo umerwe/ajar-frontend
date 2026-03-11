@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { MessageForm, messageSchema } from "@/validations/chat";
 import { useState } from "react";
 import api from "@/lib/axios";
-import Image from "next/image";
+import Image from "@/components/MyImage";
 import { toast } from "../ui/toast";
 import { SendMessageProps, FileItem } from "@/types/chat";
 

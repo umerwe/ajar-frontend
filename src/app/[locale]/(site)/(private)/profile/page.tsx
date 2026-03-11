@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "@/components/MyImage";
 import { ChevronRight } from "lucide-react";
 import Header from "@/components/ui/header";
 import LogoutButton from "@/components/auth/logout-btn";

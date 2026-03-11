@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Image from "@/components/MyImage";
 import { Loader2, FileText } from "lucide-react";
 import { format } from "date-fns";
 import {

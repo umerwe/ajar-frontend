@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
-import Image from "next/image";
+import Image from "@/components/MyImage";
 import { formatText } from "@/utils/formatText";
 
 const Document = ({ property }: { property: Listing }) => {

@@ -15,7 +15,7 @@ import Header from "@/components/ui/header";
 import { useBooking } from "@/hooks/useBooking";
 import { capitalizeWords } from "@/utils/capitalizeWords";
 import { useSendReport } from "@/hooks/useReport";
-import Image from "next/image";
+import Image from "@/components/MyImage";
 import { Listing } from "@/types/listing";
 
 export default function ReportForm() {
