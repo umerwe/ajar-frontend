@@ -19,32 +19,11 @@ const PropertyHeader = ({ property }: PropertyHeaderProps) => {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   const cleanedData = removeFields(property as any, [
-    "_id",
-    "leaser",
-    "subCategory",
-    "zone",
-    "ratings",
-    "name",
-    "subTitle",
-    "images",
-    "rentalImages",
-    "description",
-    "price",
-    "isActive",
-    "language",
-    "documents",
-    "isAvailable",
-    "currentBookingId",
-    "status",
-    "priceUnit",
-    "createdAt",
-    "updatedAt",
-    "__v",
-    "userDocuments",
-    "leaserDocuments",
-    "adminFee",
-    "tax",
-    "languages"
+    "_id", "leaser", "subCategory", "zone", "ratings", "name", "subTitle",
+    "images", "rentalImages", "description", "price", "isActive", "language",
+    "documents", "isAvailable", "currentBookingId", "status", "priceUnit",
+    "createdAt", "updatedAt", "__v", "userDocuments", "leaserDocuments",
+    "adminFee", "tax", "languages"
   ]);
 
   return (
@@ -53,7 +32,6 @@ const PropertyHeader = ({ property }: PropertyHeaderProps) => {
 
         {/* LEFT: IMAGE GALLERY SECTION */}
         <div className="flex gap-2 w-full lg:w-[600px] h-[200px] shrink-0">
-          {/* Main Large Image */}
           <div
             className="relative w-[50%] h-full rounded-sm overflow-hidden cursor-pointer hover:opacity-95 transition"
             onClick={() => setLightboxIndex(0)}
@@ -66,7 +44,6 @@ const PropertyHeader = ({ property }: PropertyHeaderProps) => {
             />
           </div>
 
-          {/* 2x2 Small Grid */}
           <div className="grid grid-cols-2 grid-rows-2 gap-2 w-[50%] h-full">
             {property.rentalImages.slice(1, 5).map((img, index) => (
               <div
@@ -80,43 +57,36 @@ const PropertyHeader = ({ property }: PropertyHeaderProps) => {
                   fill
                   className="object-cover"
                 />
-
-                {index === 3 && property.rentalImages.length > 5 && (
-                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-sm font-bold">
-                    +{property.rentalImages.length - 5}
-                  </div>
-                )}
               </div>
             ))}
           </div>
         </div>
 
         {/* RIGHT: CONTENT SECTION */}
-        <div className="flex-1 flex flex-col justify-between py-1">
+        <div className="flex-1 flex flex-col justify-between py-1 min-w-0">
           <div className="space-y-2">
-            <CoreDetails
-              property={property}
-            />
-
-            <Rating
-              property={property}
-            />
+            <CoreDetails property={property} />
+            <Rating property={property} />
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-gray-50">
-            {cleanedData.map((item, index) =>
-              Object.entries(item).map(([key, value]) => (
-                <div key={`${index}-${key}`}>
-                  <p className="text-gray-400 text-sm capitalize truncate">{key}</p>
-                  <p className="font-semibold text-gray-800 text-sm truncate capitalize">{value}</p>
-                </div>
-              ))
-            )}
+          {/* DYNAMIC FIELDS - SCROLLABLE BUT HIDDEN SCROLLBAR */}
+          <div className="border-t border-gray-50 pt-4 mt-auto">
+            <div className="flex flex-nowrap gap-8 overflow-x-auto no-scrollbar" style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
+              {cleanedData.map((item, index) =>
+                Object.entries(item).map(([key, value]) => (
+                  <div key={`${index}-${key}`} className="shrink-0">
+                    <p className="text-gray-400 text-[11px] uppercase tracking-wider mb-0.5">{key}</p>
+                    <p className="font-semibold text-gray-800 text-sm capitalize whitespace-nowrap">
+                      {String(value)}
+                    </p>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* LIGHTBOX */}
       {lightboxIndex !== null && (
         <Lightbox
           open={lightboxIndex !== null}

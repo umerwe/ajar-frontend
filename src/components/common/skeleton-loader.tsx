@@ -245,108 +245,120 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: 
         </div>
       );
 
-    case "listing":
-      return (
-        <div className="mb-9 animate-pulse space-y-6">
+   case "listing":
+  return (
+    <div className="mb-9 animate-pulse space-y-6">
+      
+      {/* 1. PROPERTY HEADER CARD */}
+      <div className="bg-white rounded-lg border border-gray-100 p-4 shadow-sm">
+        <div className="flex flex-col lg:flex-row gap-4">
 
-          {/* PropertyHeader Skeleton (White card with border) */}
-          <div className="bg-white rounded-lg border border-gray-100 p-4 shadow-sm">
-            <div className="flex flex-col lg:flex-row gap-4">
-
-              {/* LEFT: IMAGE GALLERY SECTION (Matches 600px width) */}
-              <div className="flex gap-2 w-full lg:w-[600px] h-[250px] shrink-0">
-                {/* Main Large Image */}
-                <div className="w-[50%] h-full rounded-sm bg-gray-200" />
-
-                {/* 2x2 Small Grid */}
-                <div className="grid grid-cols-2 grid-rows-2 gap-2 w-[50%] h-full">
-                  {Array.from({ length: 4 }).map((_, i) => (
-                    <div key={i} className="rounded-sm bg-gray-200" />
-                  ))}
-                </div>
-              </div>
-
-              {/* RIGHT: CONTENT SECTION */}
-              <div className="flex-1 flex flex-col justify-between py-1">
-                <div className="space-y-3">
-                  {/* Title & CoreDetails */}
-                  <div className="h-7 w-3/4 bg-gray-200 rounded" />
-                  <div className="h-4 w-1/2 bg-gray-200 rounded" />
-                  {/* Rating Box */}
-                  <div className="flex gap-2 items-center mt-2">
-                    <div className="h-6 w-10 bg-gray-200 rounded" />
-                    <div className="h-4 w-24 bg-gray-200 rounded" />
-                  </div>
-                </div>
-
-                {/* Bottom 4-column Grid (CleanedData) */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-gray-50">
-                  {Array.from({ length: 4 }).map((_, i) => (
-                    <div key={i} className="space-y-2">
-                      <div className="h-3 w-12 bg-gray-200 rounded" />
-                      <div className="h-4 w-16 bg-gray-200 rounded" />
-                    </div>
-                  ))}
-                </div>
-              </div>
+          {/* LEFT: IMAGE GALLERY SKELETON (600px width matching design) */}
+          <div className="flex gap-2 w-full lg:w-[600px] h-[200px] shrink-0">
+            {/* Main Big Image */}
+            <div className="w-[50%] h-full rounded-sm bg-gray-200" />
+            
+            {/* 2x2 Small Grid */}
+            <div className="grid grid-cols-2 grid-rows-2 gap-2 w-[50%] h-full">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="rounded-sm bg-gray-200" />
+              ))}
             </div>
           </div>
 
-          {/* TWO COLUMN MAIN CONTENT */}
-          <div className="flex flex-col md:flex-row gap-6 md:gap-8 lg:gap-10">
-
-            {/* LEFT COLUMN (About & Host) */}
-            <div className="w-full md:w-3/5 lg:w-2/3 flex flex-col gap-[40px]">
-              {/* About Section */}
-              <div>
-                <div className="h-6 w-24 bg-gray-200 rounded mb-4" />
-                <div className="space-y-2">
-                  <div className="h-4 w-full bg-gray-200 rounded" />
-                  <div className="h-4 w-full bg-gray-200 rounded" />
-                  <div className="h-4 w-2/3 bg-gray-200 rounded" />
-                </div>
-              </div>
-
-              {/* Host Info Section */}
-              <div>
-                <div className="h-6 w-32 bg-gray-200 rounded mb-5" />
-                <div className="flex items-center justify-between">
-                  <div className="flex gap-3 items-center">
-                    <div className="w-12 h-12 bg-gray-200 rounded-full shrink-0" />
-                    <div className="space-y-2">
-                      <div className="h-4 w-28 bg-gray-200 rounded" />
-                      <div className="h-3 w-36 bg-gray-200 rounded" />
-                    </div>
-                  </div>
-                  <div className="w-10 h-10 bg-gray-200 rounded-md" /> {/* Chat Icon */}
-                </div>
+          {/* RIGHT: CONTENT SECTION SKELETON */}
+          <div className="flex-1 flex flex-col justify-between py-1 min-w-0">
+            <div className="space-y-3">
+              {/* Title & Stars */}
+              <div className="h-7 w-3/4 bg-gray-200 rounded" />
+              <div className="h-4 w-1/2 bg-gray-200 rounded" />
+              
+              {/* Rating Score Box */}
+              <div className="flex gap-2 items-center mt-1">
+                <div className="h-6 w-10 bg-gray-200 rounded" />
+                <div className="h-4 w-24 bg-gray-200 rounded" />
               </div>
             </div>
 
-            {/* RIGHT COLUMN (Pricing & Map) */}
-            <div className="w-full md:w-2/5 lg:w-1/3 space-y-4">
-              {/* Pricing Box */}
-              <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3">
-                <div className="h-8 w-32 bg-gray-200 rounded" />
-                <div className="h-10 w-full lg:w-32 bg-gray-200 rounded" />
-              </div>
-
-              {/* Explore Area Map */}
-              <div className="space-y-4">
-                <div className="h-6 w-40 bg-gray-200 rounded" />
-                <div className="border-2 border-gray-200 rounded-2xl overflow-hidden">
-                  <div className="w-full h-48 md:h-56 bg-gray-200" />
-                  <div className="p-4 flex justify-between">
-                    <div className="h-5 w-32 bg-gray-200 rounded" />
-                    <div className="h-5 w-24 bg-gray-200 rounded" />
+            {/* DYNAMIC ATTRIBUTES ROW (Scrollable row matching dynamic fields) */}
+            <div className="border-t border-gray-50 pt-4 mt-auto">
+              <div className="flex flex-nowrap gap-8 overflow-hidden">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <div key={i} className="shrink-0 space-y-2">
+                    <div className="h-2.5 w-12 bg-gray-200 rounded" />
+                    <div className="h-4 w-16 bg-gray-200 rounded" />
                   </div>
-                </div>
+                ))}
               </div>
             </div>
-
           </div>
         </div>
-      );
+      </div>
+
+      {/* 2. MAIN CONTENT LAYOUT (Two Columns) */}
+      <div className="flex flex-col md:flex-row gap-6 md:gap-8 lg:gap-10">
+
+        {/* LEFT COLUMN: About & Host Info (w-3/5) */}
+        <div className="w-full md:w-3/5 lg:w-2/3 flex flex-col gap-[40px]">
+          
+          {/* About Section */}
+          <div className="space-y-3">
+            <div className="h-6 w-24 bg-gray-200 rounded mb-2" />
+            <div className="space-y-2">
+              <div className="h-4 w-full bg-gray-200 rounded" />
+              <div className="h-4 w-full bg-gray-200 rounded" />
+              <div className="h-4 w-4/5 bg-gray-200 rounded" />
+            </div>
+          </div>
+
+          {/* Host Info Section */}
+          <div className="space-y-4">
+            <div className="h-6 w-32 bg-gray-200 rounded mb-1" />
+            <div className="flex items-center justify-between">
+              <div className="flex gap-3 items-center">
+                <div className="w-12 h-12 bg-gray-200 rounded-full shrink-0" />
+                <div className="space-y-2">
+                  <div className="h-4 w-32 bg-gray-200 rounded" />
+                  <div className="h-3 w-40 bg-gray-200 rounded" />
+                </div>
+              </div>
+              <div className="w-10 h-10 border-2 border-gray-200 rounded-md shrink-0" /> {/* Chat Icon Button */}
+            </div>
+          </div>
+        </div>
+
+        {/* RIGHT COLUMN: Pricing & Explore Area (w-2/5) */}
+        <div className="w-full md:w-2/5 lg:w-1/3 space-y-6">
+          
+          {/* Pricing Action Area */}
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+            <div className="h-8 w-36 bg-gray-200 rounded" /> {/* Price text */}
+            <div className="h-10 w-full lg:w-32 bg-gray-200 rounded" /> {/* Button */}
+          </div>
+
+          {/* Explore Area Map Section */}
+          <div className="space-y-4">
+            <div className="h-6 w-40 bg-gray-200 rounded" />
+            <div className="border-2 border-gray-200 rounded-2xl overflow-hidden shadow-sm">
+              {/* Map Canvas */}
+              <div className="w-full h-48 md:h-56 bg-gray-100" />
+              {/* Map Footer */}
+              <div className="p-4 flex justify-between items-center border-t border-gray-100">
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-5 bg-gray-200 rounded-full" />
+                  <div className="h-4 w-24 bg-gray-200 rounded" />
+                </div>
+                <div className="h-4 w-20 bg-gray-200 rounded" />
+              </div>
+            </div>
+          </div>
+          
+        </div>
+
+      </div>
+    </div>
+  );
+  
     case "profile":
       return (
         <div className="flex flex-col items-center space-y-3">
