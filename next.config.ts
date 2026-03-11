@@ -35,6 +35,16 @@ const nextConfig: NextConfig = {
         pathname: '/chat/**',
       },
       {
+        protocol: "https",
+        hostname: "server.ajarhub.com",
+        pathname: "/uploads/**",
+      },
+      {
+        protocol: "https",
+        hostname: "server.ajarhub.com",
+        pathname: "/chat/**",
+      },
+      {
         protocol: 'http',
         hostname: '173.249.13.76',
         port: '5000',
