@@ -6,12 +6,12 @@ import "react-day-picker/dist/style.css"
 import { Calendar, Clock } from "lucide-react"
 
 interface BlockedSlot {
-    from: string; // "HH:mm"
-    to: string;   // "HH:mm"
+    from: string;
+    to: string;
 }
 
 interface BlockedDateSlot {
-    date: string; // "YYYY-MM-DD"
+    date: string;
     slots: BlockedSlot[];
 }
 
@@ -45,7 +45,7 @@ const DateRangeCalendar = ({
 
     const localBlockedIntervals = useMemo(() => {
         if (!blockedSlots) return [];
-        return blockedSlots.flatMap(dayEntry => 
+        return blockedSlots.flatMap(dayEntry =>
             dayEntry.slots.map(slot => ({
                 start: new Date(`${dayEntry.date}T${slot.from}:00Z`),
                 end: new Date(`${dayEntry.date}T${slot.to}:00Z`)
@@ -57,27 +57,32 @@ const DateRangeCalendar = ({
         return Array.from({ length: 24 }, (_, i) => `${i.toString().padStart(2, '0')}:00`);
     }, []);
 
-    // ✅ Updated to include "1 hour ahead" logic for today's date
     const isTimeBlocked = (timeStr: string, selectedDate: Date) => {
         const [hours, minutes] = timeStr.split(':').map(Number);
         const checkTime = setMinutes(setHours(startOfDay(selectedDate), hours), minutes);
-        
-        // 1. Check Backend Blocked Slots
+
         const isBackendBlocked = localBlockedIntervals.some(interval => checkTime >= interval.start && checkTime < interval.end);
         if (isBackendBlocked) return true;
 
-        // 2. Check "1 Hour Ahead" logic if selected date is today
         const now = new Date();
         const isToday = format(selectedDate, "yyyy-MM-dd") === format(now, "yyyy-MM-dd");
-        
+
         if (isToday) {
-            // If current time is 11:09, now.getHours() is 11. 
-            // We block all hours <= 11, so the first available is 12.
             if (hours <= now.getHours()) return true;
         }
 
         return false;
     };
+
+    // ✅ NEW: compute fully blocked dates for hourly mode to disable on calendar
+    const fullyBlockedDates = useMemo(() => {
+        if (!isHourly || !blockedSlots) return [];
+        return blockedSlots
+            .filter(dayEntry =>
+                timeSlots.every(time => isTimeBlocked(time, parseISO(dayEntry.date)))
+            )
+            .map(dayEntry => parseISO(dayEntry.date));
+    }, [blockedSlots, isHourly, timeSlots]);
 
     useEffect(() => {
         const handler = (e: MouseEvent) => {
@@ -148,7 +153,8 @@ const DateRangeCalendar = ({
     };
 
     const sharedDayPickerProps = {
-        disabled: [{ before: new Date() }, ...blockedDates.map(d => parseISO(d))],
+        // ✅ UPDATED: also disable fully blocked hourly dates on the calendar
+        disabled: [{ before: new Date() }, ...blockedDates.map(d => parseISO(d)), ...fullyBlockedDates],
         onMonthChange: (month: Date) => onMonthChange?.(format(month, "yyyy-MM")),
         classNames: {
             selected: "!bg-aqua !text-white !rounded-lg",
@@ -160,7 +166,7 @@ const DateRangeCalendar = ({
         <div className="col-span-2 grid grid-cols-2 gap-4">
             <div className="relative" ref={startRef}>
                 <div className={`bg-gray-100 rounded-lg p-3 cursor-pointer hover:bg-gray-200 ${startDate ? "border border-teal-400" : ""}`}
-                     onClick={() => setOpenCalendar(openCalendar === "start" ? null : "start")}>
+                    onClick={() => setOpenCalendar(openCalendar === "start" ? null : "start")}>
                     <div className="flex items-center gap-2 mb-1">
                         <Calendar className="w-4 h-4 text-gray-600" />
                         <span className="text-xs font-medium text-gray-900">Lease Start</span>
@@ -183,10 +189,9 @@ const DateRangeCalendar = ({
                                                 type="button"
                                                 disabled={blocked}
                                                 onClick={() => handleTimeSelect(time, "start")}
-                                                className={`text-[11px] py-1.5 rounded-md border transition-all ${
-                                                    blocked ? "bg-gray-50 text-gray-300 line-through border-gray-100 cursor-not-allowed" :
-                                                    startTime === time ? "bg-aqua text-white border-teal-500" : "hover:border-teal-500 text-gray-700"
-                                                }`}
+                                                className={`text-[11px] py-1.5 rounded-md border transition-all ${blocked ? "bg-gray-50 text-gray-300 line-through border-gray-100 cursor-not-allowed" :
+                                                        startTime === time ? "bg-aqua text-white border-teal-500" : "hover:border-teal-500 text-gray-700"
+                                                    }`}
                                             >
                                                 {format(parseISO(`2000-01-01T${time}`), "h aa")}
                                             </button>
@@ -202,7 +207,7 @@ const DateRangeCalendar = ({
 
             <div className="relative" ref={endRef}>
                 <div className={`bg-gray-100 rounded-lg p-3 cursor-pointer hover:bg-gray-200 ${endDate ? "border border-teal-400" : ""}`}
-                     onClick={() => setOpenCalendar(openCalendar === "end" ? null : "end")}>
+                    onClick={() => setOpenCalendar(openCalendar === "end" ? null : "end")}>
                     <div className="flex items-center gap-2 mb-1">
                         <Clock className="w-4 h-4 text-gray-600" />
                         <span className="text-xs font-medium text-gray-900">Lease End</span>
@@ -225,10 +230,9 @@ const DateRangeCalendar = ({
                                                 type="button"
                                                 disabled={blocked}
                                                 onClick={() => handleTimeSelect(time, "end")}
-                                                className={`text-[11px] py-1.5 rounded-md border transition-all ${
-                                                    blocked ? "bg-gray-50 text-gray-300 line-through border-gray-100 cursor-not-allowed" :
-                                                    endTime === time ? "bg-aqua text-white border-teal-500" : "hover:border-teal-500 text-gray-700"
-                                                }`}
+                                                className={`text-[11px] py-1.5 rounded-md border transition-all ${blocked ? "bg-gray-50 text-gray-300 line-through border-gray-100 cursor-not-allowed" :
+                                                        endTime === time ? "bg-aqua text-white border-teal-500" : "hover:border-teal-500 text-gray-700"
+                                                    }`}
                                             >
                                                 {format(parseISO(`2000-01-01T${time}`), "h aa")}
                                             </button>
