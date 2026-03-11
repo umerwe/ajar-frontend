@@ -23,7 +23,7 @@ const PropertyHeader = ({ property }: PropertyHeaderProps) => {
     "images", "rentalImages", "description", "price", "isActive", "language",
     "documents", "isAvailable", "currentBookingId", "status", "priceUnit",
     "createdAt", "updatedAt", "__v", "userDocuments", "leaserDocuments",
-    "adminFee", "tax", "languages"
+    "adminFee", "tax", "languages","averageRating","totalReviews"
   ]);
 
   return (
