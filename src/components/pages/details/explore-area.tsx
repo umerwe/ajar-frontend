@@ -91,7 +91,7 @@ const ExploreArea = ({ property }: { property: Listing }) => {
                         href={googleMapsUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-aqua text-sm font-semibold flex items-center hover:underline"
+                        className="text-aqua text-sm font-medium flex items-center hover:underline"
                     >
                         Navigate to Area
                         <ChevronRight className="w-4 h-4 ml-1" />
