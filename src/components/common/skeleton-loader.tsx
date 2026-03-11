@@ -247,60 +247,59 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: 
 
     case "listing":
       return (
-        <div className="mb-9 animate-pulse">
+        <div className="mb-9 animate-pulse space-y-6">
 
-          {/* Image Gallery - Matching ImageGalleryLayout.tsx structure */}
-          <div className="pb-6">
-            <div className="flex flex-col md:flex-row gap-2 h-auto">
-              {/* Big Left Image */}
-              <div className="w-full md:w-[45%] lg:w-[45%] h-[250px] sm:h-[280px] xl:h-[340px] min-h-[250px] rounded-lg bg-gray-200" />
+          {/* PropertyHeader Skeleton (White card with border) */}
+          <div className="bg-white rounded-lg border border-gray-100 p-4 shadow-sm">
+            <div className="flex flex-col lg:flex-row gap-4">
 
-              {/* Right Side Grid */}
-              <div className="w-full md:w-[55%] lg:w-[55%] h-auto md:h-[280px] xl:h-[340px]">
-                {/* Desktop Grid */}
-                <div className="hidden md:grid grid-cols-3 grid-rows-2 gap-2 h-full">
-                  {Array.from({ length: 6 }).map((_, i) => (
-                    <div key={i} className="w-full h-full rounded-lg bg-gray-200" />
+              {/* LEFT: IMAGE GALLERY SECTION (Matches 600px width) */}
+              <div className="flex gap-2 w-full lg:w-[600px] h-[250px] shrink-0">
+                {/* Main Large Image */}
+                <div className="w-[50%] h-full rounded-sm bg-gray-200" />
+
+                {/* 2x2 Small Grid */}
+                <div className="grid grid-cols-2 grid-rows-2 gap-2 w-[50%] h-full">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i} className="rounded-sm bg-gray-200" />
                   ))}
                 </div>
-                {/* Mobile Scroll */}
-                <div className="md:hidden flex gap-2 overflow-hidden pb-2">
-                  {Array.from({ length: 3 }).map((_, i) => (
-                    <div key={i} className="flex-shrink-0 w-[120px] h-[120px] sm:w-[140px] sm:h-[140px] rounded-lg bg-gray-200" />
+              </div>
+
+              {/* RIGHT: CONTENT SECTION */}
+              <div className="flex-1 flex flex-col justify-between py-1">
+                <div className="space-y-3">
+                  {/* Title & CoreDetails */}
+                  <div className="h-7 w-3/4 bg-gray-200 rounded" />
+                  <div className="h-4 w-1/2 bg-gray-200 rounded" />
+                  {/* Rating Box */}
+                  <div className="flex gap-2 items-center mt-2">
+                    <div className="h-6 w-10 bg-gray-200 rounded" />
+                    <div className="h-4 w-24 bg-gray-200 rounded" />
+                  </div>
+                </div>
+
+                {/* Bottom 4-column Grid (CleanedData) */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-gray-50">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i} className="space-y-2">
+                      <div className="h-3 w-12 bg-gray-200 rounded" />
+                      <div className="h-4 w-16 bg-gray-200 rounded" />
+                    </div>
                   ))}
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Main Content Layout - Matching BookingDetails.tsx structure */}
+          {/* TWO COLUMN MAIN CONTENT */}
           <div className="flex flex-col md:flex-row gap-6 md:gap-8 lg:gap-10">
 
-            {/* LEFT COLUMN */}
-            <div className="w-full md:w-3/5 lg:w-2/3 flex flex-col gap-6">
-
-              {/* Core Details */}
-              <div className="space-y-3">
-                <div className="h-8 w-3/4 bg-gray-200 rounded" /> {/* Title */}
-                <div className="flex items-center gap-2">
-                  <div className="h-4 w-24 bg-gray-200 rounded" /> {/* Stars */}
-                </div>
-                <div className="flex items-center gap-4 mt-2">
-                  <div className="h-4 w-1/2 bg-gray-200 rounded" /> {/* Address */}
-                  <div className="h-4 w-20 bg-gray-200 rounded" /> {/* Map Link */}
-                </div>
-              </div>
-
-              {/* Rating */}
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-6 bg-gray-200 rounded" /> {/* Score Box */}
-                <div className="h-4 w-20 bg-gray-200 rounded" /> {/* "Excellent" */}
-                <div className="h-4 w-32 bg-gray-200 rounded ml-2" /> {/* Reviews link */}
-              </div>
-
-              {/* About Listing */}
-              <div className="mt-2">
-                <div className="h-6 w-24 bg-gray-200 rounded mb-3" /> {/* "About" Title */}
+            {/* LEFT COLUMN (About & Host) */}
+            <div className="w-full md:w-3/5 lg:w-2/3 flex flex-col gap-[40px]">
+              {/* About Section */}
+              <div>
+                <div className="h-6 w-24 bg-gray-200 rounded mb-4" />
                 <div className="space-y-2">
                   <div className="h-4 w-full bg-gray-200 rounded" />
                   <div className="h-4 w-full bg-gray-200 rounded" />
@@ -308,47 +307,46 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: 
                 </div>
               </div>
 
-              {/* Host Info */}
-              <div className="mt-4">
-                <div className="h-6 w-32 bg-gray-200 rounded mb-4" /> {/* "Hosted By" Title */}
+              {/* Host Info Section */}
+              <div>
+                <div className="h-6 w-32 bg-gray-200 rounded mb-5" />
                 <div className="flex items-center justify-between">
                   <div className="flex gap-3 items-center">
-                    <div className="w-12 h-12 bg-gray-200 rounded-full" /> {/* Avatar */}
+                    <div className="w-12 h-12 bg-gray-200 rounded-full shrink-0" />
                     <div className="space-y-2">
-                      <div className="h-5 w-32 bg-gray-200 rounded" /> {/* Name */}
-                      <div className="h-3 w-40 bg-gray-200 rounded" /> {/* Email */}
+                      <div className="h-4 w-28 bg-gray-200 rounded" />
+                      <div className="h-3 w-36 bg-gray-200 rounded" />
                     </div>
                   </div>
+                  <div className="w-10 h-10 bg-gray-200 rounded-md" /> {/* Chat Icon */}
                 </div>
               </div>
             </div>
 
-            {/* RIGHT COLUMN */}
-            <div className="w-full md:w-2/5 lg:w-1/3 space-y-6">
-
-              {/* Pricing Actions */}
-              <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row justify-between items-start sm:items-center md:items-start lg:items-center gap-3">
-                <div className="h-8 w-32 bg-gray-200 rounded" /> {/* Price */}
-                <div className="h-10 w-full sm:w-32 md:w-full lg:w-32 bg-gray-200 rounded" /> {/* Action Button */}
+            {/* RIGHT COLUMN (Pricing & Map) */}
+            <div className="w-full md:w-2/5 lg:w-1/3 space-y-4">
+              {/* Pricing Box */}
+              <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3">
+                <div className="h-8 w-32 bg-gray-200 rounded" />
+                <div className="h-10 w-full lg:w-32 bg-gray-200 rounded" />
               </div>
 
-              {/* Explore Area */}
-              <div className="space-y-3 pt-2">
-                <div className="h-6 w-40 bg-gray-200 rounded" /> {/* "Explore Area" Title */}
-                <div className="border-2 border-gray-200 rounded-xl overflow-hidden">
-                  <div className="w-full h-40 sm:h-54 md:h-44 lg:h-48 bg-gray-200" /> {/* Map Image */}
-                  <div className="p-4 space-y-2">
-                    <div className="h-4 w-3/4 bg-gray-200 rounded" /> {/* Address Text */}
-                    <div className="h-4 w-24 bg-gray-200 rounded" /> {/* View Map link */}
+              {/* Explore Area Map */}
+              <div className="space-y-4">
+                <div className="h-6 w-40 bg-gray-200 rounded" />
+                <div className="border-2 border-gray-200 rounded-2xl overflow-hidden">
+                  <div className="w-full h-48 md:h-56 bg-gray-200" />
+                  <div className="p-4 flex justify-between">
+                    <div className="h-5 w-32 bg-gray-200 rounded" />
+                    <div className="h-5 w-24 bg-gray-200 rounded" />
                   </div>
                 </div>
               </div>
-
             </div>
+
           </div>
         </div>
       );
-
     case "profile":
       return (
         <div className="flex flex-col items-center space-y-3">
@@ -601,56 +599,56 @@ const SkeletonLoader = ({ count = 10, variant = "cards", isFav = false, type }: 
       );
 
     case "bank-accounts":
-  return (
-    <div className="max-w-2xl mx-auto space-y-4">
-      {Array.from({ length: 3 }).map((_, i) => (
-        <Card
-          key={i}
-          className="border bg-white shadow-sm rounded-2xl overflow-hidden"
-        >
-          <CardContent className="p-6">
-            {/* Header */}
-            <div className="flex justify-between items-start">
-              <div className="flex gap-4">
-                {/* Icon */}
-                <div className="pt-1">
-                  <Skeleton className="w-5 h-5 rounded bg-slate-200" />
+      return (
+        <div className="max-w-2xl mx-auto space-y-4">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Card
+              key={i}
+              className="border bg-white shadow-sm rounded-2xl overflow-hidden"
+            >
+              <CardContent className="p-6">
+                {/* Header */}
+                <div className="flex justify-between items-start">
+                  <div className="flex gap-4">
+                    {/* Icon */}
+                    <div className="pt-1">
+                      <Skeleton className="w-5 h-5 rounded bg-slate-200" />
+                    </div>
+
+                    {/* Bank + Account Name */}
+                    <div className="space-y-1.5">
+                      <Skeleton className="h-5 w-36 rounded bg-slate-200" />
+                      <Skeleton className="h-4 w-28 rounded bg-slate-200" />
+                    </div>
+                  </div>
+
+                  {/* Action buttons */}
+                  <div className="flex gap-1">
+                    <Skeleton className="w-9 h-9 rounded-full bg-slate-200" />
+                    <Skeleton className="w-9 h-9 rounded-full bg-slate-200" />
+                  </div>
                 </div>
 
-                {/* Bank + Account Name */}
-                <div className="space-y-1.5">
-                  <Skeleton className="h-5 w-36 rounded bg-slate-200" />
-                  <Skeleton className="h-4 w-28 rounded bg-slate-200" />
+                {/* Divider + Details */}
+                <div className="mt-6 space-y-3 border-t pt-5 border-slate-50">
+                  <div className="flex items-center">
+                    <Skeleton className="h-3 w-36 mr-4 rounded bg-slate-200" />
+                    <Skeleton className="h-3 w-44 rounded bg-slate-200" />
+                  </div>
+
+                  <div className="flex items-center">
+                    <Skeleton className="h-3 w-36 mr-4 rounded bg-slate-200" />
+                    <Skeleton className="h-3 w-44 rounded bg-slate-200" />
+                  </div>
                 </div>
-              </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      );
 
-              {/* Action buttons */}
-              <div className="flex gap-1">
-                <Skeleton className="w-9 h-9 rounded-full bg-slate-200" />
-                <Skeleton className="w-9 h-9 rounded-full bg-slate-200" />
-              </div>
-            </div>
 
-            {/* Divider + Details */}
-            <div className="mt-6 space-y-3 border-t pt-5 border-slate-50">
-              <div className="flex items-center">
-                <Skeleton className="h-3 w-36 mr-4 rounded bg-slate-200" />
-                <Skeleton className="h-3 w-44 rounded bg-slate-200" />
-              </div>
-
-              <div className="flex items-center">
-                <Skeleton className="h-3 w-36 mr-4 rounded bg-slate-200" />
-                <Skeleton className="h-3 w-44 rounded bg-slate-200" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  );
-
-    
-      default: <div></div>;
+    default: <div></div>;
 
   }
 };

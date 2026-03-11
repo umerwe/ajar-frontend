@@ -25,7 +25,6 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const { mutate: sendExtendRental, isPending: isExtendRentalPending } = useExtendRental();
   const { mutate: updateStatus, isPending: isStatusLoading } = useUpdateBookingStatus();
   const { data } = useUser();
-  console.log(bookingData)
 
   const [isRateOpen, setIsRateOpen] = useState(false)
   const [isPaymentOpen, setIsPaymentOpen] = useState(false)
