@@ -143,7 +143,6 @@ export default function EditProfileForm({
                                                     <Image src={process.env.NEXT_PUBLIC_API_BASE_URL + doc.fileUrl} alt="preview" fill className="object-cover" />
                                                 )}
                                             </div>
-                                            {doc.status !== "approved" && (
                                                 <button
                                                     type="button"
                                                     disabled={isRemoving}
@@ -152,7 +151,6 @@ export default function EditProfileForm({
                                                 >
                                                     <X className="w-3 h-3" />
                                                 </button>
-                                            )}
                                         </div>
                                     </div>
                                 )}
