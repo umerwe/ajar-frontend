@@ -5,13 +5,12 @@ import { Button } from "@/components/ui/button";
 import { useUpdateUser } from "@/hooks/useAuth";
 import React from "react";
 import Image from "@/components/MyImage";
-import { Upload, File, X, CheckCircle2 } from "lucide-react";
+import { X } from "lucide-react";
 import { capitalizeWords } from "@/utils/capitalizeWords";
 import Loader from "../common/loader";
-import { formatFileSize } from "@/utils/formatFileSize";
 import { EditProfileFormValues, EditProfileSchema } from "@/validations/profile";
 import { toast } from "../ui/toast";
-import { useRemoveDocumentFile } from "@/hooks/useDocument"; // ← add this import
+import { useRemoveDocumentFile } from "@/hooks/useDocument";
 
 
 export default function EditProfileForm({
@@ -117,7 +116,7 @@ export default function EditProfileForm({
             {user?.documents && user.documents.length > 0 && (
                 <div className="mt-6">
                     <h3 className="text-base font-semibold text-gray-900 mb-4">
-                        Upload Documents
+                        Documents
                     </h3>
                     <div className="space-y-3">
                         {user.documents.map((doc: any) => (
@@ -134,30 +133,26 @@ export default function EditProfileForm({
                                     </span>
                                 </div>
 
-                                {doc?.filesUrl?.length !== 0 && (
+                                {doc?.fileUrl && (
                                     <div className="mb-2">
-                                        <div className="flex gap-2 overflow-x-auto scrollbar-thin p-2">
-                                            {doc.filesUrl?.map((url: string, index: number) => (
-                                                <div key={index} className="relative w-24 h-24 flex-shrink-0 group">
-                                                    <div className="w-full h-full rounded-lg overflow-hidden border">
-                                                        {url.endsWith(".pdf") ? (
-                                                            <div className="flex items-center justify-center h-full bg-gray-200 text-sm text-gray-600">PDF</div>
-                                                        ) : (
-                                                            <Image src={process.env.NEXT_PUBLIC_API_BASE_URL + url} alt="preview" fill className="object-cover" />
-                                                        )}
-                                                    </div>
-                                                    {doc.status !== "approved" && (
-                                                        <button
-                                                            type="button"
-                                                            disabled={isRemoving}
-                                                            onClick={() => handleRemoveFile(url)}
-                                                            className="absolute -top-1.5 -right-1.5 bg-red-500 hover:bg-red-600 text-white rounded-full p-0.5 shadow transition-opacity opacity-0 group-hover:opacity-100"
-                                                        >
-                                                            <X className="w-3 h-3" />
-                                                        </button>
-                                                    )}
-                                                </div>
-                                            ))}
+                                        <div className="relative w-24 h-24 flex-shrink-0 group">
+                                            <div className="w-full h-full rounded-lg overflow-hidden border">
+                                                {doc.fileUrl.endsWith(".pdf") ? (
+                                                    <div className="flex items-center justify-center h-full bg-gray-200 text-sm text-gray-600">PDF</div>
+                                                ) : (
+                                                    <Image src={process.env.NEXT_PUBLIC_API_BASE_URL + doc.fileUrl} alt="preview" fill className="object-cover" />
+                                                )}
+                                            </div>
+                                            {doc.status !== "approved" && (
+                                                <button
+                                                    type="button"
+                                                    disabled={isRemoving}
+                                                    onClick={() => handleRemoveFile(doc.name)}
+                                                    className="absolute -top-1.5 -right-1.5 bg-red-500 hover:bg-red-600 text-white rounded-full p-0.5 shadow transition-opacity opacity-0 group-hover:opacity-100"
+                                                >
+                                                    <X className="w-3 h-3" />
+                                                </button>
+                                            )}
                                         </div>
                                     </div>
                                 )}
@@ -170,7 +165,7 @@ export default function EditProfileForm({
                                     onChange={(e) => handleDocChange(doc.name, e.target.files?.[0] || null)}
                                 />
 
-                                {docFiles[doc.name] ? (
+                                {/* {docFiles[doc.name] ? (
                                     <div className="flex items-center justify-between p-2 bg-white border-2 border-blue-500 rounded-lg">
                                         <div className="flex items-center gap-2 flex-1 min-w-0">
                                             {docFiles[doc.name]!.type.startsWith('image/') ? (
@@ -194,7 +189,7 @@ export default function EditProfileForm({
                                             <p className="text-xs text-gray-500">PDF or Image</p>
                                         </div>
                                     </label>
-                                )}
+                                )} */}
                             </div>
                         ))}
                     </div>

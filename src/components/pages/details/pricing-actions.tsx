@@ -19,6 +19,7 @@ import { useUser } from "@/hooks/useAuth"
 import Loader from "@/components/common/loader"
 import Document from "./document"
 import { LoginDialog } from "@/components/dialogs/login-dialog"
+import { InactiveAccountDialog } from "@/components/dialogs/inactiveAccountDialog"
 
 const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const { mutate, isPending } = useSubmitPin();
@@ -31,6 +32,7 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const [loadingPayment, setLoadingPayment] = useState(false)
   const [clientSecret, setClientSecret] = useState<string | null>(null)
   const [isGuestDialogOpen, setIsGuestDialogOpen] = useState(false);
+  const [isInactiveOpen, setIsInactiveOpen] = useState(false);
 
   const [isPriceOpen, setIsPriceOpen] = useState(false)
   const [isPinOpen, setIsPinOpen] = useState(false);
@@ -89,6 +91,12 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
       setIsGuestDialogOpen(true);
       return;
     }
+
+    if (data?.status === "inactive") {
+      setIsInactiveOpen(true);
+      return;
+    }
+
     router.push(`/listing/${category_id}/${id}/checkout`)
   };
 
@@ -316,6 +324,10 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
         onOpenChange={setIsGuestDialogOpen}
       />
 
+      <InactiveAccountDialog
+        open={isInactiveOpen}
+        onOpenChange={setIsInactiveOpen}
+      />
     </div>
   )
 }

@@ -104,7 +104,7 @@ export default function ProfileDropdown() {
     return (
       <div
         style={imageWrapperStyle}
-        className="flex items-center justify-center rounded-full bg-aqua text-white text-xs font-semibold flex-shrink-0"
+        className="flex items-center justify-center rounded-full bg-aqua text-white text-xs font-semibold flex-shrink-0 cursor-pointer"
       >
         {getInitial(user?.name)}
       </div>

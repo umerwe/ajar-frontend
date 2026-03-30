@@ -87,6 +87,7 @@ export default function ProfilePage() {
                                         key={index}
                                         data={item}
                                         documents={documents}
+                                        userDocs={user?.documents || []}
                                     />
                                 );
                             }

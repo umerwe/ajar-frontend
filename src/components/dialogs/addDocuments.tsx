@@ -21,15 +21,23 @@ import { toast } from "../ui/toast";
 import Image from "@/components/MyImage";
 import { useUpdateUser } from "@/hooks/useAuth";
 
-const AddDocumentDialog = ({ data, documents }: any) => {
+const AddDocumentDialog = ({ data, documents, userDocs = [] }: any) => {
     const [open, setOpen] = useState(false);
     const [selectedDocType, setSelectedDocType] = useState<string>("");
     const [docFile, setDocFile] = useState<File | null>(null);
     const [preview, setPreview] = useState<string | null>(null);
+    const [expiryDate, setExpiryDate] = useState<string>("");
 
     const { mutate, isPending } = useUpdateUser();
 
     const Icon = data?.icon;
+
+    const availableDocuments = documents?.filter((doc: any) => {
+        const userDoc = userDocs?.find((ud: any) => ud.name === doc.value);
+        return !userDoc?.fileUrl || userDoc?.status === "rejected";
+    });
+
+    const selectedDocConfig = availableDocuments?.find((doc: any) => doc.value === selectedDocType);
 
     useEffect(() => {
         if (docFile && docFile.type.startsWith("image/")) {
@@ -46,6 +54,7 @@ const AddDocumentDialog = ({ data, documents }: any) => {
             setDocFile(null);
             setSelectedDocType("");
             setPreview(null);
+            setExpiryDate("");
         }
     };
 
@@ -55,8 +64,17 @@ const AddDocumentDialog = ({ data, documents }: any) => {
             return;
         }
 
+        if (selectedDocConfig?.hasExpiry && !expiryDate) {
+            toast({ title: "Error", description: "Expiry date is required", variant: "destructive" });
+            return;
+        }
+
         const formData = new FormData();
         formData.append(selectedDocType, docFile);
+        formData.append("dropdownName", "userDocuments");
+        if (selectedDocConfig?.hasExpiry && expiryDate) {
+            formData.append("expiryDate", expiryDate);
+        }
 
         mutate(formData, {
             onSuccess: () => {
@@ -89,17 +107,42 @@ const AddDocumentDialog = ({ data, documents }: any) => {
                 <div className="space-y-5 py-4">
                     <div className="space-y-2">
                         <label className="text-sm font-medium">Document Type</label>
-                        <Select onValueChange={setSelectedDocType} value={selectedDocType}>
-                            <SelectTrigger className="w-full bg-gray-50">
-                                <SelectValue placeholder="Select type" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {documents?.map((doc: any) => (
-                                    <SelectItem key={doc.value} value={doc.value}>{doc.name}</SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+
+                        {/* ✅ Show message if all docs are submitted */}
+                        {availableDocuments?.length === 0 ? (
+                            <p className="text-sm text-gray-500 text-center py-4 bg-gray-50 rounded-lg border">
+                                All documents have been submitted.
+                            </p>
+                        ) : (
+                            <Select onValueChange={setSelectedDocType} value={selectedDocType}>
+                                <SelectTrigger className="w-full bg-gray-50">
+                                    <SelectValue placeholder="Select type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {availableDocuments?.map((doc: any) => (
+                                        <SelectItem key={doc.value} value={doc.value}>
+                                            {doc.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        )}
                     </div>
+
+                    {/* ✅ Show expiry date only if hasExpiry is true */}
+                    {selectedDocConfig?.hasExpiry && (
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium">Expiry Date</label>
+                            <input
+                                type="date"
+                                value={expiryDate}
+                                onChange={(e) => setExpiryDate(e.target.value)}
+                                min={new Date().toISOString().split("T")[0]}
+                                className="w-full rounded-md border border-input bg-gray-50 px-3 py-2 text-sm"
+                                onKeyDown={(e) => e.preventDefault()}
+                            />
+                        </div>
+                    )}
 
                     <div className="space-y-2">
                         <label className="text-sm font-medium">File</label>
@@ -139,7 +182,13 @@ const AddDocumentDialog = ({ data, documents }: any) => {
                     <div className="flex justify-end gap-3 pt-4 border-t">
                         <Button
                             onClick={handleSubmit}
-                            disabled={isPending || !docFile || !selectedDocType}
+                            disabled={
+                                isPending ||
+                                !docFile ||
+                                !selectedDocType ||
+                                availableDocuments?.length === 0 ||
+                                (selectedDocConfig?.hasExpiry && !expiryDate)
+                            }
                             variant="destructive"
                         >
                             {isPending ? "Saving..." : "Save Document"}
