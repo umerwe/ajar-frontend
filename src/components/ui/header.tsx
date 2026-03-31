@@ -16,10 +16,22 @@ interface HeaderProps {
 const Header = ({ status, title, isBookingLoading, onAddClick }: HeaderProps) => {
     const router = useRouter();
 
-    const formattedStatus =
-        status?.toLowerCase() === "in_progress"
-            ? "In Progress"
-            : capitalizeWords(status || "");
+    const formattedStatus = (status: string) => {
+        if (!status) return "";
+
+        // 1. Special case for In Progress
+        if (status.toLowerCase() === "in_progress") {
+            return "In Progress";
+        }
+
+        // 2. Special case for Booking Cancelled
+        if (status.toLowerCase() === "booking_cancelled") {
+            return "Booking Cancelled";
+        }
+        
+        const cleanStatus = status.replace(/_/g, " ");
+        return capitalizeWords(cleanStatus);
+    };
 
     return (
         <div className="flex items-center justify-between bg-white">
@@ -45,7 +57,7 @@ const Header = ({ status, title, isBookingLoading, onAddClick }: HeaderProps) =>
             ) : (
                 status && (
                     <div className={`${getStatusStyles(status)} px-3 py-1 text-xs sm:text-sm font-semibold`}>
-                        {formattedStatus}
+                        {formattedStatus(status)}
                     </div>
                 )
             )}

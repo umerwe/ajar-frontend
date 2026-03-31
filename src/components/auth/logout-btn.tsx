@@ -6,8 +6,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LogoutButtonProps } from "@/types/auth";
-import { LogoutDialog } from "../dialogs/logout-dialog";
 import { signOut } from "next-auth/react";
+import { ConfirmDialog } from "../dialogs/confirm-dialog"; // Path update karein
 
 const LogoutButton = ({ variant = "menu", isPending }: LogoutButtonProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -15,6 +15,7 @@ const LogoutButton = ({ variant = "menu", isPending }: LogoutButtonProps) => {
   const queryClient = useQueryClient();
 
   const handleLogout = async () => {
+    // Cleanup
     queryClient.clear();
     localStorage.clear();
     sessionStorage.clear();
@@ -40,7 +41,7 @@ const LogoutButton = ({ variant = "menu", isPending }: LogoutButtonProps) => {
         </Button>
       ) : (
         <div
-          onClick={handleLogout}
+          onClick={triggerDialog}
           className="px-4 py-2 text-sm transition-colors duration-150
             cursor-pointer text-red-600 hover:bg-red-50 hover:text-red-700 flex items-center gap-2"
         >
@@ -48,11 +49,15 @@ const LogoutButton = ({ variant = "menu", isPending }: LogoutButtonProps) => {
         </div>
       )}
 
-      {/* Separate Dialog Component */}
-      <LogoutDialog
+      {/* Reusable Confirm Dialog */}
+      <ConfirmDialog
         open={isDialogOpen}
         onOpenChange={setIsDialogOpen}
         onConfirm={handleLogout}
+        title="Confirm Logout"
+        description="Are you sure you want to log out? You will need to login again to access your account."
+        confirmText="Logout"
+        variant="default"
       />
     </>
   );

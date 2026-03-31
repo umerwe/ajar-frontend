@@ -12,7 +12,6 @@ const ITEMS_PER_PAGE = 8;
 
 const Status = ({ status }: { status: string }) => {
   const [currentPage, setCurrentPage] = useState(1);
-
   const { data, isLoading } = useBooking(status === "all" ? undefined : status, currentPage);
 
   const bookings = data?.data?.bookings || [];

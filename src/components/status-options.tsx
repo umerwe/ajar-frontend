@@ -5,16 +5,11 @@ import Dropdown from "@/components/ui/dropdown";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { formatText } from "@/utils/formatText";
 import { statusOptions } from "../constants/booking";
+import { slugify } from "@/utils/formatStatus";
 
 const StatusOptions = () => {
     const params = useParams();
     const statusParam = (params.status as string) || "all";
-
-    const slugify = (str: string) => {
-        if (!str) return "";
-        if (str.toLowerCase() === "in progress") return "in_progress";
-        return str.toLowerCase();
-    };
 
     const getHref = (status: string) => `/booking/${slugify(status)}`;
 
@@ -24,7 +19,8 @@ const StatusOptions = () => {
 
     const getCurrentLabel = () => {
         if (!statusParam || slugify(statusParam) === "all") return "All Status";
-        return formatText(statusParam);
+        // If the URL is /booking/booking_cancelled, this will return "Booking Cancelled"
+        return formatText(statusParam.replace("_", " "));
     };
 
     const mobileButton = (
@@ -51,8 +47,8 @@ const StatusOptions = () => {
                             key={i}
                             href={getHref(status)}
                             className={`flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors duration-150 border-l-4 ${active
-                                    ? "bg-blue-50 border-l-aqua text-aqua"
-                                    : "border-l-transparent text-gray-600"
+                                ? "bg-blue-50 border-l-aqua text-aqua"
+                                : "border-l-transparent text-gray-600"
                                 }`}
                         >
                             <span className={`text-sm ${active ? "text-aqua" : ""}`}>

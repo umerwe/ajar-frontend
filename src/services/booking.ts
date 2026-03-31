@@ -1,7 +1,7 @@
 import api from "@/lib/axios";
 import { BookingRequest } from "@/types/booking";
 
-export async function getBooking(status?: string, currentPage?: number) {
+export async function getBooking(status?: string, currentPage?: number, isRefundable?: string) {
   const params = new URLSearchParams();
 
   params.append("role", "renter");
@@ -9,6 +9,7 @@ export async function getBooking(status?: string, currentPage?: number) {
 
   if (status) params.append("status", status);
   if (currentPage) params.append("page", currentPage.toString());
+  if (isRefundable) params.append("isRefundable", isRefundable);
 
   const endpoint = `/api/bookings/user/bookings?${params.toString()}`;
 
@@ -27,9 +28,9 @@ export async function createBooking({ booking }: { booking: BookingRequest }) {
   return data;
 }
 
-export async function updateBookingStatus({ bookingId }: { bookingId: string }) {
+export async function updateBookingStatus({ bookingId, status = "request_cancelled" }: { bookingId: string; status?: string }) {
   const { data } = await api.patch(`/api/bookings/${bookingId}/status`, {
-    status: "cancelled"
+    status
   });
   return data;
 }

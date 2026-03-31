@@ -14,8 +14,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { capitalizeWords } from "@/utils/capitalizeWords";
-
-const statusOptions = ["Pending", "Approved", "Rejected", "Completed", "Cancelled"];
+import { status } from "@/constants/booking";
+import { slugify } from "@/utils/formatStatus";
 
 const SubCategories = () => {
   const { data = [], isLoading } = useSubCategories();
@@ -47,7 +47,7 @@ const SubCategories = () => {
       : subCategoryParam === subCategory._id;
 
   const handleStatusSelect = (status: string) => {
-    router.push(`/booking/${status.toLowerCase()}`);
+    router.push(`/booking/${slugify(status)}`);
   };
 
   const mobileButton = (
@@ -58,7 +58,7 @@ const SubCategories = () => {
           border-l-blue"
     >
       <div className="flex items-center gap-3">
-        <span className="text-sm text-[#01c89b]">
+        <span className="text-sm text-aqua">
           {activeSubCategory.name}
         </span>
       </div>
@@ -105,7 +105,7 @@ const SubCategories = () => {
   const filterContent = (
     <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
       <div className="py-2">
-        {statusOptions.map((status) => (
+        {status.map((status) => (
           <button
             key={status}
             onClick={() => handleStatusSelect(status)}

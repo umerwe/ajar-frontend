@@ -204,7 +204,7 @@ const CheckoutPage = () => {
                                                 </div>
                                                 <div className="flex flex-wrap items-center gap-2">
                                                     <span className="bg-aqua text-white px-3 py-1 rounded-l-2xl rounded-b-2xl text-sm font-medium">
-                                                        {(listing?.averageRating ? listing.averageRating.toFixed(1) : 0 || 0).toFixed(1)}/5
+                                                        {Number(listing?.averageRating || 0).toFixed(1)}/5
                                                     </span>
                                                     <span className="text-sm text-gray-500">{listing?.totalReviews || 0} reviews</span>
                                                 </div>

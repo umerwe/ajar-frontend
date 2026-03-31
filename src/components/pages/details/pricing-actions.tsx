@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/hover-card";
 import { RatingDialog } from "../../dialogs/rating"
 import { getActionDetails } from "@/lib/getAction"
-import { PaymentDialog } from "@/components/dialogs/payment"
 import { PinDialog } from "@/components/dialogs/pin"
 import { useExtendRental, useSubmitPin, useUpdateBookingStatus } from "@/hooks/useBooking"
 import { ExtensionDialog } from "@/components/dialogs/extenstion"
@@ -20,6 +19,8 @@ import Loader from "@/components/common/loader"
 import Document from "./document"
 import { LoginDialog } from "@/components/dialogs/login-dialog"
 import { InactiveAccountDialog } from "@/components/dialogs/inactiveAccountDialog"
+import { ConfirmDialog } from "@/components/dialogs/confirm-dialog" // Added
+import RefundStatusDialog from "@/components/dialogs/RefundStatusDialog"
 
 const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const { mutate, isPending } = useSubmitPin();
@@ -28,18 +29,17 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const { data } = useUser();
 
   const [isRateOpen, setIsRateOpen] = useState(false)
-  const [isPaymentOpen, setIsPaymentOpen] = useState(false)
-  const [loadingPayment, setLoadingPayment] = useState(false)
-  const [clientSecret, setClientSecret] = useState<string | null>(null)
   const [isGuestDialogOpen, setIsGuestDialogOpen] = useState(false);
   const [isInactiveOpen, setIsInactiveOpen] = useState(false);
 
   const [isPriceOpen, setIsPriceOpen] = useState(false)
   const [isPinOpen, setIsPinOpen] = useState(false);
   const [isExtendOpen, setIsExtendOpen] = useState(false);
+  const [isCancelConfirmOpen, setIsCancelConfirmOpen] = useState(false);
 
   const router = useRouter()
   const { label, link } = getActionDetails(bookingData?.status);
+  const [isRefundStatusOpen, setIsRefundStatusOpen] = useState(false);
 
   const rawPrice = property?.price || 0;
   const adminFeeNoBooking = property?.adminFee || 0;
@@ -48,7 +48,6 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const totalNoBookingPrice =
     rawPrice + adminFeeNoBooking + taxNoBooking;
 
-  // Pricing variables extraction update
   const pricingMeta = bookingData?.pricingMeta;
 
   const unitPrice = pricingMeta?.priceFromListing || property?.price || 0;
@@ -62,6 +61,8 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const additionalCharges = bookingData?.extraRequestCharges?.additionalCharges || 0
   const displayPrice = priceDetails?.totalPrice || basePrice;
   const displayTotal = priceDetails?.totalPrice || 0;
+
+  const refundRequest = bookingData?.refundRequest;
 
   const handlePinSubmit = (pin: string) => {
     mutate({ bookingId: bookingData._id, otp: pin },
@@ -86,6 +87,15 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
     )
   }
 
+  // Handler for dynamic cancellation
+  const handleCancelBooking = () => {
+    const targetStatus = bookingData.status === "pending" ? "request_cancelled" : "booking_cancelled";
+    updateStatus(
+      { bookingId: bookingData._id, status: targetStatus },
+      { onSuccess: () => setIsCancelConfirmOpen(false) }
+    );
+  }
+
   const handleProtectedAction = () => {
     if (!data?.name) {
       setIsGuestDialogOpen(true);
@@ -104,6 +114,19 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
     ? new Date(bookingData.dates.checkOut).toISOString().split("T")[0]
     : undefined;
 
+  // Configuration for dynamic dialog text
+  const cancelConfig = bookingData?.status === "pending"
+    ? {
+      title: "Cancel Booking Request?",
+      description: "This will cancel your current booking request. This action cannot be undone.",
+      confirmText: "Confirm"
+    }
+    : {
+      title: "Cancel Confirmed Booking?",
+      description: "This will cancel your active booking. You may be eligible for a refund based on the policy.",
+      confirmText: "Confirm"
+    };
+
   const renderActionButton = () => {
     if (!bookingData) {
       if (data?._id !== property.leaser._id) {
@@ -119,7 +142,7 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
       return <Document property={property} />
     }
 
-    if (label === "Cancelled" || label === "Rejected" || label === "Expired") {
+    if (label === "Request Cancelled" || label === "Rejected" || label === "Expired") {
       return null;
     }
 
@@ -127,7 +150,7 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
       case "Cancel Request":
         return (
           <Button
-            onClick={() => updateStatus({ bookingId: bookingData._id })}
+            onClick={() => setIsCancelConfirmOpen(true)}
             variant="destructive"
             disabled={isStatusLoading}
           >
@@ -159,19 +182,47 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
           )
           ;
 
-      case "Proceed to pay":
+      case "Booking Cancelled":
+        if (!refundRequest) {
+          return (
+            <Button
+              onClick={() => router.push(`/refund?bookingId=${bookingData._id}`)}
+              variant="destructive"
+              className="w-full sm:w-auto px-7"
+            >
+              Request Refund
+            </Button>
+          );
+        }
         return (
-          <Button
-            onClick={() => setIsPinOpen(true)}
-            disabled={loadingPayment}
-            variant="destructive"
-          >
-            {loadingPayment ? (
-              <Loader />
-            ) : (
-              "Submit Pin"
-            )}
-          </Button>
+          <>
+            <Button
+              onClick={() => setIsRefundStatusOpen(true)}
+              variant="destructive"
+              className="w-full sm:w-auto px-7"
+            >
+              Refund Info
+            </Button>
+          </>
+        );
+
+      case "Submit Pin":
+        return (
+          <div className="flex flex-col gap-2">
+            <Button
+              onClick={() => setIsPinOpen(true)}
+              variant="destructive"
+            >
+              Submit Pin
+            </Button>
+            <Button
+              onClick={() => setIsCancelConfirmOpen(true)} // Trigger Dialog
+              variant="destructive"
+              disabled={isStatusLoading}
+            >
+              {isStatusLoading ? <Loader /> : "Cancel Booking"}
+            </Button>
+          </div>
         );
 
       default:
@@ -289,17 +340,22 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
 
       {renderActionButton()}
 
+      {/* Confirmation Dialog Integration */}
+      <ConfirmDialog
+        open={isCancelConfirmOpen}
+        onOpenChange={setIsCancelConfirmOpen}
+        onConfirm={handleCancelBooking}
+        title={cancelConfig.title}
+        description={cancelConfig.description}
+        confirmText={cancelConfig.confirmText}
+        variant="destructive"
+        isLoading={isStatusLoading}
+      />
+
       <RatingDialog
         open={isRateOpen}
         onClose={() => setIsRateOpen(false)}
         bookingId={bookingData?._id as string}
-      />
-
-      <PaymentDialog
-        open={isPaymentOpen}
-        onOpenChange={setIsPaymentOpen}
-        clientSecret={clientSecret}
-        amount={displayPrice}
       />
 
       <PinDialog
@@ -327,6 +383,13 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
       <InactiveAccountDialog
         open={isInactiveOpen}
         onOpenChange={setIsInactiveOpen}
+      />
+
+      <RefundStatusDialog
+        isOpen={isRefundStatusOpen}
+        onOpenChange={setIsRefundStatusOpen}
+        refundRequest={refundRequest}
+        refundNote={bookingData?.refundNote}
       />
     </div>
   )

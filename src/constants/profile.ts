@@ -22,7 +22,7 @@ export const profileItems = [
     {
         icon: CalendarCheck,
         label: "Bookings",
-        href: "/booking/pending",
+        href: "/booking/all",
     },
     // {
     //     icon: Landmark,

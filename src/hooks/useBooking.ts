@@ -5,10 +5,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 
-export function useBooking(status?: string, currentPage?: number) {
+export function useBooking(status?: string, currentPage?: number, isRefundable?: string) {
   return useQuery({
-    queryKey: ["bookings", status, currentPage],
-    queryFn: () => getBooking(status, currentPage),
+    queryKey: ["bookings", status, currentPage, isRefundable],
+    queryFn: () => getBooking(status, currentPage, isRefundable),
   });
 }
 

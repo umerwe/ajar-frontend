@@ -3,13 +3,7 @@ import { Listing } from "@/types/listing";
 import { capitalizeWords } from "@/utils/capitalizeWords";
 import { getStatusStyles } from "@/constants/booking";
 import { Star } from "lucide-react";
-
-export const formatStatusText = (status: string) => {
-  return status
-    .replace(/_/g, " ")
-    .toLowerCase()
-    .replace(/\b\w/g, (char) => char.toUpperCase());
-};
+import { formatStatus } from "@/utils/formatStatus";
 
 type CardBodyProps = {
   property: Listing;
@@ -30,7 +24,7 @@ const CardBody = ({ property, bookingStatus }: CardBodyProps) => {
               bookingStatus
             )}`}
           >
-            {formatStatusText(bookingStatus)}
+            {formatStatus(bookingStatus)}
           </span>
         ) : (
           <div className="flex items-center gap-1 text-xs">
@@ -44,14 +38,14 @@ const CardBody = ({ property, bookingStatus }: CardBodyProps) => {
       </div>
 
       {
-        bookingStatus && 
+        bookingStatus &&
         <div className="flex items-center gap-1 text-xs my-1">
-        <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-400 text-yellow-400" />
-        <span className="text-header">{property.totalReviews || 0}</span>
-        <span className="text-header">
-          ({property.averageRating?.toFixed(1) || 0})
-        </span>
-      </div>
+          <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-400 text-yellow-400" />
+          <span className="text-header">{property.totalReviews || 0}</span>
+          <span className="text-header">
+            ({property.averageRating?.toFixed(1) || 0})
+          </span>
+        </div>
       }
 
       <p className="text-[11px] sm:text-[13px] text-[#00CC99] font-medium mb-2 truncate 2xl:mt-0.5">
