@@ -19,6 +19,8 @@ const NotificationContent = (props: React.HTMLAttributes<HTMLDivElement>) => {
 
   const notifications = data?.data;
 
+  console.log(notifications)
+
   return (
     <div
       {...props}

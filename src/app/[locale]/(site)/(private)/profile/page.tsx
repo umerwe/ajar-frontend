@@ -48,7 +48,7 @@ export default function ProfilePage() {
                                             className="object-cover object-center"
                                         />
                                     ) : (
-                                        <div className="h-full w-full flex items-center justify-center bg-aqua text-white font-semibold text-2xl">
+                                        <div className="h-full w-full flex items-center justify-center bg-header text-white font-semibold text-2xl">
                                             {user?.name?.charAt(0).toUpperCase() || "U"}
                                         </div>
                                     )}
