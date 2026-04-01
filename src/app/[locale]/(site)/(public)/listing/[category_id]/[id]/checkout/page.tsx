@@ -17,6 +17,7 @@ import PrivateComponent from "@/components/private-component"
 import { calculateFrontendPrice } from "@/utils/priceCalculator"
 import { useMemo, useState } from "react"
 import DateRangeCalendar from "@/components/DateRangeCalendar"
+import { toast } from "@/components/ui/toast"
 
 
 const CheckoutPage = () => {
@@ -99,7 +100,10 @@ const CheckoutPage = () => {
             while (current <= checkOut) {
                 const dateStr = current.toISOString().split("T")[0];
                 if (isDateBlocked(dateStr)) {
-                    alert(`Date ${dateStr} is already booked. Please select different dates.`);
+                    toast({
+                        description: `Date ${dateStr} is already booked. Please select different dates.`,
+                        variant: "destructive",
+                    });
                     return;
                 }
                 current.setDate(current.getDate() + 1);
