@@ -16,6 +16,7 @@ export function useSendRefundRequest() {
         mutationFn: sendRefundRequest,
         onSuccess: () => {
              queryClient.invalidateQueries({ queryKey: ["refund-preview"] });
+             queryClient.invalidateQueries({ queryKey: ["bookings"] });
             toast({
                 title: "Success",
                 description: "Your Refund Request has been successfully submitted.",

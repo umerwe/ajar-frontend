@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import Header from "@/components/ui/header";
 import { useBooking } from "@/hooks/useBooking";
 import { capitalizeWords } from "@/utils/capitalizeWords";
-import { useSendRefundRequest, useGetRefundPreview } from "@/hooks/useRefund"; // Added Preview Hook
+import { useSendRefundRequest, useGetRefundPreview } from "@/hooks/useRefund";
 import { Listing } from "@/types/listing";
 import { useSearchParams } from "next/navigation";
 
@@ -102,7 +102,9 @@ export default function RefundRequestForm() {
 
                             {/* Refund Reason */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Reason for Refund</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Reason for Refund <span className="text-red-500 ml-1">*</span>
+                                </label>
                                 <div className="relative">
                                     <span className={`${iconClass} text-aqua`}>
                                         <AlertCircle size={18} />
@@ -168,7 +170,6 @@ export default function RefundRequestForm() {
                                             <span className="text-sm font-semibold text-gray-800">Estimated Refund</span>
                                             <span className="text-xl font-bold text-aqua">${preview?.estimatedRefund?.toFixed(2)}</span>
                                         </div>
-                                        <p className="text-[10px] text-gray-400 mt-2 italic">Based on: {preview?.policyName || "Standard Policy"}</p>
                                     </div>
 
                                     {!preview?.isEligible && (
@@ -180,7 +181,7 @@ export default function RefundRequestForm() {
 
                                     <Button
                                         onClick={handleSubmit}
-                                        disabled={isPending || !booking || !refundReason || !preview?.isEligible}
+                                        disabled={isPending || !booking || !refundReason}
                                         variant="destructive"
                                         className="w-full mt-4 py-6 rounded-2xl shadow-lg shadow-red-100"
                                     >
