@@ -1,9 +1,8 @@
 "use client"
 
 import type React from "react"
-import { Star } from "lucide-react"
+import { Star, ShieldCheck, Info } from "lucide-react"
 import { useParams } from "next/navigation"
-import Image from "next/image"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useGetListingBookedDates, useGetMarketplaceListing } from "@/hooks/useListing"
@@ -18,13 +17,15 @@ import { calculateFrontendPrice } from "@/utils/priceCalculator"
 import { useMemo, useState } from "react"
 import DateRangeCalendar from "@/components/DateRangeCalendar"
 import { toast } from "@/components/ui/toast"
-
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import MyImage from "@/components/MyImage"
 
 const CheckoutPage = () => {
     const params = useParams()
     const id = params?.id as string
 
-    const { data: listing, isLoading } = useGetMarketplaceListing(id)
+    const { data: listing, isLoading } = useGetMarketplaceListing(id);
+
     const { mutateAsync: createBooking, isPending } = useCreateBooking()
     const isHourly = listing?.priceUnit === "hour";
 
@@ -59,6 +60,17 @@ const CheckoutPage = () => {
     const watchedStartDate = watch("startDate");
     const watchedEndDate = watch("endDate");
 
+    // Helper to get Zone Policies
+    const policies = listing?.zone?.rentalPolicies;
+
+    // Calculate Deposit Amount
+    const depositAmount = useMemo(() => {
+        if (policies?.securityDepositRules?.depositRequired) {
+            return Number(policies.securityDepositRules.depositAmount) || 0;
+        }
+        return 0;
+    }, [policies]);
+
     const priceBreakdown = useMemo(() => {
         if (!listing || !watchedStartDate || !watchedEndDate) return null;
 
@@ -76,7 +88,9 @@ const CheckoutPage = () => {
     const displayBasePrice = priceBreakdown?.basePrice ?? listing?.price ?? 0;
     const displayAdminFee = priceBreakdown?.adminFee ?? listing?.adminFee ?? 0;
     const displayTax = priceBreakdown?.tax ?? listing?.tax ?? 0;
-    const displayTotal = priceBreakdown?.totalPrice ?? (displayBasePrice + displayAdminFee + displayTax);
+
+    // NEW: Total includes the refundable deposit
+    const displayTotal = (priceBreakdown?.totalPrice ?? (displayBasePrice + displayAdminFee + displayTax)) + depositAmount;
 
     const isDateBlocked = (dateStr: string) => {
         return blockedDates.includes(dateStr);
@@ -91,7 +105,6 @@ const CheckoutPage = () => {
     const onSubmit = async (data: BookingFormData) => {
         if (!listing?._id) return;
 
-        // Block submission if selected dates are blocked
         if (!isHourly) {
             const checkIn = new Date(data.startDate);
             const checkOut = new Date(data.endDate);
@@ -135,6 +148,79 @@ const CheckoutPage = () => {
 
                                 {/* LEFT COLUMN */}
                                 <div className="space-y-6">
+                                    {/* Rental Policies Section */}
+                                    {policies && (
+                                        <div className="bg-aqua/5 border border-aqua/20 rounded-2xl p-5 flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <div className="bg-aqua p-2 rounded-lg">
+                                                    <ShieldCheck className="w-5 h-5 text-white" />
+                                                </div>
+                                                <div>
+                                                    <h3 className="text-sm font-semibold text-gray-900">Rental Policies</h3>
+                                                    <p className="text-xs text-gray-500">Security deposit and liability terms apply.</p>
+                                                </div>
+                                            </div>
+                                            <Dialog>
+                                                <DialogTrigger asChild>
+                                                    <button type="button" className="text-aqua text-sm font-medium hover:underline flex items-center gap-1">
+                                                        View Details <Info className="w-3 h-3" />
+                                                    </button>
+                                                </DialogTrigger>
+                                                <DialogContent className="max-w-md bg-white rounded-2xl shadow-xl border-0">
+                                                    <DialogHeader>
+                                                        <DialogTitle className="text-xl font-bold text-gray-900 border-b pb-3">
+                                                            Rental policies & terms
+                                                        </DialogTitle>
+                                                    </DialogHeader>
+
+                                                    {/* Wrapper for scrollable content: 
+           max-h-[70vh] gives it a responsive height.
+           overflow-y-auto enables scrolling only when content is too long.
+        */}
+                                                    <div className="space-y-6 pt-4 max-h-[70vh] overflow-y-auto pr-2 custom-scrollbar">
+
+                                                        {/* Condition Section */}
+                                                        {policies.securityDepositRules?.depositConditions && (
+                                                            <div className="space-y-2">
+                                                                <h4 className="text-sm font-semibold text-gray-500">
+                                                                    Deposit conditions
+                                                                </h4>
+                                                                <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                                                    <p className="text-sm text-gray-700 leading-relaxed font-medium">
+                                                                        {policies.securityDepositRules.depositConditions}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        )}
+
+                                                        {/* Damage & Liability Section */}
+                                                        <div className="space-y-2">
+                                                            <h4 className="text-sm font-semibold text-gray-500">
+                                                                Damage & liability
+                                                            </h4>
+                                                            <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                                                <p className="text-sm text-gray-700 leading-relaxed italic font-medium">
+                                                                    {policies.damageLiabilityTerms?.responsibilityClause || "No specific liability description provided for this zone."}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+
+                                                        {/* Extension Allowed Status */}
+                                                        <div className="pt-4 border-t flex items-center gap-2 sticky bottom-0 bg-white pb-2">
+                                                            <div className={`w-2 h-2 rounded-full ${policies.extensionAllowed ? 'bg-green-500' : 'bg-red-500'}`} />
+                                                            <p className="text-xs font-bold text-gray-700">
+                                                                {policies.extensionAllowed
+                                                                    ? "Extension allowed"
+                                                                    : "Extension not allowed"
+                                                                }
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </DialogContent>
+                                            </Dialog>
+                                        </div>
+                                    )}
+
                                     <div>
                                         <h2 className="text-base font-semibold text-gray-900 mb-4">Reservation Dates</h2>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -144,8 +230,8 @@ const CheckoutPage = () => {
                                                 blockedSlots={blockedSlots}
                                                 startDate={watchedStartDate}
                                                 endDate={watchedEndDate}
-                                                isLoadingDates={isLoadingDates} // ✅ loader
-                                                onMonthChange={(month) => setVisibleMonth(month)} // ✅ month change → refetch
+                                                isLoadingDates={isLoadingDates}
+                                                onMonthChange={(month) => setVisibleMonth(month)}
                                                 onRangeChange={(start, end) => {
                                                     setValue("startDate", start)
                                                     setValue("endDate", end)
@@ -158,7 +244,6 @@ const CheckoutPage = () => {
                                         {errors.endDate && <p className="text-red-500 text-sm px-2">{errors.endDate.message}</p>}
                                     </div>
 
-                                    {/* Comments Section */}
                                     <div>
                                         <h2 className="text-base font-semibold text-gray-900 mb-4">Comments</h2>
                                         <textarea
@@ -185,7 +270,7 @@ const CheckoutPage = () => {
                                         <div className="flex gap-4 mb-4">
                                             <div className="w-24 h-24 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
                                                 {listing?.rentalImages?.[0] && (
-                                                    <Image
+                                                    <MyImage
                                                         src={`${process.env.NEXT_PUBLIC_API_BASE_URL}${listing.rentalImages[0]}`}
                                                         alt={listing?.name || "Listing image"}
                                                         width={100}
@@ -233,13 +318,22 @@ const CheckoutPage = () => {
                                                 <span className="text-base text-gray-600">Tax</span>
                                                 <span className="text-base font-medium text-gray-900">${displayTax.toFixed(2)}</span>
                                             </div>
+
+                                            {/* NEW: Refundable Deposit Line Item */}
+                                            {depositAmount > 0 && (
+                                                <div className="flex justify-between items-center text-aqua">
+                                                    <span className="text-base">Refundable Deposit</span>
+                                                    <span className="text-base font-medium">${depositAmount.toFixed(2)}</span>
+                                                </div>
+                                            )}
+
                                             <div className="flex justify-between items-center py-3 border-t">
                                                 <span className="text-base font-medium text-gray-900">Total Cost</span>
                                                 <span className="text-xl font-semibold text-gray-900">
                                                     ${displayTotal.toFixed(2)}
-                                                    <span className="text-sm font-normal text-gray-500">/{listing?.priceUnit}</span>
                                                 </span>
                                             </div>
+                                            <p className="text-[10px] text-gray-400 text-right italic">* Deposit is refundable after safe return.</p>
                                         </div>
                                     </div>
                                 </div>

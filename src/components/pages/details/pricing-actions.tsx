@@ -58,9 +58,10 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const basePrice = priceDetails?.price || property?.price || 0
   const adminFee = priceDetails?.adminFee || 0
   const tax = priceDetails?.tax || 0
-  const additionalCharges = bookingData?.extraRequestCharges?.additionalCharges || 0
+  const additionalCharges = bookingData?.extraRequestCharges?.additionalCharges || 0;
+  const securityDeposit = priceDetails?.securityDeposit || 0;
   const displayPrice = priceDetails?.totalPrice || basePrice;
-  const displayTotal = priceDetails?.totalPrice || 0;
+  const displayTotal = priceDetails?.totalPrice + securityDeposit || 0;
 
   const refundRequest = bookingData?.refundRequest;
 
@@ -277,6 +278,13 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
                   <span>${tax.toFixed(2)}</span>
                 </div>
 
+                {securityDeposit > 0 && (
+                  <div className="flex justify-between text-sm text-aqua font-medium">
+                    <span>Security Deposit</span>
+                    <span>${securityDeposit.toFixed(2)}</span>
+                  </div>
+                )}
+
                 {additionalCharges > 0 && (
                   <div className="flex justify-between text-sm text-muted-foreground">
                     <span>Extra Charges</span>
@@ -288,6 +296,9 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
                   <span>Total</span>
                   <span>${displayTotal.toFixed(2)}</span>
                 </div>
+                {securityDeposit > 0 && (
+                  <p className="text-[10px] text-gray-400 italic mt-1">* Includes refundable deposit</p>
+                )}
               </div>
             </HoverCardContent>
           </HoverCard>
