@@ -16,7 +16,7 @@ export default function CongratulationsDialog({
     title = "Congratulations!",
     description = "Your Account has been verified successfully.",
     redirectTo = "/",
-    seconds = 5,
+    seconds = 4,
 }: CongratulationsDialogProps) {
     const router = useRouter();
     const [timeLeft, setTimeLeft] = useState(seconds);
@@ -56,7 +56,7 @@ export default function CongratulationsDialog({
                 onInteractOutside={(e) => e.preventDefault()}
                 onEscapeKeyDown={(e) => e.preventDefault()}
             >
-                <div className="flex justify-center">
+                <div className="flex justify-center items-center mx-auto">
                     <Image
                         src="/congratulations.png"
                         alt="Congratulations"

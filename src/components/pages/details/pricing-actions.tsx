@@ -36,7 +36,7 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const [isPinOpen, setIsPinOpen] = useState(false);
   const [isExtendOpen, setIsExtendOpen] = useState(false);
   const [isCancelConfirmOpen, setIsCancelConfirmOpen] = useState(false);
-
+  console.log({ bookingData })
   const router = useRouter()
   const { label, link } = getActionDetails(bookingData?.status);
   const [isRefundStatusOpen, setIsRefundStatusOpen] = useState(false);
@@ -48,6 +48,7 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const totalNoBookingPrice =
     rawPrice + adminFeeNoBooking + taxNoBooking;
 
+  const isExtension = bookingData?.marketplaceListingId?.zone?.rentalPolicies?.extensionAllowed;
   const pricingMeta = bookingData?.pricingMeta;
 
   const unitPrice = pricingMeta?.priceFromListing || property?.price || 0;
@@ -61,7 +62,15 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const additionalCharges = bookingData?.extraRequestCharges?.additionalCharges || 0;
   const securityDeposit = priceDetails?.securityDeposit || 0;
   const displayPrice = priceDetails?.totalPrice || basePrice;
-  const displayTotal = priceDetails?.totalPrice + securityDeposit || 0;
+  
+
+  // ✅ Sum all extension totals
+  const extensionTotal = (bookingData?.extensions || []).reduce(
+    (sum: number, ext: any) => sum + (ext.priceDetails?.totalPrice || 0),
+    0
+  );
+
+  const displayTotal = priceDetails?.totalPrice + securityDeposit + extensionTotal || 0;
 
   const refundRequest = bookingData?.refundRequest;
 
@@ -171,17 +180,18 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
         );
 
       case "Extend Rental":
-        return bookingData?.isExtend ?
-          null
-          : (
-            <Button
-              onClick={() => setIsExtendOpen(true)}
-              variant="destructive"
-            >
-              {label}
-            </Button>
-          )
-          ;
+        return isExtension ? (
+          bookingData?.isExtend ?
+            null
+            : (
+              <Button
+                onClick={() => setIsExtendOpen(true)}
+                variant="destructive"
+              >
+                {label}
+              </Button>
+            )
+        ) : null;
 
       case "Booking Cancelled":
         if (!refundRequest) {
@@ -277,6 +287,13 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
                   <span>Tax</span>
                   <span>${tax.toFixed(2)}</span>
                 </div>
+
+                {extensionTotal > 0 && (
+                  <div className="flex justify-between text-sm text-aqua font-medium">
+                    <span>Extension Total</span>
+                    <span>${extensionTotal.toFixed(2)}</span>
+                  </div>
+                )}
 
                 {securityDeposit > 0 && (
                   <div className="flex justify-between text-sm text-aqua font-medium">
