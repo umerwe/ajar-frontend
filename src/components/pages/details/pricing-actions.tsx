@@ -70,7 +70,7 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
     0
   );
 
-  const displayTotal = priceDetails?.totalPrice + securityDeposit + extensionTotal || 0;
+  const displayTotal = priceDetails?.totalPrice + extensionTotal || 0;
 
   const refundRequest = bookingData?.refundRequest;
 
