@@ -165,10 +165,23 @@ export default function RefundRequestForm() {
                                         <span className="font-medium text-red-500">-${preview?.deductionFee?.toFixed(2)}</span>
                                     </div>
 
-                                    <div className="border-t border-gray-200 pt-4 mt-4">
+                                    {(preview?.securityDeposit ?? 0) > 0 && (
+                                        <div className="flex justify-between text-sm">
+                                            <span className="text-gray-500">Security Deposit</span>
+                                            <span className="font-medium text-emerald-600">+${preview?.securityDeposit?.toFixed(2)}</span>
+                                        </div>
+                                    )}
+
+                                    <div className="border-t border-gray-200 pt-4 mt-4 space-y-2">
+                                        <div className="flex justify-between text-sm">
+                                            <span className="text-gray-500">Estimated Refund</span>
+                                            <span className="font-medium text-gray-700">${preview?.estimatedRefund?.toFixed(2)}</span>
+                                        </div>
                                         <div className="flex justify-between items-center">
-                                            <span className="text-sm font-semibold text-gray-800">Estimated Refund</span>
-                                            <span className="text-xl font-bold text-aqua">${preview?.estimatedRefund?.toFixed(2)}</span>
+                                            <span className="text-sm font-semibold text-gray-800">Total to Wallet</span>
+                                            <span className="text-xl font-bold text-aqua">
+                                                ${((preview?.estimatedRefund ?? 0) + (preview?.securityDeposit ?? 0)).toFixed(2)}
+                                            </span>
                                         </div>
                                     </div>
 
