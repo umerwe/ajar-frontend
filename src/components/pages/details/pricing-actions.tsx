@@ -21,6 +21,7 @@ import { LoginDialog } from "@/components/dialogs/login-dialog"
 import { InactiveAccountDialog } from "@/components/dialogs/inactiveAccountDialog"
 import { ConfirmDialog } from "@/components/dialogs/confirm-dialog" // Added
 import RefundStatusDialog from "@/components/dialogs/RefundStatusDialog"
+import DamagedReportDialog from "@/components/dialogs/damagedReportDialog"
 
 const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const { mutate, isPending } = useSubmitPin();
@@ -31,12 +32,13 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const [isRateOpen, setIsRateOpen] = useState(false)
   const [isGuestDialogOpen, setIsGuestDialogOpen] = useState(false);
   const [isInactiveOpen, setIsInactiveOpen] = useState(false);
+  const [isDamageDialogOpen, setIsDamageDialogOpen] = useState(false);
 
   const [isPriceOpen, setIsPriceOpen] = useState(false)
   const [isPinOpen, setIsPinOpen] = useState(false);
   const [isExtendOpen, setIsExtendOpen] = useState(false);
   const [isCancelConfirmOpen, setIsCancelConfirmOpen] = useState(false);
-  console.log({ bookingData })
+  
   const router = useRouter()
   const { label, link } = getActionDetails(bookingData?.status);
   const [isRefundStatusOpen, setIsRefundStatusOpen] = useState(false);
@@ -62,7 +64,8 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const additionalCharges = bookingData?.extraRequestCharges?.additionalCharges || 0;
   const securityDeposit = priceDetails?.securityDeposit || 0;
   const displayPrice = priceDetails?.totalPrice || basePrice;
-  
+
+  const isDamagedReportSubmitted = bookingData?.status === 'completed' && bookingData?.hasDamagedReport;
 
   // ✅ Sum all extension totals
   const extensionTotal = (bookingData?.extensions || []).reduce(
@@ -170,13 +173,27 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
 
       case "Rate Owner":
         return (
-          bookingData.isReviewSubmitted ?
-            <Button variant="destructive" className="w-full sm:w-auto px-7">
-              Review Submitted
-            </Button> :
-            <Button onClick={() => setIsRateOpen(true)} variant="destructive" className="w-full sm:w-auto px-7">
-              {label}
-            </Button>
+          <div className="flex flex-col gap-2 w-full sm:w-auto">
+            {bookingData.isReviewSubmitted ? (
+              <Button variant="destructive" className="px-7" disabled>
+                Review Submitted
+              </Button>
+            ) : (
+              <Button onClick={() => setIsRateOpen(true)} variant="destructive" className="px-7">
+                {label}
+              </Button>
+            )}
+
+             {isDamagedReportSubmitted && (
+              <Button
+                onClick={() => setIsDamageDialogOpen(true)}
+                variant="outline"
+                className="border-red-500 text-red-500 hover:bg-red-50 hover:text-red-600"
+              >
+                Damage Report
+              </Button>
+            )}
+          </div>
         );
 
       case "Extend Rental":
@@ -411,6 +428,14 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
       <InactiveAccountDialog
         open={isInactiveOpen}
         onOpenChange={setIsInactiveOpen}
+      />
+
+      <DamagedReportDialog
+        isOpen={isDamageDialogOpen}
+        onOpenChange={setIsDamageDialogOpen}
+        bookingId={bookingData?._id as string}
+        status={bookingData?.damagedReport?.status}
+        report={bookingData?.damagedReport}
       />
 
       <RefundStatusDialog

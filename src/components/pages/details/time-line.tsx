@@ -25,6 +25,7 @@ interface TimelineProps {
         };
         bookingDates?: {
             handover?: string | Date;
+            returnDate?: string | Date; // Added returnDate here
         };
         pricingMeta: {
             unit: "hour" | "day" | "month" | "year";
@@ -58,6 +59,11 @@ const Timeline = ({ property }: TimelineProps) => {
             label: "HANDOVER COMPLETED",
             date: formatDate(property.bookingDates?.handover),
             show: !!property.bookingDates?.handover
+        },
+        {
+            label: "RETURN COMPLETED", // Added Return Date step
+            date: formatDate(property.bookingDates?.returnDate),
+            show: !!property.bookingDates?.returnDate
         },
     ];
 
