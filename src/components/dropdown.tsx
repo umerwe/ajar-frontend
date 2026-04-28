@@ -19,8 +19,6 @@ const NotificationContent = (props: React.HTMLAttributes<HTMLDivElement>) => {
 
   const notifications = data?.data;
 
-  console.log(notifications)
-
   return (
     <div
       {...props}
@@ -90,7 +88,7 @@ export default function ProfileDropdown() {
       return (
         <div
           style={imageWrapperStyle}
-          className="relative rounded-full overflow-hidden"
+          className="relative rounded-full overflow-hidden cursor-pointer"
         >
           <Image
             src={user.profilePicture.startsWith("http") ? user.profilePicture : process.env.NEXT_PUBLIC_API_BASE_URL + user.profilePicture}
@@ -115,7 +113,7 @@ export default function ProfileDropdown() {
 
   const notificationButton = (
     <button
-      className="rounded-full text-aqua hover:bg-gray-200 transition-colors flex"
+      className="rounded-full cursor-pointer text-aqua hover:bg-gray-200 transition-colors flex"
       aria-label="Notifications"
       onClick={() => mutate()}
     >
@@ -134,7 +132,7 @@ export default function ProfileDropdown() {
     <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50 md:w-64">
       <div className="px-4 py-3 border-b border-gray-100">
         <div className="flex items-center space-x-3">
-          <div className="relative">
+          <div className="relative ">
             <ProfileImage size={40} />
             {!isLoading && (
               <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>

@@ -19,7 +19,7 @@ export const ExtensionDialog = ({
     open,
     onOpenChange,
     onSubmit,
-    minDate, // Current checkOut date string
+    minDate,
     isPending,
     pricingUnit
 }: {

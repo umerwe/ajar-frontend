@@ -28,7 +28,7 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const { mutate: sendExtendRental, isPending: isExtendRentalPending } = useExtendRental();
   const { mutate: updateStatus, isPending: isStatusLoading } = useUpdateBookingStatus();
   const { data } = useUser();
-
+  console.log(bookingData)
   const [isRateOpen, setIsRateOpen] = useState(false)
   const [isGuestDialogOpen, setIsGuestDialogOpen] = useState(false);
   const [isInactiveOpen, setIsInactiveOpen] = useState(false);
@@ -38,7 +38,7 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const [isPinOpen, setIsPinOpen] = useState(false);
   const [isExtendOpen, setIsExtendOpen] = useState(false);
   const [isCancelConfirmOpen, setIsCancelConfirmOpen] = useState(false);
-  
+
   const router = useRouter()
   const { label, link } = getActionDetails(bookingData?.status);
   const [isRefundStatusOpen, setIsRefundStatusOpen] = useState(false);
@@ -123,9 +123,15 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
     router.push(`/listing/${category_id}/${id}/checkout`)
   };
 
-  const minExtensionDate = bookingData?.dates?.checkOut
-    ? new Date(bookingData.dates.checkOut).toISOString().split("T")[0]
-    : undefined;
+  const lastExtension = bookingData?.extensions?.length
+    ? bookingData.extensions[bookingData.extensions.length - 1]
+    : null;
+
+  const minExtensionDate = lastExtension?.extensionDate
+    ? new Date(lastExtension.extensionDate).toISOString().split("T")[0]
+    : bookingData?.dates?.checkOut
+      ? new Date(bookingData.dates.checkOut).toISOString().split("T")[0]
+      : undefined;
 
   // Configuration for dynamic dialog text
   const cancelConfig = bookingData?.status === "pending"
@@ -184,7 +190,7 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
               </Button>
             )}
 
-             {isDamagedReportSubmitted && (
+            {isDamagedReportSubmitted && (
               <Button
                 onClick={() => setIsDamageDialogOpen(true)}
                 variant="outline"
@@ -198,16 +204,13 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
 
       case "Extend Rental":
         return isExtension ? (
-          bookingData?.isExtend ?
-            null
-            : (
-              <Button
-                onClick={() => setIsExtendOpen(true)}
-                variant="destructive"
-              >
-                {label}
-              </Button>
-            )
+
+          <Button
+            onClick={() => setIsExtendOpen(true)}
+            variant="destructive"
+          >
+            {label}
+          </Button>
         ) : null;
 
       case "Booking Cancelled":
