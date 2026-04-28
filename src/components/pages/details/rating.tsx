@@ -17,13 +17,13 @@ const Rating = ({ property }: { property: Listing }) => {
                 </span>
             </div>
 
-            <Button
+            {/* <Button
                 variant="link"
                 className="p-0 h-auto text-aqua font-medium cursor-pointer hover:no-underline"
             >
                 See all {property.totalReviews} reviews
                 <ChevronRight className="w-4 h-4 ml-1" />
-            </Button>
+            </Button> */}
         </div>
     )
 }

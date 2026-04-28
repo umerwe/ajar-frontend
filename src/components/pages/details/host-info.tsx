@@ -1,4 +1,5 @@
 import { LoginDialog } from '@/components/dialogs/login-dialog'
+import MyImage from '@/components/MyImage'
 import { useUser } from '@/hooks/useAuth'
 import { useCreateChat, useGetChatList } from '@/hooks/useChat'
 import { Chat, Participant } from '@/types/chat'
@@ -67,7 +68,7 @@ const HostInfo = ({ property }: { property: Listing }) => {
                     {/* Updated Image Logic */}
                     <div className="w-12 h-12 rounded-full overflow-hidden shrink-0">
                         {property.leaser.profilePicture ? (
-                            <Image
+                            <MyImage
                                 src={imageSrc}
                                 alt={hostName || "Host profile image"}
                                 width={100}
