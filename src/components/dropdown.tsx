@@ -13,10 +13,10 @@ import { timeAgo } from "@/utils/timeAgo";
 import { useGetUnreadCount, useMarkAllRead, useNotification } from "@/hooks/useNotification";
 import { Notification } from "@/types/notification";
 import { getNotificationLink } from "@/utils/getNotificationLink";
+import { useGetBusinessSettings } from "@/hooks/useBusinessSettings";
 
 const NotificationContent = (props: React.HTMLAttributes<HTMLDivElement>) => {
   const { data, isLoading } = useNotification({});
-
   const notifications = data?.data;
 
   return (
@@ -70,6 +70,7 @@ const NotificationContent = (props: React.HTMLAttributes<HTMLDivElement>) => {
 
 export default function ProfileDropdown() {
   const { data: user = {}, isLoading } = useUser();
+    const { data: termsAndConditionsData } = useGetBusinessSettings("termsAndConditions");
   const { mutate } = useMarkAllRead();
 
   const { data: unreadData } = useGetUnreadCount();
@@ -160,7 +161,12 @@ export default function ProfileDropdown() {
         {profileMenuItems.map((item, index) => (
           <Link
             key={index}
-            href={item.href}
+            href={
+              item.label === "Terms & Conditions"
+                ? `${process.env.NEXT_PUBLIC_API_BASE_URL}${termsAndConditionsData?.pageSettings?.fileUrl}`
+                : item.href
+            }
+            target={item.label === "Terms & Conditions" ? "_blank" : undefined}
             className="block px-4 py-2 font-light text-sm text-black hover:bg-gray-50 hover:text-gray-900"
           >
             {item.label}

@@ -151,3 +151,15 @@ interface PriceCalculationInput {
     adminCommissionRate: number;
     taxRate: number;
 }
+
+type SettingsPageName =
+  | "businessInfo"
+  | "paymentMethods"
+  | "smsModule"
+  | "mailConfig"
+  | "mapAPI"
+  | "socialLogins"
+  | "recaptcha"
+  | "firebase"
+  | "pushNotifications"
+  | "termsAndConditions";

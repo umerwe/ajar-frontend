@@ -6,6 +6,7 @@ export const profileMenuItems = [
     { label: "Favourites", href: "/favourites" },
     { label: "Chat", href: "/chat" },
     { label: "Reports", href: "/report" },
+    { label: "Terms & Conditions", href: "#" },
     { label: "Help Center", href: "/help-center" },
 ];
 
