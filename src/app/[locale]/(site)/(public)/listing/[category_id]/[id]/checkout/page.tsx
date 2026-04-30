@@ -186,7 +186,7 @@ const CheckoutPage = () => {
                                                                     Deposit conditions
                                                                 </h4>
                                                                 <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                                                                    <p className="text-sm text-gray-700 leading-relaxed font-medium">
+                                                                    <p className="text-sm text-gray-700 leading-relaxed font-medium first-letter:uppercase">
                                                                         {policies.securityDepositRules.depositConditions}
                                                                     </p>
                                                                 </div>
@@ -199,7 +199,7 @@ const CheckoutPage = () => {
                                                                 Damage & liability
                                                             </h4>
                                                             <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                                                                <p className="text-sm text-gray-700 leading-relaxed italic font-medium">
+                                                                <p className="text-sm text-gray-700 leading-relaxed font-medium first-letter:uppercase">
                                                                     {policies.damageLiabilityTerms?.responsibilityClause || "No specific liability description provided for this zone."}
                                                                 </p>
                                                             </div>

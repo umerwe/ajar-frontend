@@ -16,6 +16,7 @@ export function useGetBookingId(id?: string) {
   return useQuery({
     queryKey: ["bookingId", id],
     queryFn: () => getBookingId(id),
+    enabled: !!id,
   });
 }
 
