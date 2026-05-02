@@ -127,6 +127,9 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
     ? bookingData.extensions[bookingData.extensions.length - 1]
     : null;
 
+  const lastExtensionStatus = lastExtension?.status;
+  const isLastExtensionPending = lastExtensionStatus && lastExtensionStatus !== "approved";
+
   const minExtensionDate = lastExtension?.extensionDate
     ? new Date(lastExtension.extensionDate).toISOString().split("T")[0]
     : bookingData?.dates?.checkOut
@@ -203,8 +206,7 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
         );
 
       case "Extend Rental":
-        return isExtension ? (
-
+        return isExtension && !isLastExtensionPending ? (
           <Button
             onClick={() => setIsExtendOpen(true)}
             variant="destructive"
