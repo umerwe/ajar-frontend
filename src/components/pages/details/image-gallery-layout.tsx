@@ -23,8 +23,13 @@ const PropertyHeader = ({ property }: PropertyHeaderProps) => {
     "images", "rentalImages", "description", "price", "isActive", "language",
     "documents", "isAvailable", "currentBookingId", "status", "priceUnit",
     "createdAt", "updatedAt", "__v", "userDocuments", "leaserDocuments",
-    "adminFee", "tax", "languages","averageRating","totalReviews","rejectionNote","refundNote","refundNote","bookings","reviews"
+    "adminFee", "tax", "languages", "averageRating", "totalReviews", "rejectionNote", "refundNote", "refundNote", "bookings", "reviews"
   ]);
+
+  const images = property.rentalImages ?? [];
+  const hasImages = images.length > 0;
+  const sideImages = images.slice(1, 5);
+  const placeholder = "/fallback.png";
 
   return (
     <div className="bg-white rounded-lg border border-gray-100 p-4 shadow-sm">
@@ -32,34 +37,40 @@ const PropertyHeader = ({ property }: PropertyHeaderProps) => {
 
         {/* LEFT: IMAGE GALLERY SECTION */}
         <div className="flex gap-2 w-full lg:w-[600px] h-[200px] shrink-0">
+          {/* Main image - takes full width if it's the only one */}
           <div
-            className="relative w-[50%] h-full rounded-sm overflow-hidden cursor-pointer hover:opacity-95 transition"
-            onClick={() => setLightboxIndex(0)}
+            className={`relative h-full rounded-sm overflow-hidden transition ${
+              sideImages.length > 0 ? "w-[50%]" : "w-full"
+            } ${hasImages ? "cursor-pointer hover:opacity-95" : ""}`}
+            onClick={() => hasImages && setLightboxIndex(0)}
           >
             <Image
-              src={process.env.NEXT_PUBLIC_API_BASE_URL + property.rentalImages[0]}
+              src={hasImages ? process.env.NEXT_PUBLIC_API_BASE_URL + images[0] : placeholder}
               alt="Main"
               fill
               className="object-cover"
             />
           </div>
 
-          <div className="grid grid-cols-2 grid-rows-2 gap-2 w-[50%] h-full">
-            {property.rentalImages.slice(1, 5).map((img, index) => (
-              <div
-                key={index}
-                className="relative rounded-sm overflow-hidden cursor-pointer hover:opacity-90 transition"
-                onClick={() => setLightboxIndex(index + 1)}
-              >
-                <Image
-                  src={process.env.NEXT_PUBLIC_API_BASE_URL + img}
-                  alt={`Gallery ${index}`}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            ))}
-          </div>
+          {/* Side grid - only renders if there are extra images */}
+          {sideImages.length > 0 && (
+            <div className="grid grid-cols-2 grid-rows-2 gap-2 w-[50%] h-full">
+              {sideImages.map((img, index) => (
+                <div
+                  key={index}
+                  className="relative rounded-sm overflow-hidden cursor-pointer hover:opacity-90 transition"
+                  onClick={() => setLightboxIndex(index + 1)}
+                >
+                  <Image
+                    src={process.env.NEXT_PUBLIC_API_BASE_URL + img}
+                    alt={`Gallery ${index}`}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* RIGHT: CONTENT SECTION */}
@@ -87,12 +98,12 @@ const PropertyHeader = ({ property }: PropertyHeaderProps) => {
         </div>
       </div>
 
-      {lightboxIndex !== null && (
+      {lightboxIndex !== null && hasImages && (
         <Lightbox
           open={lightboxIndex !== null}
           close={() => setLightboxIndex(null)}
           index={lightboxIndex}
-          slides={property.rentalImages.map((img) => ({
+          slides={images.map((img) => ({
             src: process.env.NEXT_PUBLIC_API_BASE_URL + img,
           }))}
           plugins={[Thumbnails]}
