@@ -108,11 +108,13 @@ export function useSubmitPin() {
 }
 
 export function useExtendRental() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: extendRental,
     onSuccess: () => {
       toast({ description: "Extension request created successfully" })
-
+      queryClient.invalidateQueries({ queryKey: ["bookings"] })
+      queryClient.invalidateQueries({ queryKey: ["bookingId"] })
     },
     onError: (error) => {
       const err = error as AxiosError<ErrorResponse>;

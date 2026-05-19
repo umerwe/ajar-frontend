@@ -28,7 +28,7 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const { mutate: sendExtendRental, isPending: isExtendRentalPending } = useExtendRental();
   const { mutate: updateStatus, isPending: isStatusLoading } = useUpdateBookingStatus();
   const { data } = useUser();
-  
+
   const [isRateOpen, setIsRateOpen] = useState(false)
   const [isGuestDialogOpen, setIsGuestDialogOpen] = useState(false);
   const [isInactiveOpen, setIsInactiveOpen] = useState(false);
@@ -130,10 +130,17 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const lastExtensionStatus = lastExtension?.status;
   const isLastExtensionPending = lastExtensionStatus && lastExtensionStatus !== "approved";
 
+  // AFTER
+  const isHourlyUnit = bookingData?.pricingMeta?.unit === "hour"
+
   const minExtensionDate = lastExtension?.extensionDate
-    ? new Date(lastExtension.extensionDate).toISOString().split("T")[0]
+    ? isHourlyUnit
+      ? new Date(lastExtension.extensionDate).toISOString()          // full ISO for hourly
+      : new Date(lastExtension.extensionDate).toISOString().split("T")[0]  // date only for others
     : bookingData?.dates?.checkOut
-      ? new Date(bookingData.dates.checkOut).toISOString().split("T")[0]
+      ? isHourlyUnit
+        ? new Date(bookingData.dates.checkOut).toISOString()                // full ISO for hourly
+        : new Date(bookingData.dates.checkOut).toISOString().split("T")[0]  // date only for others
       : undefined;
 
   // Configuration for dynamic dialog text
@@ -422,6 +429,7 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
         onSubmit={handleExtensionSubmit}
         minDate={minExtensionDate}
         isPending={isExtendRentalPending}
+        priceMeta={bookingData?.pricingMeta}
         pricingUnit={bookingData?.pricingMeta?.unit}
       />
 
