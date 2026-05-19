@@ -2,7 +2,7 @@
 
 import { useGetMessages, useSendMessage } from "@/hooks/useChat"
 import { socket } from "@/lib/socket"
-import Image from "next/image"
+import Image from "../MyImage"
 import Link from "next/link"
 import { useUser } from "@/hooks/useAuth"
 import { useEffect, useRef, useState, useCallback } from "react"
@@ -15,7 +15,8 @@ import { MessageSquare, ArrowLeft } from "lucide-react"
 const ChatConversation = ({ id: chatId }: { id?: string }) => {
   const { data: user } = useUser();
   const { mutate } = useSendMessage();
-  const [messages, setMessages] = useState<Message[]>([])
+  const [messages, setMessages] = useState<Message[]>([]);
+
   const [currentPage, setCurrentPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
@@ -196,7 +197,7 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
           <>
             {data?.receiver?.profilePicture ? (
               <Image
-                src={process.env.NEXT_PUBLIC_API_BASE_URL + data?.receiver?.profilePicture || "/placeholder.svg"}
+                src={process.env.NEXT_PUBLIC_API_BASE_URL + data?.receiver?.profilePicture || "/fallback.png"}
                 alt={data?.receiver?.name || "User"}
                 width={256}
                 height={256}
