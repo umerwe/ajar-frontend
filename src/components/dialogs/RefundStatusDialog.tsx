@@ -17,6 +17,7 @@ interface RefundStatusDialogProps {
     totalRefundAmount?: number;
   };
   refundNote?: string;
+  booking?: any;
 }
 
 const RefundStatusDialog = ({
@@ -24,8 +25,11 @@ const RefundStatusDialog = ({
   onOpenChange,
   refundRequest,
   refundNote,
+  booking,
 }: RefundStatusDialogProps) => {
   if (!refundRequest) return null;
+  
+  const totalRefundAmount = refundRequest.totalRefundAmount + booking.priceDetails?.securityDeposit + booking.priceDetails?.adminFee + booking.priceDetails?.tax;
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -55,7 +59,7 @@ const RefundStatusDialog = ({
           <div className="flex justify-between items-center border-b pb-3">
             <span className="text-gray-500 font-medium">Refund Amount</span>
             <span className="text-lg font-semibold text-gray-900">
-              ${refundRequest.totalRefundAmount?.toFixed(2)}
+              ${totalRefundAmount?.toFixed(2)}
             </span>
           </div>
 

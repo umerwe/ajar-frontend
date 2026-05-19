@@ -455,6 +455,7 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
         isOpen={isRefundStatusOpen}
         onOpenChange={setIsRefundStatusOpen}
         refundRequest={refundRequest}
+        booking={bookingData}
         refundNote={bookingData?.refundNote}
       />
     </div>
