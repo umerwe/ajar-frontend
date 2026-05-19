@@ -180,7 +180,7 @@ export default function RefundRequestForm() {
                                         <div className="flex justify-between items-center">
                                             <span className="text-sm font-semibold text-gray-800">Total to Wallet</span>
                                             <span className="text-xl font-bold text-aqua">
-                                                ${((preview?.estimatedRefund ?? 0) + (preview?.securityDeposit ?? 0)).toFixed(2)}
+                                                ${preview?.totalToWallet?.toFixed(2) ?? "0.00"}
                                             </span>
                                         </div>
                                     </div>

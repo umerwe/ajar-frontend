@@ -102,6 +102,7 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
         if (prev.some((msg) => msg._id === message._id)) return prev
         return [...prev, message]
       })
+      scrollToBottom()
     }
 
     const handleMessageReceived = (message: Message) => {
@@ -112,6 +113,7 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
       if (isChatActive && document.visibilityState === "visible") {
         socket?.emit("message:deliver", { messageId: message._id })
       }
+      scrollToBottom()
     }
 
     const handleMessageDelivered = (data: { messageId: string; deliveredAt: Date }) => {
