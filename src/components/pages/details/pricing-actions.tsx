@@ -200,7 +200,7 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
               </Button>
             )}
 
-            {isDamagedReportSubmitted && (
+            {/* {isDamagedReportSubmitted && (
               <Button
                 onClick={() => setIsDamageDialogOpen(true)}
                 variant="outline"
@@ -208,7 +208,7 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
               >
                 Damage Report
               </Button>
-            )}
+            )} */}
           </div>
         );
 
