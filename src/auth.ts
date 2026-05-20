@@ -14,12 +14,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async signIn({ account }) {
       if (account?.provider === "google" && account?.id_token) {
         try {
-          const response = await axios.post(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/oauth/google/nextauth`,
-            { idToken: account.id_token }
-          )
-          account.backendToken = response.data.data.token  // store on account
-        } catch {
+          const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/oauth/google/nextauth`
+          console.log("Backend URL:", url)
+
+          const response = await axios.post(url, { idToken: account.id_token })
+          account.backendToken = response.data.data.token
+        } catch (err: any) {
+          console.error("=== SIGN IN ERROR ===")
+          console.error("Message:", err?.message)
+          console.error("Status:", err?.response?.status)
+          console.error("Response data:", JSON.stringify(err?.response?.data))
+          console.error("URL was:", err?.config?.url)
           return false
         }
       }
