@@ -65,15 +65,13 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const securityDeposit = priceDetails?.securityDeposit || 0;
   const displayPrice = priceDetails?.totalPrice || basePrice;
 
-  const isDamagedReportSubmitted = bookingData?.status === 'completed' && bookingData?.hasDamagedReport;
-
   // ✅ Sum all extension totals
   const extensionTotal = (bookingData?.extensions || []).reduce(
     (sum: number, ext: any) => sum + (ext.priceDetails?.totalPrice || 0),
     0
   );
 
-  const displayTotal = priceDetails?.totalPrice + extensionTotal || 0;
+  const displayTotal = priceDetails?.totalPrice + extensionTotal + securityDeposit || 0;
 
   const refundRequest = bookingData?.refundRequest;
 
