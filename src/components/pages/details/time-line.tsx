@@ -51,21 +51,21 @@ const statusColorMap: Record<string, string> = {
 
 const Timeline = ({ property }: TimelineProps) => {
     const formatDate = (date: string | Date | undefined) => {
-    if (!date) return null;
-    const isHourly = property.pricingMeta.unit === "hour";
+        if (!date) return null;
+        const isHourly = property.pricingMeta.unit === "hour";
 
-    if (!isHourly) {
-        // For date-only strings (YYYY-MM-DD), parse manually to avoid UTC→local shift
-        const raw = typeof date === "string" ? date : date.toISOString();
-        const dateOnly = raw.split("T")[0]; // "2026-05-31"
-        const [year, month, day] = dateOnly.split("-").map(Number);
-        const localDate = new Date(year, month - 1, day); // local midnight, no UTC shift
-        return format(localDate, "dd MMM yyyy");
-    }
+        if (!isHourly) {
+            // For date-only strings (YYYY-MM-DD), parse manually to avoid UTC→local shift
+            const raw = typeof date === "string" ? date : date.toISOString();
+            const dateOnly = raw.split("T")[0]; // "2026-05-31"
+            const [year, month, day] = dateOnly.split("-").map(Number);
+            const localDate = new Date(year, month - 1, day); // local midnight, no UTC shift
+            return format(localDate, "dd MMM yyyy");
+        }
 
-    // Hourly — parse normally and show with time in local tz
-    return format(new Date(date), "dd MMM yyyy, hh:mm a");
-};
+        // Hourly — parse normally and show with time in local tz
+        return format(new Date(date), "dd MMM yyyy, hh:mm a");
+    };
 
     const isCompleted = property.status === "completed";
     const isApproved = ["approved", "in_progress", "completed"].includes(property.status);
@@ -88,13 +88,7 @@ const Timeline = ({ property }: TimelineProps) => {
             date: formatDate(property.bookingDates?.handover),
             show: !!property.bookingDates?.handover,
             completed: !!property.bookingDates?.handover,
-        },
-        {
-            label: "RETURN COMPLETED",
-            date: formatDate(property.bookingDates?.returnDate),
-            show: !!property.bookingDates?.returnDate,
-            completed: !!property.bookingDates?.returnDate,
-        },
+        }
     ];
 
     const extensionSteps: Step[] = (property.extensions || []).map((ext, index) => ({
@@ -106,11 +100,15 @@ const Timeline = ({ property }: TimelineProps) => {
         status: ext.status,
     }));
 
-    const timelineSteps = [...baseSteps, ...extensionSteps].filter((s) => s.show);
+    const returnStep: Step = {
+        label: "RETURN COMPLETED",
+        date: formatDate(property.bookingDates?.returnDate),
+        show: !!property.bookingDates?.returnDate,
+        completed: !!property.bookingDates?.returnDate,
+    };
 
-    const bookingStatusLabel = property.status.replace(/_/g, " ");
-    const bookingStatusClass = statusColorMap[property.status] || "bg-gray-100 text-gray-500";
-
+    const timelineSteps = [...baseSteps, ...extensionSteps, returnStep].filter((s) => s.show);
+    
     return (
         <div className="w-full bg-white p-4 sm:p-6 rounded-xl border border-gray-100 shadow-sm">
             {/* Header */}
