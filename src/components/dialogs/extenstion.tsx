@@ -53,8 +53,7 @@ export const ExtensionDialog = ({
     pricingUnit?: string
 }) => {
     const unit = pricingUnit ?? "day"
-    const [qty, setQty] = useState(1)
-    console.log({ priceMeta })
+    const [qty, setQty] = useState(1);
 
     const newCheckoutDate = useMemo(() => {
         if (!minDate) return null

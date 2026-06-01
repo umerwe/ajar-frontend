@@ -137,7 +137,7 @@ const AddDocumentDialog = ({ data, documents, userDocs = [] }: any) => {
                                 type="date"
                                 value={expiryDate}
                                 onChange={(e) => setExpiryDate(e.target.value)}
-                                min={new Date().toISOString().split("T")[0]}
+                                min={new Date(Date.now() + 86400000).toISOString().split("T")[0]}
                                 className="w-full rounded-md border border-input bg-gray-50 px-3 py-2 text-sm"
                                 onKeyDown={(e) => e.preventDefault()}
                             />
