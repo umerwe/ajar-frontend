@@ -150,6 +150,11 @@ interface PriceCalculationInput {
     endDate: string;
     adminCommissionRate: number;
     taxRate: number;
+    dynamicPricing?: {
+      price: number;
+      startDate: string;
+      endDate: string;
+    } | null;
 }
 
 type SettingsPageName =

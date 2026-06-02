@@ -139,13 +139,19 @@ const DateRangeCalendar = ({
 
         if (type === "start") {
             setStartRange(day);
-            if (!isHourly) {
+            if (isHourly) {
+                const localStart = new Date(`${format(day, "yyyy-MM-dd")}T${startTime}:00`);
+                onRangeChange(localStart.toISOString(), endDate || "");
+            } else {
                 onRangeChange(format(day, "yyyy-MM-dd"), endDate || "");
                 setOpenCalendar(null);
             }
         } else {
             setEndRange(day);
-            if (!isHourly) {
+            if (isHourly) {
+                const localEnd = new Date(`${format(day, "yyyy-MM-dd")}T${endTime}:00`);
+                onRangeChange(startDate || "", localEnd.toISOString());
+            } else {
                 onRangeChange(startDate || "", format(day, "yyyy-MM-dd"));
                 setOpenCalendar(null);
             }

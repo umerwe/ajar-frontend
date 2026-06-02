@@ -38,7 +38,7 @@ const CheckoutPage = () => {
         id,
         month: visibleMonth,
     });
-    const blockedDates: string[] = bookedDatesData?.blockedDates ?? [];
+    const blockedDates: string[] = bookedDatesData?.blockedDates ?? bookedDatesData?.fullyBlockedDates ?? [];
     const blockedSlots = bookedDatesData?.blockedSlots ?? [];
 
     const {
@@ -81,6 +81,7 @@ const CheckoutPage = () => {
             endDate: watchedEndDate,
             adminCommissionRate: listing.adminFee,
             taxRate: listing.tax,
+            dynamicPricing: listing.dynamicPricing,
         });
     }, [listing, watchedStartDate, watchedEndDate]);
 

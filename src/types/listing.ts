@@ -55,6 +55,11 @@ export interface Listing  {
     address: string;
     Price: number;
     price: number;
+    dynamicPricing?: {
+      price: number;
+      startDate: string;
+      endDate: string;
+    } | null;
     priceUnit : string;
     isActive: boolean;
     language: string;
