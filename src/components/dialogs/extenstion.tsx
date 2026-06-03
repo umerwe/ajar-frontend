@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import { Calendar, Clock, Info } from "lucide-react"
+import { Calendar, Clock, Info, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -43,7 +43,13 @@ type DynamicPricing = {
 
 const HOUR_MS = 1000 * 60 * 60
 
-const toDateKey = (date: Date) => date.toISOString().split("T")[0]
+const toDateKey = (date: Date) => {
+    const year = date.getUTCFullYear()
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0")
+    const day = String(date.getUTCDate()).padStart(2, "0")
+    return `${year}-${month}-${day}`
+}
+
 const toLocalDateKey = (date: Date) => {
     const year = date.getFullYear()
     const month = String(date.getMonth() + 1).padStart(2, "0")
@@ -118,7 +124,6 @@ export const ExtensionDialog = ({
         if (!d) return "—"
 
         if (unit === "hour") {
-            // Force local timezone display
             return d.toLocaleString("en-US", {
                 month: "short",
                 day: "numeric",
@@ -126,7 +131,7 @@ export const ExtensionDialog = ({
                 hour: "2-digit",
                 minute: "2-digit",
                 hour12: true,
-                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, // user's local tz
+                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
             })
         }
 
@@ -137,11 +142,18 @@ export const ExtensionDialog = ({
         })
     }
 
+    const formatStringDate = (dateStr?: string) => {
+        if (!dateStr) return ""
+        const d = new Date(dateStr.slice(0, 10))
+        if (isNaN(d.getTime())) return ""
+        return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+    }
+
     const handleSubmit = () => {
         if (!newCheckoutDate) return
 
         if (unit === "hour") {
-            onSubmit(newCheckoutDate.toISOString())  // ✅ pure UTC ISO, backend handles it
+            onSubmit(newCheckoutDate.toISOString())
         } else {
             const yyyy = newCheckoutDate.getFullYear()
             const mm = String(newCheckoutDate.getMonth() + 1).padStart(2, "0")
@@ -157,6 +169,7 @@ export const ExtensionDialog = ({
     const unitLabel = UNIT_LABELS[unit] ?? unit
     const unitPlural = UNIT_PLURAL[unit] ?? unit
 
+    // --- ACCURATE PERIOD CALCULATOR LOOP ---
     const extensionUnitPrices = useMemo(() => {
         if (!priceMeta || !minDate) return []
 
@@ -166,12 +179,13 @@ export const ExtensionDialog = ({
         const prices: number[] = []
 
         for (let index = 0; index < qty; index += 1) {
+            if (unit === "day") current.setUTCDate(current.getUTCDate() + 1)
+            else if (unit === "month") current.setUTCMonth(current.getUTCMonth() + 1)
+            else if (unit === "year") current.setUTCFullYear(current.getUTCFullYear() + 1)
+
             prices.push(getPriceForDate(current, priceMeta.priceFromListing, dynamicPricing, unit === "hour"))
 
             if (unit === "hour") current.setTime(current.getTime() + HOUR_MS)
-            else if (unit === "day") current.setUTCDate(current.getUTCDate() + 1)
-            else if (unit === "month") current.setUTCMonth(current.getUTCMonth() + 1)
-            else if (unit === "year") current.setUTCFullYear(current.getUTCFullYear() + 1)
         }
 
         return prices
@@ -180,23 +194,29 @@ export const ExtensionDialog = ({
     const displayUnitPrice = extensionUnitPrices.length > 0 && extensionUnitPrices.every(price => price === extensionUnitPrices[0])
         ? extensionUnitPrices[0]
         : priceMeta?.priceFromListing
+        
     const totalPrice = priceMeta ? extensionUnitPrices.reduce((sum, price) => sum + price, 0) : null
+    
     const fmt = (n: number) =>
         n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-[400px] p-0 overflow-hidden border-none rounded-3xl">
-                <DialogHeader className="px-6 pt-6 pb-0">
+            {/* Fixed view container boundary rules */}
+            <DialogContent className="sm:max-w-[400px] p-0 overflow-hidden border-none rounded-3xl flex flex-col h-[90dvh] max-h-[640px]">
+
+                {/* ── Pinned Header ── */}
+                <DialogHeader className="px-6 pt-6 pb-4 shrink-0 border-b border-gray-100">
                     <DialogTitle className="text-xl font-bold text-gray-900">Extend Booking</DialogTitle>
                     <DialogDescription className="text-gray-500 text-sm">
                         Choose how long you'd like to extend your rental.
                     </DialogDescription>
                 </DialogHeader>
 
-                <div className="px-6 pt-5 pb-2 space-y-4">
+                {/* ── Scrollable Body ── */}
+                <div className="px-6 pt-5 pb-4 space-y-4 overflow-y-auto flex-1 min-h-0 custom-scrollbar">
 
-                    {/* Unit Tabs — display only, driven by pricingUnit prop */}
+                    {/* Unit Tabs */}
                     <div className="grid grid-cols-4 gap-1.5 bg-gray-100 rounded-2xl p-1">
                         {["hour", "day", "month", "year"].map((u) => (
                             <button
@@ -240,6 +260,16 @@ export const ExtensionDialog = ({
                         </div>
                     </div>
 
+                    {/* Simple Dynamic Pricing Range Visual Indicator */}
+                    {dynamicPricing?.startDate && dynamicPricing?.endDate && (
+                        <div className="flex items-center gap-2 bg-emerald-50/60 border border-emerald-100 rounded-2xl p-3.5 text-emerald-800">
+                            <Sparkles className="w-4 h-4 text-emerald-500 shrink-0" />
+                            <p className="text-[11px] font-medium leading-snug">
+                                Special Offer: ${fmt(dynamicPricing.price)}/{unit} from {formatStringDate(dynamicPricing.startDate)} to {formatStringDate(dynamicPricing.endDate)}
+                            </p>
+                        </div>
+                    )}
+
                     {/* New Checkout Date */}
                     <div className="flex items-center gap-3 bg-gray-50 rounded-2xl p-4">
                         <div className="bg-white p-2 rounded-xl border border-gray-100">
@@ -262,7 +292,7 @@ export const ExtensionDialog = ({
                         <div className="rounded-2xl border border-gray-100 p-4 space-y-2.5">
                             <div className="flex justify-between text-sm text-gray-500">
                                 <span>Price / {unitLabel.toLowerCase()}</span>
-                                <span className="text-gray-800 font-medium">${fmt(displayUnitPrice ?? priceMeta.priceFromListing)}</span>
+                                <span className="text-gray-800 font-semibold">${fmt(displayUnitPrice ?? priceMeta.priceFromListing)}</span>
                             </div>
                             <div className="flex justify-between text-sm text-gray-500">
                                 <span>{unitPlural}</span>
@@ -284,9 +314,11 @@ export const ExtensionDialog = ({
                             Extension amount will be deducted from your wallet.
                         </p>
                     </div>
+
                 </div>
 
-                <DialogFooter className="px-6 pb-6 pt-3">
+                {/* ── Pinned Footer ── */}
+                <DialogFooter className="px-6 pb-6 pt-3 shrink-0 border-t border-gray-100 bg-white">
                     <Button
                         onClick={handleSubmit}
                         disabled={isPending || !newCheckoutDate}
@@ -296,6 +328,7 @@ export const ExtensionDialog = ({
                         {isPending ? <Loader /> : "Confirm Extend Booking"}
                     </Button>
                 </DialogFooter>
+
             </DialogContent>
         </Dialog>
     )
