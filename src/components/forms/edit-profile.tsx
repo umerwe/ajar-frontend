@@ -11,6 +11,7 @@ import Loader from "../common/loader";
 import { EditProfileFormValues, EditProfileSchema } from "@/validations/profile";
 import { toast } from "../ui/toast";
 import { useRemoveDocumentFile } from "@/hooks/useDocument";
+import { ConfirmDialog } from "@/components/dialogs/confirm-dialog";
 
 
 export default function EditProfileForm({
@@ -33,6 +34,7 @@ export default function EditProfileForm({
     });
 
     const [docFiles, setDocFiles] = React.useState<{ [key: string]: File | null }>({});
+    const [fileToRemove, setFileToRemove] = React.useState<string | null>(null);
 
     const onSubmit = (data: EditProfileFormValues) => {
         const formData = new FormData();
@@ -71,6 +73,7 @@ export default function EditProfileForm({
     const handleRemoveFile = (fileUrl: string) => {
         removeFile(fileUrl, {
             onSuccess: () => {
+                setFileToRemove(null);
                 toast({ title: "File removed successfully", variant: "default" });
             },
             onError: () => {
@@ -146,7 +149,7 @@ export default function EditProfileForm({
                                                 <button
                                                     type="button"
                                                     disabled={isRemoving}
-                                                    onClick={() => handleRemoveFile(doc.name)}
+                                                    onClick={() => setFileToRemove(doc.name)}
                                                     className="absolute -top-1.5 -right-1.5 bg-red-500 hover:bg-red-600 text-white rounded-full p-0.5 shadow transition-opacity opacity-0 group-hover:opacity-100"
                                                 >
                                                     <X className="w-3 h-3" />
@@ -162,32 +165,6 @@ export default function EditProfileForm({
                                     accept="image/*,.pdf"
                                     onChange={(e) => handleDocChange(doc.name, e.target.files?.[0] || null)}
                                 />
-
-                                {/* {docFiles[doc.name] ? (
-                                    <div className="flex items-center justify-between p-2 bg-white border-2 border-blue-500 rounded-lg">
-                                        <div className="flex items-center gap-2 flex-1 min-w-0">
-                                            {docFiles[doc.name]!.type.startsWith('image/') ? (
-                                                <Image src={URL.createObjectURL(docFiles[doc.name]!)} alt="Preview" width={40} height={40} className="w-10 h-10 object-cover rounded" />
-                                            ) : (
-                                                <File className="w-5 h-5 text-blue-500" />
-                                            )}
-                                            <div className="flex-1 min-w-0">
-                                                <p className="text-xs font-medium truncate">{docFiles[doc.name]!.name}</p>
-                                                <p className="text-xs text-gray-500">{formatFileSize(docFiles[doc.name]!.size)}</p>
-                                            </div>
-                                            <CheckCircle2 className="w-4 h-4 text-green-500" />
-                                        </div>
-                                        <button type="button" onClick={() => handleDocChange(doc.name, null)} className="ml-2 p-1"><X className="w-4 h-4 text-gray-500" /></button>
-                                    </div>
-                                ) : (
-                                    <label htmlFor={`file-${doc.name}`} className="flex items-center justify-center gap-2 p-3 border-2 mt-4 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-blue-50">
-                                        <Upload className="w-5 h-5 text-gray-400" />
-                                        <div className="text-center">
-                                            <p className="text-xs font-medium text-gray-700">Click to upload new file</p>
-                                            <p className="text-xs text-gray-500">PDF or Image</p>
-                                        </div>
-                                    </label>
-                                )} */}
                             </div>
                         ))}
                     </div>
@@ -197,6 +174,21 @@ export default function EditProfileForm({
             <Button variant="destructive" className="w-full" type="submit" disabled={isPending}>
                 {isPending ? <Loader /> : "Save Changes"}
             </Button>
+
+            <ConfirmDialog
+                open={Boolean(fileToRemove)}
+                onOpenChange={(open) => {
+                    if (!open) setFileToRemove(null);
+                }}
+                onConfirm={() => {
+                    if (fileToRemove) handleRemoveFile(fileToRemove);
+                }}
+                title="Remove Document"
+                description="Are you sure you want to remove this document?"
+                confirmText="Remove"
+                isLoading={isRemoving}
+                variant="destructive"
+            />
         </form>
     );
 }

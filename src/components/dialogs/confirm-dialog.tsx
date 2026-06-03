@@ -37,19 +37,19 @@ export const ConfirmDialog = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
-        <DialogHeader className="text-left">
+        <DialogHeader className="text-left gap-1s">
           <DialogTitle className="text-xl font-semibold">{title}</DialogTitle>
           <DialogDescription className="text-gray-600">
             {description}
           </DialogDescription>
         </DialogHeader>
 
-        <DialogFooter className="grid grid-cols-2 gap-3 sm:justify-start mt-4">
+        <DialogFooter className="grid grid-cols-2 gap-3 sm:justify-start mt-2">
           <Button
             variant="outline"
             disabled={isLoading}
             onClick={() => onOpenChange(false)}
-            className="w-full rounded-full border-gray-300"
+            className="w-full h-10 rounded-full border-gray-300"
           >
             {cancelText}
           </Button>
@@ -57,7 +57,7 @@ export const ConfirmDialog = ({
           <Button
             onClick={onConfirm}
             disabled={isLoading}
-            className={`w-full rounded-full text-white ${variant === "destructive"
+            className={`w-full h-10 rounded-full text-white ${variant === "destructive"
               ? "bg-red-500 hover:bg-red-600"
               : "bg-header hover:bg-aqua"
               }`}
