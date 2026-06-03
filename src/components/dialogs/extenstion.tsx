@@ -35,6 +35,49 @@ type PriceMeta = {
     totalPrice: number
 }
 
+type DynamicPricing = {
+    startDate: string
+    endDate: string
+    price: number
+}
+
+const HOUR_MS = 1000 * 60 * 60
+
+const toDateKey = (date: Date) => date.toISOString().split("T")[0]
+const toLocalDateKey = (date: Date) => {
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, "0")
+    const day = String(date.getDate()).padStart(2, "0")
+    return `${year}-${month}-${day}`
+}
+
+const getDynamicPriceForDate = (
+    date: Date,
+    dynamicPricing?: DynamicPricing | null,
+    useLocalDate = false,
+) => {
+    if (!dynamicPricing?.startDate || !dynamicPricing?.endDate) return null
+
+    const dynamicPrice = Number(dynamicPricing.price)
+    if (!Number.isFinite(dynamicPrice)) return null
+
+    const dateKey = useLocalDate ? toLocalDateKey(date) : toDateKey(date)
+    const startDateKey = dynamicPricing.startDate.slice(0, 10)
+    const endDateKey = dynamicPricing.endDate.slice(0, 10)
+
+    return dateKey >= startDateKey && dateKey <= endDateKey ? dynamicPrice : null
+}
+
+const getPriceForDate = (
+    date: Date,
+    basePrice: number,
+    dynamicPricing?: DynamicPricing | null,
+    useLocalDate = false,
+) => {
+    const dynamicPrice = getDynamicPriceForDate(date, dynamicPricing, useLocalDate)
+    return dynamicPrice !== null && Number.isFinite(dynamicPrice) ? dynamicPrice : basePrice
+}
+
 export const ExtensionDialog = ({
     open,
     onOpenChange,
@@ -43,6 +86,7 @@ export const ExtensionDialog = ({
     isPending,
     priceMeta,
     pricingUnit,
+    dynamicPricing
 }: {
     open: boolean
     onOpenChange: (open: boolean) => void
@@ -51,6 +95,7 @@ export const ExtensionDialog = ({
     isPending?: boolean
     priceMeta?: PriceMeta
     pricingUnit?: string
+    dynamicPricing?: DynamicPricing | null
 }) => {
     const unit = pricingUnit ?? "day"
     const [qty, setQty] = useState(1);
@@ -61,7 +106,7 @@ export const ExtensionDialog = ({
         if (isNaN(base.getTime())) return null
 
         const d = new Date(base)
-        if (unit === "hour") d.setUTCHours(d.getUTCHours() + qty)  // ✅ stay in UTC
+        if (unit === "hour") d.setUTCHours(d.getUTCHours() + qty)
         else if (unit === "day") d.setDate(d.getDate() + qty)
         else if (unit === "month") d.setMonth(d.getMonth() + qty)
         else if (unit === "year") d.setFullYear(d.getFullYear() + qty)
@@ -112,7 +157,30 @@ export const ExtensionDialog = ({
     const unitLabel = UNIT_LABELS[unit] ?? unit
     const unitPlural = UNIT_PLURAL[unit] ?? unit
 
-    const totalPrice = priceMeta ? priceMeta.priceFromListing * qty : null
+    const extensionUnitPrices = useMemo(() => {
+        if (!priceMeta || !minDate) return []
+
+        const current = new Date(minDate)
+        if (isNaN(current.getTime())) return []
+
+        const prices: number[] = []
+
+        for (let index = 0; index < qty; index += 1) {
+            prices.push(getPriceForDate(current, priceMeta.priceFromListing, dynamicPricing, unit === "hour"))
+
+            if (unit === "hour") current.setTime(current.getTime() + HOUR_MS)
+            else if (unit === "day") current.setUTCDate(current.getUTCDate() + 1)
+            else if (unit === "month") current.setUTCMonth(current.getUTCMonth() + 1)
+            else if (unit === "year") current.setUTCFullYear(current.getUTCFullYear() + 1)
+        }
+
+        return prices
+    }, [dynamicPricing, minDate, priceMeta, qty, unit])
+
+    const displayUnitPrice = extensionUnitPrices.length > 0 && extensionUnitPrices.every(price => price === extensionUnitPrices[0])
+        ? extensionUnitPrices[0]
+        : priceMeta?.priceFromListing
+    const totalPrice = priceMeta ? extensionUnitPrices.reduce((sum, price) => sum + price, 0) : null
     const fmt = (n: number) =>
         n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
@@ -194,7 +262,7 @@ export const ExtensionDialog = ({
                         <div className="rounded-2xl border border-gray-100 p-4 space-y-2.5">
                             <div className="flex justify-between text-sm text-gray-500">
                                 <span>Price / {unitLabel.toLowerCase()}</span>
-                                <span className="text-gray-800 font-medium">${fmt(priceMeta.priceFromListing)}</span>
+                                <span className="text-gray-800 font-medium">${fmt(displayUnitPrice ?? priceMeta.priceFromListing)}</span>
                             </div>
                             <div className="flex justify-between text-sm text-gray-500">
                                 <span>{unitPlural}</span>

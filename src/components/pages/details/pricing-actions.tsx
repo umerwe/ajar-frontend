@@ -28,7 +28,7 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const { mutate: sendExtendRental, isPending: isExtendRentalPending } = useExtendRental();
   const { mutate: updateStatus, isPending: isStatusLoading } = useUpdateBookingStatus();
   const { data } = useUser();
-
+console.log(bookingData)
   const [isRateOpen, setIsRateOpen] = useState(false)
   const [isGuestDialogOpen, setIsGuestDialogOpen] = useState(false);
   const [isInactiveOpen, setIsInactiveOpen] = useState(false);
@@ -445,6 +445,7 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
         isPending={isExtendRentalPending}
         priceMeta={bookingData?.pricingMeta}
         pricingUnit={bookingData?.pricingMeta?.unit}
+        dynamicPricing={bookingData?.marketplaceListingId?.dynamicPricing}
       />
 
       <LoginDialog
