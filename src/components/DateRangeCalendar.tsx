@@ -15,10 +15,17 @@ interface BlockedDateSlot {
     slots: BlockedSlot[];
 }
 
+interface DynamicPricing {
+    price: number;
+    startDate: string;
+    endDate: string;
+}
+
 const DateRangeCalendar = ({
     isHourly,
     blockedDates,
     blockedSlots,
+    dynamicPricing,
     onRangeChange,
     startDate,
     endDate,
@@ -27,6 +34,7 @@ const DateRangeCalendar = ({
     isHourly: boolean
     blockedDates: string[]
     blockedSlots: BlockedDateSlot[]
+    dynamicPricing?: DynamicPricing | null
     onRangeChange: (start: string, end: string) => void
     startDate: string
     endDate: string
@@ -56,6 +64,39 @@ const DateRangeCalendar = ({
     const timeSlots = useMemo(() => {
         return Array.from({ length: 24 }, (_, i) => `${i.toString().padStart(2, '0')}:00`);
     }, []);
+
+    const dynamicPricingRange = useMemo(() => {
+        if (!dynamicPricing?.startDate || !dynamicPricing?.endDate) return null;
+        return {
+            from: parseISO(dynamicPricing.startDate.slice(0, 10)),
+            to: parseISO(dynamicPricing.endDate.slice(0, 10)),
+        };
+    }, [dynamicPricing]);
+
+    const hasBlockedDateInRange = (rangeStart: string, rangeEnd: string) => {
+        if (!rangeStart || !rangeEnd) return false;
+
+        const startKey = rangeStart.slice(0, 10);
+        const endKey = rangeEnd.slice(0, 10);
+        const fromKey = startKey <= endKey ? startKey : endKey;
+        const toKey = startKey <= endKey ? endKey : startKey;
+
+        return blockedDates.some(date => date >= fromKey && date <= toKey);
+    };
+
+    const hasBlockedSlotInRange = (rangeStart: string, rangeEnd: string) => {
+        if (!rangeStart || !rangeEnd) return false;
+
+        const start = new Date(rangeStart);
+        const end = new Date(rangeEnd);
+        if (!Number.isFinite(start.getTime()) || !Number.isFinite(end.getTime())) return false;
+
+        return localBlockedIntervals.some(interval => start < interval.end && end > interval.start);
+    };
+
+    const hasBlockedRange = (rangeStart: string, rangeEnd: string) => {
+        return isHourly ? hasBlockedSlotInRange(rangeStart, rangeEnd) : hasBlockedDateInRange(rangeStart, rangeEnd);
+    };
 
     const isTimeBlocked = (timeStr: string, selectedDate: Date) => {
         const [hours, minutes] = timeStr.split(':').map(Number);
@@ -118,6 +159,10 @@ const DateRangeCalendar = ({
                 setError("Start must be before end");
                 return;
             }
+            if (endDate && hasBlockedRange(localStart.toISOString(), endDate)) {
+                setError("Selected range includes unavailable time");
+                return;
+            }
             setStartTime(time);
             onRangeChange(localStart.toISOString(), endDate || "");
             setOpenCalendar(null);
@@ -125,6 +170,10 @@ const DateRangeCalendar = ({
             const localEnd = new Date(`${format(endRange, "yyyy-MM-dd")}T${time}:00`);
             if (startDate && localEnd <= new Date(startDate)) {
                 setError("End must be after start");
+                return;
+            }
+            if (startDate && hasBlockedRange(startDate, localEnd.toISOString())) {
+                setError("Selected range includes unavailable time");
                 return;
             }
             setEndTime(time);
@@ -138,21 +187,41 @@ const DateRangeCalendar = ({
         setError(null);
 
         if (type === "start") {
-            setStartRange(day);
             if (isHourly) {
                 const localStart = new Date(`${format(day, "yyyy-MM-dd")}T${startTime}:00`);
+                if (endDate && hasBlockedRange(localStart.toISOString(), endDate)) {
+                    setError("Selected range includes unavailable time");
+                    return;
+                }
+                setStartRange(day);
                 onRangeChange(localStart.toISOString(), endDate || "");
             } else {
-                onRangeChange(format(day, "yyyy-MM-dd"), endDate || "");
+                const nextStartDate = format(day, "yyyy-MM-dd");
+                if (endDate && hasBlockedRange(nextStartDate, endDate)) {
+                    setError("Selected range includes unavailable dates");
+                    return;
+                }
+                setStartRange(day);
+                onRangeChange(nextStartDate, endDate || "");
                 setOpenCalendar(null);
             }
         } else {
-            setEndRange(day);
             if (isHourly) {
                 const localEnd = new Date(`${format(day, "yyyy-MM-dd")}T${endTime}:00`);
+                if (startDate && hasBlockedRange(startDate, localEnd.toISOString())) {
+                    setError("Selected range includes unavailable time");
+                    return;
+                }
+                setEndRange(day);
                 onRangeChange(startDate || "", localEnd.toISOString());
             } else {
-                onRangeChange(startDate || "", format(day, "yyyy-MM-dd"));
+                const nextEndDate = format(day, "yyyy-MM-dd");
+                if (startDate && hasBlockedRange(startDate, nextEndDate)) {
+                    setError("Selected range includes unavailable dates");
+                    return;
+                }
+                setEndRange(day);
+                onRangeChange(startDate || "", nextEndDate);
                 setOpenCalendar(null);
             }
         }
@@ -161,6 +230,12 @@ const DateRangeCalendar = ({
     const sharedDayPickerProps = {
         // ✅ UPDATED: also disable fully blocked hourly dates on the calendar
         disabled: [{ before: new Date() }, ...blockedDates.map(d => parseISO(d)), ...fullyBlockedDates],
+        modifiers: {
+            dynamicPrice: dynamicPricingRange ?? [],
+        },
+        modifiersClassNames: {
+            dynamicPrice: "relative after:absolute after:bottom-1 after:left-1/2 after:h-1.5 after:w-1.5 after:-translate-x-1/2 after:rounded-full after:bg-aqua",
+        },
         onMonthChange: (month: Date) => onMonthChange?.(format(month, "yyyy-MM")),
         classNames: {
             selected: "!bg-aqua !text-white !rounded-lg",
@@ -183,6 +258,12 @@ const DateRangeCalendar = ({
                 {openCalendar === "start" && (
                     <div className="absolute top-full mt-2 left-0 z-50 bg-white border rounded-2xl shadow-xl p-4 w-[320px]">
                         <DayPicker mode="single" selected={startRange} onSelect={(d) => handleDateSelect(d, "start")} {...sharedDayPickerProps} />
+                        {dynamicPricingRange && (
+                            <div className="flex items-center gap-2 border-t pt-3 text-[11px] text-gray-500">
+                                <span className="h-1.5 w-1.5 rounded-full bg-aqua" />
+                                <span>Dynamic pricing active on marked dates</span>
+                            </div>
+                        )}
                         {isHourly && startRange && (
                             <div className="border-t pt-3">
                                 <label className="text-xs font-semibold text-gray-500 mb-2 block">Select Start Time</label>
@@ -224,6 +305,12 @@ const DateRangeCalendar = ({
                 {openCalendar === "end" && (
                     <div className="absolute top-full mt-2 right-0 z-50 bg-white border rounded-2xl shadow-xl p-4 w-[320px]">
                         <DayPicker mode="single" selected={endRange} onSelect={(d) => handleDateSelect(d, "end")} {...sharedDayPickerProps} />
+                        {dynamicPricingRange && (
+                            <div className="flex items-center gap-2 border-t pt-3 text-[11px] text-gray-500">
+                                <span className="h-1.5 w-1.5 rounded-full bg-aqua" />
+                                <span>Dynamic pricing active on marked dates</span>
+                            </div>
+                        )}
                         {isHourly && endRange && (
                             <div className="border-t pt-3">
                                 <label className="text-xs font-semibold text-gray-500 mb-2 block">Select End Time</label>

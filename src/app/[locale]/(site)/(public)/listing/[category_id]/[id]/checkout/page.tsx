@@ -20,6 +20,24 @@ import { toast } from "@/components/ui/toast"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import MyImage from "@/components/MyImage"
 
+const safeNumber = (value: unknown, fallback = 0) => {
+    const numericValue = Number(value);
+    return Number.isFinite(numericValue) ? numericValue : fallback;
+};
+
+const formatDisplayDate = (date: string) => {
+    return new Date(date).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+    });
+};
+
+type BlockedSlotInterval = {
+    start: Date;
+    end: Date;
+};
+
 const CheckoutPage = () => {
     const params = useParams()
     const id = params?.id as string
@@ -40,6 +58,14 @@ const CheckoutPage = () => {
     });
     const blockedDates: string[] = bookedDatesData?.blockedDates ?? bookedDatesData?.fullyBlockedDates ?? [];
     const blockedSlots = bookedDatesData?.blockedSlots ?? [];
+    const blockedSlotIntervals = useMemo<BlockedSlotInterval[]>(() => {
+        return blockedSlots.flatMap((dayEntry: { date: string; slots: { from: string; to: string }[] }) =>
+            dayEntry.slots.map(slot => ({
+                start: new Date(`${dayEntry.date}T${slot.from}:00Z`),
+                end: new Date(`${dayEntry.date}T${slot.to}:00Z`),
+            }))
+        );
+    }, [blockedSlots]);
 
     const {
         register,
@@ -86,12 +112,40 @@ const CheckoutPage = () => {
     }, [listing, watchedStartDate, watchedEndDate]);
 
 
-    const displayBasePrice = priceBreakdown?.basePrice ?? listing?.price ?? 0;
-    const displayAdminFee = priceBreakdown?.adminFee ?? listing?.adminFee ?? 0;
-    const displayTax = priceBreakdown?.tax ?? listing?.tax ?? 0;
+    const displayBasePrice = safeNumber(priceBreakdown?.basePrice, safeNumber(listing?.price));
+    const displayAdminFee = safeNumber(priceBreakdown?.adminFee, safeNumber(listing?.adminFee));
+    const displayTax = safeNumber(priceBreakdown?.tax, safeNumber(listing?.tax));
 
     // NEW: Total includes the refundable deposit
-    const displayTotal = (priceBreakdown?.totalPrice ?? (displayBasePrice + displayAdminFee + displayTax)) + depositAmount;
+    const displayTotal = safeNumber(priceBreakdown?.totalPrice, displayBasePrice + displayAdminFee + displayTax) + depositAmount;
+
+    const dynamicPrice = safeNumber(listing?.dynamicPricing?.price, NaN);
+    const hasDynamicPricing = Boolean(
+        listing?.dynamicPricing?.startDate &&
+        listing?.dynamicPricing?.endDate &&
+        Number.isFinite(dynamicPrice)
+    );
+
+    const hasBlockedDateInRange = (rangeStart: string, rangeEnd: string) => {
+        const startKey = rangeStart.slice(0, 10);
+        const endKey = rangeEnd.slice(0, 10);
+        const fromKey = startKey <= endKey ? startKey : endKey;
+        const toKey = startKey <= endKey ? endKey : startKey;
+
+        return blockedDates.some(date => date >= fromKey && date <= toKey);
+    };
+
+    const hasBlockedSlotInRange = (rangeStart: string, rangeEnd: string) => {
+        const start = new Date(rangeStart);
+        const end = new Date(rangeEnd);
+        if (!Number.isFinite(start.getTime()) || !Number.isFinite(end.getTime())) return false;
+
+        return blockedSlotIntervals.some(interval => start < interval.end && end > interval.start);
+    };
+
+    const selectedRangeHasUnavailableDates = (rangeStart: string, rangeEnd: string) => {
+        return isHourly ? hasBlockedSlotInRange(rangeStart, rangeEnd) : hasBlockedDateInRange(rangeStart, rangeEnd);
+    };
 
     const isDateBlocked = (dateStr: string) => {
         return blockedDates.includes(dateStr);
@@ -105,6 +159,16 @@ const CheckoutPage = () => {
 
     const onSubmit = async (data: BookingFormData) => {
         if (!listing?._id) return;
+
+        if (selectedRangeHasUnavailableDates(data.startDate, data.endDate)) {
+            toast({
+                description: isHourly
+                    ? "Selected time range includes unavailable time. Please choose another range."
+                    : "Selected date range includes unavailable dates. Please choose another range.",
+                variant: "destructive",
+            });
+            return;
+        }
 
         if (!isHourly) {
             const checkIn = new Date(data.startDate);
@@ -206,6 +270,29 @@ const CheckoutPage = () => {
                                                             </div>
                                                         </div>
 
+                                                        {policies.rentalDurationLimits?.length > 0 && (
+                                                            <div className="space-y-2">
+                                                                <h4 className="text-sm font-semibold text-gray-500">
+                                                                    Rental duration limits
+                                                                </h4>
+                                                                <div className="space-y-2">
+                                                                    {policies.rentalDurationLimits.map((limit: {
+                                                                        appliesToPriceUnit: string;
+                                                                        minimumDuration?: { value: number; unit: string };
+                                                                        maximumDuration?: { value: number; unit: string };
+                                                                    }, index: number) => (
+                                                                        <div key={`${limit.appliesToPriceUnit}-${index}`} className="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                                                            <p className="text-sm text-gray-700 leading-relaxed font-medium first-letter:uppercase">
+                                                                                {limit.appliesToPriceUnit} rental: {limit.minimumDuration?.value ?? 0} {limit.minimumDuration?.unit ?? limit.appliesToPriceUnit} minimum
+                                                                                {" - "}
+                                                                                {limit.maximumDuration?.value ?? 0} {limit.maximumDuration?.unit ?? limit.appliesToPriceUnit} maximum
+                                                                            </p>
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                        )}
+
                                                         {/* Extension Allowed Status */}
                                                         <div className="pt-4 border-t flex items-center gap-2 sticky bottom-0 bg-white pb-2">
                                                             <div className={`w-2 h-2 rounded-full ${policies.extensionAllowed ? 'bg-green-500' : 'bg-red-500'}`} />
@@ -232,6 +319,7 @@ const CheckoutPage = () => {
                                                 startDate={watchedStartDate}
                                                 endDate={watchedEndDate}
                                                 isLoadingDates={isLoadingDates}
+                                                dynamicPricing={listing?.dynamicPricing}
                                                 onMonthChange={(month) => setVisibleMonth(month)}
                                                 onRangeChange={(start, end) => {
                                                     setValue("startDate", start)
@@ -319,6 +407,20 @@ const CheckoutPage = () => {
                                                 <span className="text-base text-gray-600">Tax</span>
                                                 <span className="text-base font-medium text-gray-900">${displayTax.toFixed(2)}</span>
                                             </div>
+
+                                            {hasDynamicPricing && listing?.dynamicPricing && (
+                                                <div className="flex justify-between items-start gap-4 rounded-lg bg-aqua/5 px-3 py-2 text-aqua">
+                                                    <div>
+                                                        <span className="text-sm font-medium">Special Offer</span>
+                                                        <p className="text-[11px] text-gray-500">
+                                                            {formatDisplayDate(listing.dynamicPricing.startDate)} - {formatDisplayDate(listing.dynamicPricing.endDate)}
+                                                        </p>
+                                                    </div>
+                                                    <span className="text-sm font-semibold whitespace-nowrap">
+                                                        ${dynamicPrice.toFixed(2)}/{listing.priceUnit}
+                                                    </span>
+                                                </div>
+                                            )}
 
                                             {/* NEW: Refundable Deposit Line Item */}
                                             {depositAmount > 0 && (

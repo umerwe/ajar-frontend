@@ -301,19 +301,27 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
                 </div>
 
                 <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>Subtotal ({duration} × ${unitPrice.toFixed(2)})</span>
+                  <span>Subtotal</span>
                   <span>${basePrice.toFixed(2)}</span>
                 </div>
 
-                <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>Admin Fee</span>
-                  <span>${adminFee.toFixed(2)}</span>
-                </div>
+                {
+                  adminFee > 0 && (
+                    <div className="flex justify-between text-sm text-muted-foreground">
+                      <span>Admin Fee</span>
+                      <span>${adminFee.toFixed(2)}</span>
+                    </div>
+                  )
+                }
 
-                <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>Tax</span>
-                  <span>${tax.toFixed(2)}</span>
-                </div>
+                {
+                  tax > 0 && (
+                    <div className="flex justify-between text-sm text-muted-foreground">
+                      <span>Tax</span>
+                      <span>${tax.toFixed(2)}</span>
+                    </div>
+                  )
+                }
 
                 {extensionTotal > 0 && (
                   <div className="flex justify-between text-sm text-aqua font-medium">
@@ -373,15 +381,23 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
                   <span>${rawPrice.toFixed(2)}</span>
                 </div>
 
-                <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>Admin Fee</span>
-                  <span>${adminFeeNoBooking.toFixed(2)}</span>
-                </div>
+                {
+                  adminFeeNoBooking > 0 && (
+                    <div className="flex justify-between text-sm text-muted-foreground">
+                      <span>Admin Fee</span>
+                      <span>${adminFeeNoBooking.toFixed(2)}</span>
+                    </div>
+                  )
+                }
 
-                <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>Tax</span>
-                  <span>${taxNoBooking.toFixed(2)}</span>
-                </div>
+                {
+                  taxNoBooking > 0 && (
+                    <div className="flex justify-between text-sm text-muted-foreground">
+                      <span>Tax</span>
+                      <span>${taxNoBooking.toFixed(2)}</span>
+                    </div>
+                  )
+                }
 
                 <div className="border-t pt-2 mt-2 flex justify-between font-semibold">
                   <span>Total</span>
