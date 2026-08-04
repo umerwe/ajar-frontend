@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
 import { useGetZones } from "@/hooks/useZone";
-import { capitalizeWords } from "@/utils/capitalizeWords";
 import Loader from "@/components/common/loader";
 import SkeletonLoader from "@/components/common/skeleton-loader";
 
@@ -63,10 +62,10 @@ export default function SearchBar() {
                 {zones?.map((loc: Zone, index: number) => (
                   <DropdownMenuItem
                     key={index}
-                    className="p-2 sm:p-3 cursor-pointer text-gray-800 text-sm font-medium"
+                    className="p-2 sm:p-3 cursor-pointer text-gray-800 text-sm font-medium capitalize"
                     onClick={() => handleZoneSelect(loc._id)}
                   >
-                    {capitalizeWords(loc.name)}
+                    {loc.name}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>

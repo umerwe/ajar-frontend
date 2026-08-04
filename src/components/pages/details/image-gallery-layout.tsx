@@ -10,6 +10,7 @@ import "yet-another-react-lightbox/plugins/thumbnails.css";
 import CoreDetails from "./core-details";
 import Rating from "./rating";
 import { removeFields } from "@/utils/removeFields"
+import { LISTING_DETAIL_EXCLUDED_FIELDS } from "@/constants/listing";
 
 interface PropertyHeaderProps {
   property: Listing;
@@ -18,13 +19,7 @@ interface PropertyHeaderProps {
 const PropertyHeader = ({ property }: PropertyHeaderProps) => {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
-  const cleanedData = removeFields(property as any, [
-    "_id", "leaser", "subCategory", "zone", "ratings", "name", "subTitle",
-    "images", "rentalImages", "description", "price", "isActive", "language",
-    "documents", "isAvailable", "currentBookingId", "status", "priceUnit",
-    "createdAt", "updatedAt", "__v", "userDocuments", "leaserDocuments",
-    "adminFee", "tax", "languages", "averageRating", "totalReviews", "rejectionNote","location", "refundNote", "refundNote", "bookings", "reviews","unavailability","dynamicPricing","dropoffLocation","timezone"
-  ]);
+  const listingHighlights = removeFields(property as any, LISTING_DETAIL_EXCLUDED_FIELDS);
 
   const images = property.rentalImages ?? [];
   const hasImages = images.length > 0;
@@ -39,9 +34,8 @@ const PropertyHeader = ({ property }: PropertyHeaderProps) => {
         <div className="flex gap-2 w-full lg:w-[600px] h-[200px] shrink-0">
           {/* Main image - takes full width if it's the only one */}
           <div
-            className={`relative h-full rounded-sm overflow-hidden transition ${
-              sideImages.length > 0 ? "w-[50%]" : "w-full"
-            } ${hasImages ? "cursor-pointer hover:opacity-95" : ""}`}
+            className={`relative h-full rounded-sm overflow-hidden transition ${sideImages.length > 0 ? "w-[50%]" : "w-full"
+              } ${hasImages ? "cursor-pointer hover:opacity-95" : ""}`}
             onClick={() => hasImages && setLightboxIndex(0)}
           >
             <Image
@@ -83,7 +77,7 @@ const PropertyHeader = ({ property }: PropertyHeaderProps) => {
           {/* DYNAMIC FIELDS - SCROLLABLE BUT HIDDEN SCROLLBAR */}
           <div className="border-t border-gray-50 pt-4 mt-auto">
             <div className="flex flex-nowrap gap-8 overflow-x-auto no-scrollbar" style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
-              {cleanedData.map((item, index) =>
+              {listingHighlights.map((item, index) =>
                 Object.entries(item).map(([key, value]) => (
                   <div key={`${index}-${key}`} className="shrink-0">
                     <p className="text-gray-400 text-[11px] uppercase tracking-wider mb-0.5">{key}</p>

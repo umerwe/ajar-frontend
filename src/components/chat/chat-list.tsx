@@ -6,7 +6,6 @@ import { Input } from "../ui/input";
 import { useGetChatList, useMessageSeen } from "@/hooks/useChat";
 import Image from "@/components/MyImage";
 import { useUser } from "@/hooks/useAuth";
-import { capitalizeWords } from "@/utils/capitalizeWords";
 import Link from "next/link";
 import SkeletonLoader from "../common/skeleton-loader";
 import clsx from "clsx";
@@ -106,8 +105,8 @@ const ChatList = ({ id }: { id?: string }) => {
 
                                 <div className="flex-1 min-w-0 flex justify-between items-start">
                                     <div className="min-w-0">
-                                        <p className="text-sm font-semibold truncate text-gray-800">
-                                            {capitalizeWords(participant?.name)}
+                                        <p className="text-sm font-semibold truncate capitalize text-gray-800">
+                                            {participant?.name}
                                         </p>
                                     </div>
                                     <div className="flex flex-col items-end justify-between min-w-[50px]">

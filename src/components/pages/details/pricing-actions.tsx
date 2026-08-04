@@ -19,9 +19,18 @@ import Loader from "@/components/common/loader"
 import Document from "./document"
 import { LoginDialog } from "@/components/dialogs/login-dialog"
 import { InactiveAccountDialog } from "@/components/dialogs/inactiveAccountDialog"
-import { ConfirmDialog } from "@/components/dialogs/confirm-dialog" // Added
+import { ConfirmDialog } from "@/components/dialogs/confirm-dialog"
 import RefundStatusDialog from "@/components/dialogs/RefundStatusDialog"
-import DamagedReportDialog from "@/components/dialogs/damagedReportDialog"
+import { toast } from "@/components/ui/toast"
+
+type BookingPaymentResponse = {
+  clientSecret?: string;
+  paymentIntentId?: string;
+};
+
+const getBookingPayment = (response: any): BookingPaymentResponse => {
+  return response?.payment || response?.data?.payment || {};
+};
 
 const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const { mutate, isPending } = useSubmitPin();
@@ -32,7 +41,6 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const [isRateOpen, setIsRateOpen] = useState(false)
   const [isGuestDialogOpen, setIsGuestDialogOpen] = useState(false);
   const [isInactiveOpen, setIsInactiveOpen] = useState(false);
-  const [isDamageDialogOpen, setIsDamageDialogOpen] = useState(false);
 
   const [isPriceOpen, setIsPriceOpen] = useState(false)
   const [isPinOpen, setIsPinOpen] = useState(false);
@@ -49,8 +57,8 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
 
   const totalNoBookingPrice =
     rawPrice + adminFeeNoBooking + taxNoBooking;
-
-  const isExtension = bookingData?.marketplaceListingId?.zone?.rentalPolicies?.extensionAllowed;
+    
+  const isExtension = bookingData?.rentalPolicySnapshot?.extensionAllowed;
   const pricingMeta = bookingData?.pricingMeta;
 
   const unitPrice = pricingMeta?.priceFromListing || property?.price || 0;
@@ -85,14 +93,35 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
     )
   }
 
-  const handleExtensionSubmit = (date: string) => {
+  const handleExtensionSubmit = (date: string, amount: number) => {
     sendExtendRental({
       marketplaceListingId: bookingData.marketplaceListingId._id,
       extensionDate: date
     },
       {
-        onSuccess: () => {
+        onSuccess: (response) => {
+          const payment = getBookingPayment(response);
+
+          if (!payment.clientSecret || !payment.paymentIntentId) {
+            toast({
+              title: "Payment Failed",
+              description: "Payment details were not received. Please try again.",
+              variant: "destructive",
+            });
+            return;
+          }
+
+          sessionStorage.setItem(
+            "bookingPayment",
+            JSON.stringify({
+              clientSecret: payment.clientSecret,
+              paymentIntentId: payment.paymentIntentId,
+              amount,
+              successRedirect: `/booking/details/${bookingData._id}`,
+            })
+          );
           setIsExtendOpen(false)
+          router.push("/booking/payment");
         }
       }
     )
@@ -197,16 +226,6 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
                 {label}
               </Button>
             )}
-
-            {/* {isDamagedReportSubmitted && (
-              <Button
-                onClick={() => setIsDamageDialogOpen(true)}
-                variant="outline"
-                className="border-red-500 text-red-500 hover:bg-red-50 hover:text-red-600"
-              >
-                Damage Report
-              </Button>
-            )} */}
           </div>
         );
 
@@ -456,14 +475,6 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
       <InactiveAccountDialog
         open={isInactiveOpen}
         onOpenChange={setIsInactiveOpen}
-      />
-
-      <DamagedReportDialog
-        isOpen={isDamageDialogOpen}
-        onOpenChange={setIsDamageDialogOpen}
-        bookingId={bookingData?._id as string}
-        status={bookingData?.damagedReport?.status}
-        report={bookingData?.damagedReport}
       />
 
       <RefundStatusDialog

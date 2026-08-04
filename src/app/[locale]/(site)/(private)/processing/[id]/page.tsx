@@ -1,14 +1,19 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useParams, useRouter } from "next/navigation"
+import { useParams, useRouter, useSearchParams } from "next/navigation"
 import { Loader2 } from "lucide-react"
 import api from "@/lib/axios"
 
 const PaymentProcessing = () => {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const { id } = useParams();
     const paymentIntentId = id as string;
+    const redirectParam = searchParams.get("redirect");
+    const successRedirect = redirectParam?.startsWith("/") && !redirectParam.startsWith("//")
+        ? redirectParam
+        : "/success";
 
     const [message, setMessage] = useState("Confirming your payment...")
 
@@ -22,9 +27,9 @@ const PaymentProcessing = () => {
                 })
                 const data = res.data
 
-                if (data.status === "succeeded") {
+                if (data.status === "succeeded" || data.stripeStatus === "requires_capture") {
                     setMessage(data.message || "Payment successful!")
-                    router.replace("/success")
+                    router.replace(successRedirect)
                 } else if (data.status === "failed") {
                     setMessage(data.message || "Payment failed")
                     router.replace("/failed")
@@ -41,7 +46,7 @@ const PaymentProcessing = () => {
         }
 
         verifyPayment()
-    }, [paymentIntentId, router])
+    }, [paymentIntentId, router, successRedirect])
 
     return (
         <div className="min-h-[calc(100vh-66px)] flex items-center justify-center p-4">

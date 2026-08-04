@@ -1,5 +1,5 @@
 import {
-    deductWallet, getBankAccountDetails, getWallet, addBankAccount,
+    getBankAccountDetails, getWallet, addBankAccount,
     updateBankAccount,
     deleteBankAccount,
     createPaymentIntent,
@@ -17,11 +17,6 @@ export const useGetWallet = () => {
     });
 };
 
-export const useDeductWallet = () => {
-    return useMutation({
-        mutationFn: deductWallet,
-    });
-};
 
 export const useGetBankAccountDetails = () => {
     return useQuery({

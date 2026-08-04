@@ -11,7 +11,6 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { useGetArticle } from "@/hooks/useArticles";
-import { capitalizeWords } from "@/utils/capitalizeWords";
 
 export default function ArticleDetailDialog({
     open,
@@ -31,8 +30,8 @@ export default function ArticleDetailDialog({
                 ) : articleDetail ? (
                     <>
                         <DialogHeader>
-                            <DialogTitle className="text-2xl font-bold">
-                                {capitalizeWords(articleDetail.title)}
+                            <DialogTitle className="text-2xl font-bold capitalize">
+                                {articleDetail.title}
                             </DialogTitle>
                             <div className="flex items-center text-sm text-muted-foreground">
                                 <FileText className="mr-2 h-4 w-4" />

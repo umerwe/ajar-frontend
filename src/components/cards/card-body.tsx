@@ -1,6 +1,5 @@
 import { CardContent } from "@/components/ui/card";
 import { Listing } from "@/types/listing";
-import { capitalizeWords } from "@/utils/capitalizeWords";
 import { getStatusStyles } from "@/constants/booking";
 import { Star } from "lucide-react";
 import { formatStatus } from "@/utils/formatStatus";
@@ -14,8 +13,8 @@ const CardBody = ({ property, bookingStatus }: CardBodyProps) => {
   return (
     <CardContent className="-mt-1">
       <div className="flex items-center justify-between">
-        <h3 className="flex-1 font-semibold text-gray-900 text-xs sm:text-sm 2xl:text-base truncate mr-2">
-          {capitalizeWords(property?.name)}
+        <h3 className="flex-1 font-semibold capitalize text-gray-900 text-xs sm:text-sm 2xl:text-base truncate mr-2">
+          {property?.name}
         </h3>
 
         {bookingStatus ? (
@@ -48,8 +47,8 @@ const CardBody = ({ property, bookingStatus }: CardBodyProps) => {
         </div>
       }
 
-      <p className="text-[11px] sm:text-[13px] text-[#00CC99] font-medium mb-2 truncate 2xl:mt-0.5">
-        Location: {capitalizeWords(property?.zone?.name)}
+      <p className="text-[11px] sm:text-[13px] capitalize text-[#00CC99] font-medium mb-2 truncate 2xl:mt-0.5">
+        Location: {property?.location?.address || "N/A"}
       </p>
     </CardContent>
   );

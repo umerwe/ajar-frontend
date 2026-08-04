@@ -15,7 +15,7 @@ import { StripeCardFormProps } from "@/types/payment"
 import { inputBaseClasses, stripeElementOptions } from "@/utils/stripe"
 import Loader from "../common/loader"
 
-export const StripeCardForm = ({ clientSecret, amount }: StripeCardFormProps) => {
+export const StripeCardForm = ({ clientSecret, amount, paymentIntentId, successRedirect }: StripeCardFormProps) => {
     const stripe = useStripe()
     const elements = useElements();
 
@@ -56,11 +56,16 @@ export const StripeCardForm = ({ clientSecret, amount }: StripeCardFormProps) =>
                 description: error.message || "Payment failed.",
                 variant: "destructive",
             })
+            setIsLoading(false)
+            return
         }
 
         // ✅ If paymentIntent exists, let processing page handle all statuses
-        if (paymentIntent?.id) {
-            window.location.href = `/processing/${paymentIntent.id}`
+        const confirmedPaymentIntentId = paymentIntentId || paymentIntent?.id
+        if (confirmedPaymentIntentId) {
+            const redirectQuery = successRedirect ? `?redirect=${encodeURIComponent(successRedirect)}` : ""
+            sessionStorage.removeItem("bookingPayment")
+            window.location.href = `/processing/${confirmedPaymentIntentId}${redirectQuery}`
         } else {
             // ✅ No payment intent - direct failure
             setIsLoading(false)

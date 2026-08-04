@@ -42,7 +42,6 @@ const ListingItems = () => {
 
               <HostInfo property={listingData} />
 
-              {/* Reviews Section - Added Here */}
               {listingData?.reviews?.length > 0 && (
                 <ReviewsSection
                   reviews={listingData.reviews}

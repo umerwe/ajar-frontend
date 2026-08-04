@@ -4,7 +4,6 @@ import { useUser } from '@/hooks/useAuth'
 import { useCreateChat, useGetChatList } from '@/hooks/useChat'
 import { Chat, Participant } from '@/types/chat'
 import { Listing } from '@/types/listing'
-import { capitalizeWords } from '@/utils/capitalizeWords'
 import { MessageCircleMore } from 'lucide-react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
@@ -83,8 +82,8 @@ const HostInfo = ({ property }: { property: Listing }) => {
                     </div>
 
                     <div>
-                        <p className="font-semibold text-gray-800 text-sm xl:text-base">
-                            {capitalizeWords(property.leaser.name)}
+                        <p className="font-semibold text-gray-800 text-sm xl:text-base capitalize">
+                            {property.leaser.name}
                         </p>
                         <p className="text-gray-500 text-xs sm:text-sm flex items-center sm:-mt-0.5">
                             {property?.leaser?.email}

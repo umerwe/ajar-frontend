@@ -1,13 +1,12 @@
 import { Button } from "@/components/ui/button"
 import { Listing } from "@/types/listing"
-import { capitalizeWords } from "@/utils/capitalizeWords"
 import { ChevronRight, MapPin, Star } from "lucide-react"
 
 const CoreDetails = ({ property }: { property: Listing }) => {
     return (
         <div>
             <h1 className="text-xl font-semibold text-gray-800 flex flex-col sm:flex-row sm:items-center gap-2">
-                <span>{capitalizeWords(property.name)}</span>
+                <span className="capitalize">{property.name}</span>
                 <div className="flex gap-0.5">
                     {[...Array(5)].map((_, i) => (
                         <Star
@@ -18,12 +17,12 @@ const CoreDetails = ({ property }: { property: Listing }) => {
                 </div>
             </h1>
 
-            <h2 className="text-sm mb-1">{capitalizeWords(property.subTitle)}</h2>
+            <h2 className="text-sm mb-1 capitalize">{property.subTitle}</h2>
 
             <div className="text-xs sm:text-sm text-gray-900 font-medium flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 md:gap-20">
                 <div className="flex gap-1 items-center">
                     <MapPin className="w-4 h-4 text-aqua" />
-                    <span>{capitalizeWords(property?.zone?.name)}</span>
+                    <span className="capitalize">{property?.zone?.name}</span>
                 </div>
 
                 {/* Show on Map link */}

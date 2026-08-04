@@ -1,11 +1,10 @@
-import { Heart, Flag, ShieldCheck, Pencil, CalendarCheck, Lock, Wallet, Landmark } from "lucide-react"
+import { Heart,ShieldCheck, Pencil, CalendarCheck, Lock, Wallet, Landmark } from "lucide-react"
 
 export const profileMenuItems = [
     { label: "View Profile", href: "/profile" },
     { label: "Bookings", href: "/booking/all" },
     { label: "Favourites", href: "/favourites" },
     { label: "Chat", href: "/chat" },
-    { label: "Reports", href: "/report" },
     { label: "Terms & Conditions", href: "#" },
     { label: "Help Center", href: "/help-center" },
 ];
@@ -17,19 +16,14 @@ export const profileItems = [
     },
     {
         icon: Wallet,
-        label: "Wallet",
-        href: "/wallet"
+        label: "Transactions",
+        href: "/transactions"
     },
     {
         icon: CalendarCheck,
         label: "Bookings",
         href: "/booking/all",
     },
-    // {
-    //     icon: Landmark,
-    //     label: "Bank Account",
-    //     href: "/bank-account",
-    // },
     {
         icon: Landmark,
         label: "Connect Bank Account",
@@ -53,11 +47,6 @@ export const profileItems = [
         icon: ShieldCheck,
         label: "Two-Factor Authentication",
         href: "/two-factor",
-    },
-    {
-        icon: Flag,
-        label: "Report",
-        href: "/report",
     },
     {
         icon: Pencil,

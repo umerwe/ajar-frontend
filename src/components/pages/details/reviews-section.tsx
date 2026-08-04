@@ -3,8 +3,8 @@
 
 import { useState } from "react";
 import { Star, StarHalf, User, Calendar } from "lucide-react";
-import { format } from "date-fns";
 import MyImage from "@/components/MyImage";
+import { format } from "date-fns";
 
 interface Review {
   _id: string;

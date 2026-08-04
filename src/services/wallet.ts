@@ -5,25 +5,6 @@ export const getWallet = async () => {
   return data;
 };
 
-export const deductWallet = async (
-  {
-    amount,
-    description,
-    bookingId
-  }: {
-    amount: number;
-    description: string;
-    bookingId: string;
-  }
-) => {
-  const { data } = await api.post("/api/users/wallet/deduct", {
-    amount,
-    description,
-    bookingId
-  });
-  return data;
-};
-
 export const getBankAccountDetails = async () => {
   const { data } = await api.get("/api/users/bank-account");
   return data.data;

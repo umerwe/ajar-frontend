@@ -13,7 +13,6 @@ import {
 import { Button } from "@/components/ui/button";
 import Header from "@/components/ui/header";
 import { useBooking } from "@/hooks/useBooking";
-import { capitalizeWords } from "@/utils/capitalizeWords";
 import { useSendReport } from "@/hooks/useReport";
 import Image from "@/components/MyImage";
 import { Listing } from "@/types/listing";
@@ -96,16 +95,16 @@ export default function ReportForm() {
                                 <ChevronDown size={22} />
                             </span>
                             <select
-                                className="w-full pl-10 pr-10 py-2 rounded-full border border-gray-300 bg-gray-50 text-sm text-gray-600 focus:outline-none appearance-none"
+                                className="w-full pl-10 pr-10 py-2 rounded-full border border-gray-300 bg-gray-50 text-sm text-gray-600 focus:outline-none appearance-none capitalize"
                                 value={booking}
                                 onChange={(e) => setBooking(e.target.value)}
                             >
                                 <option value="">Select Booking</option>
 
                                 {bookings?.map((b: { _id: string; marketplaceListingId: Listing }) => (
-                                    <option key={b?._id} value={b?._id}>
+                                    <option key={b?._id} value={b?._id} className="capitalize">
                                         {typeof b?.marketplaceListingId === "object"
-                                            ? capitalizeWords(b?.marketplaceListingId?.name)
+                                            ? b?.marketplaceListingId?.name
                                             : ""}
                                     </option>
                                 ))}

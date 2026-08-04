@@ -5,21 +5,11 @@ import { Transaction } from '@/types/wallet';
 import { Wallet } from 'lucide-react';
 import Header from '@/components/ui/header';
 import SkeletonLoader from '@/components/common/skeleton-loader';
+import { formatWalletDate } from '@/utils/formatDate';
 
-const TransactionsPage = () => {
+const Transactions = () => {
     const { data, isLoading } = useGetWallet();
     const transactions = data?.transactions;
-
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleString('en-GB', {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true,
-        }).replace(/:(\d{2}) /, ':$1 ');
-    };
 
     return (
         <div>
@@ -53,7 +43,7 @@ const TransactionsPage = () => {
                                                 </h3>
 
                                                 <p className="text-xs text-slate-400 font-medium">
-                                                    {formatDate(tx.createdAt)}
+                                                    {formatWalletDate(tx.createdAt)}
                                                 </p>
                                             </div>
                                         </div>
@@ -80,4 +70,4 @@ const TransactionsPage = () => {
     );
 };
 
-export default TransactionsPage;
+export default Transactions;

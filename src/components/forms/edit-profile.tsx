@@ -6,7 +6,6 @@ import { useUpdateUser } from "@/hooks/useAuth";
 import React from "react";
 import Image from "@/components/MyImage";
 import { X } from "lucide-react";
-import { capitalizeWords } from "@/utils/capitalizeWords";
 import Loader from "../common/loader";
 import { EditProfileFormValues, EditProfileSchema } from "@/validations/profile";
 import { toast } from "../ui/toast";
@@ -128,11 +127,11 @@ export default function EditProfileForm({
                                     <span className="text-sm font-medium text-gray-700">
                                         {doc.name.replace("_", " ").toUpperCase()}
                                     </span>
-                                    <span className={`text-xs font-semibold px-2 py-1 rounded-full ${doc.status === "approved" ? "bg-green-100 text-green-700" :
+                                    <span className={`text-xs font-semibold px-2 py-1 rounded-full capitalize ${doc.status === "approved" ? "bg-green-100 text-green-700" :
                                         doc.status === "rejected" ? "bg-red-100 text-red-700" :
                                             "bg-yellow-100 text-yellow-700"
                                         }`}>
-                                        {capitalizeWords(doc?.status as string)}
+                                        {doc?.status as string}
                                     </span>
                                 </div>
 

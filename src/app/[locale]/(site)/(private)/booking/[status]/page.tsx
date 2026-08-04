@@ -1,17 +1,7 @@
-"use client"
+import Bookings from "@/components/pages/Bookings"
 
-import Status from '@/components/pages/status/status';
-import StatusOptions from '@/components/status-options';
-import { useParams } from 'next/navigation'
-
-const BookingPage = () => {
-    const { status } = useParams();
-    return (
-        <>
-            <StatusOptions />
-            <Status status={status as string} />
-        </>
-    )
+const BookingsPage = () => {
+    return <Bookings />
 }
 
-export default BookingPage
+export default BookingsPage

@@ -10,7 +10,6 @@ import { Listing } from "@/types/listing"
 import SkeletonLoader from "./common/skeleton-loader"
 import NotFound from "./common/not-found"
 import Error from "./common/error"
-// import { useSession } from "next-auth/react"
 
 interface ListingContentProps {
   isHome?: boolean
@@ -18,7 +17,6 @@ interface ListingContentProps {
 }
 
 const ListingContent = ({ isHome, initialCategory }: ListingContentProps) => {
-  // const { data: session } = useSession();
   const [currentPage, setCurrentPage] = useState(1)
   const limit = 8
 

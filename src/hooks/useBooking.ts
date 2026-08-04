@@ -26,7 +26,7 @@ export function useCreateBooking() {
 
   return useMutation({
     mutationFn: createBooking,
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: ["bookings"],
       });
@@ -35,31 +35,17 @@ export function useCreateBooking() {
       });
 
       toast({ description: "Booking request submitted successfully." })
-      router.replace(`/booking/pending`);
+      if (variables.redirectOnSuccess !== false) {
+        router.replace(`/booking/pending`);
+      }
 
     },
     onError: (error) => {
       const err = error as AxiosError<ErrorResponse>;
-
-      const data = err.response?.data;
-
-      if (
-        data?.requiredBalance !== undefined &&
-        data?.currentBalance !== undefined
-      ) {
-        toast({
-          title: "Booking Failed",
-          description: `Your wallet balance is $${data.currentBalance.toFixed(2)}. You need at least $${data.requiredBalance.toFixed(2)} to create this booking. Please add funds and try again.`,
-          variant: "destructive",
-        });
-
-      } else {
-        toast({
-          title: "Booking Failed",
-          description: data?.message || "Something went wrong.",
-          variant: "destructive",
-        });
-      }
+      toast({
+        description: err.response?.data?.message || "Something went wrong.",
+        variant: "destructive",
+      });
     },
   });
 }
@@ -118,25 +104,10 @@ export function useExtendRental() {
     },
     onError: (error) => {
       const err = error as AxiosError<ErrorResponse>;
-      const data = err.response?.data;
-
-      if (
-        data?.requiredBalance !== undefined &&
-        data?.currentBalance !== undefined
-      ) {
-        toast({
-          title: "Insufficient Wallet Balance",
-          description: `Your wallet balance is $${data.currentBalance.toFixed(2)}. You need at least $${data.requiredBalance.toFixed(2)} to request an extension. Please add funds and try again.`,
-          variant: "destructive",
-        });
-      }
-      else {
-        toast({
-          title: "Extension Request Failed",
-          description: data?.message || "Something went wrong.",
-          variant: "destructive",
-        });
-      }
+      toast({
+        description: err.response?.data?.message || "Something went wrong.",
+        variant: "destructive",
+      });
     },
   });
 }

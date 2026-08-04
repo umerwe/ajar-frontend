@@ -1,29 +1,15 @@
-export interface LatLng {
-  lat: number;
-  lng: number;
-}
-
-// Support for standard GeoJSON Polygon structure
-export interface GeoJSONPolygon {
-  type: "Polygon";
-  coordinates: number[][][]; // Array of rings, each ring is an array of [lng, lat]
-}
-
-// Support for standard GeoJSON MultiPolygon structure
-export interface GeoJSONMultiPolygon {
-  type: "MultiPolygon";
-  coordinates: number[][][][];
-}
-
 export interface Zone {
   _id?: string;
   name: string;
   currency?: string;
-  // Polygons can come from the frontend as LatLng arrays 
-  // or from the backend as GeoJSON objects
-  polygons: LatLng[][] | GeoJSONPolygon | GeoJSONMultiPolygon;
   createdAt?: string;
   updatedAt?: string;
+}
+
+export interface ListingLocation {
+  lat: number;
+  lng: number;
+  address: string;
 }
 
 export interface Listing  {
@@ -48,6 +34,7 @@ export interface Listing  {
       updatedAt: string; // ISO date string
     };
     zone: Zone;
+    location: ListingLocation;
     name: string;
     images: string[];
     rentalImages: string[];

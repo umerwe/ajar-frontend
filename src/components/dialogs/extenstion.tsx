@@ -12,6 +12,7 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog"
 import Loader from "../common/loader"
+import { formatBookingDate } from "@/utils/formatDate"
 
 const UNIT_LABELS: Record<string, string> = {
     hour: "Hour",
@@ -84,6 +85,12 @@ const getPriceForDate = (
     return dynamicPrice !== null && Number.isFinite(dynamicPrice) ? dynamicPrice : basePrice
 }
 
+const formatExtensionDateTime = (date: Date, _options?: unknown) =>
+    formatBookingDate(date.toISOString(), "hour")
+
+const formatExtensionDate = (date: string | Date, unit: string) =>
+    formatBookingDate(typeof date === "string" ? date : date.toISOString(), unit)
+
 export const ExtensionDialog = ({
     open,
     onOpenChange,
@@ -96,7 +103,7 @@ export const ExtensionDialog = ({
 }: {
     open: boolean
     onOpenChange: (open: boolean) => void
-    onSubmit: (date: string) => void
+    onSubmit: (date: string, amount: number) => void
     minDate?: string
     isPending?: boolean
     priceMeta?: PriceMeta
@@ -124,41 +131,40 @@ export const ExtensionDialog = ({
         if (!d) return "—"
 
         if (unit === "hour") {
-            return d.toLocaleString("en-US", {
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: true,
-                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            return formatExtensionDateTime(d, {
+                fallback: "â€”",
+                includeTime: true,
+                options: {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true,
+                    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                },
             })
         }
 
-        return d.toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-        })
+        return formatExtensionDate(d, unit)
     }
 
     const formatStringDate = (dateStr?: string) => {
         if (!dateStr) return ""
-        const d = new Date(dateStr.slice(0, 10))
-        if (isNaN(d.getTime())) return ""
-        return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+        return formatExtensionDate(dateStr.slice(0, 10), unit)
     }
 
     const handleSubmit = () => {
         if (!newCheckoutDate) return
+        const amount = totalPrice ?? 0
 
         if (unit === "hour") {
-            onSubmit(newCheckoutDate.toISOString())
+            onSubmit(newCheckoutDate.toISOString(), amount)
         } else {
             const yyyy = newCheckoutDate.getFullYear()
             const mm = String(newCheckoutDate.getMonth() + 1).padStart(2, "0")
             const dd = String(newCheckoutDate.getDate()).padStart(2, "0")
-            onSubmit(`${yyyy}-${mm}-${dd}`)
+            onSubmit(`${yyyy}-${mm}-${dd}`, amount)
         }
     }
 
@@ -311,7 +317,7 @@ export const ExtensionDialog = ({
                     <div className="flex items-start gap-2.5 bg-blue-50 rounded-2xl p-3.5">
                         <Info className="w-4 h-4 text-blue-400 mt-0.5 shrink-0" />
                         <p className="text-xs text-blue-600 leading-relaxed">
-                            Extension amount will be deducted from your wallet.
+                            Extension amount will be held securely by card.
                         </p>
                     </div>
 

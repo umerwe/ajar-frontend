@@ -6,7 +6,6 @@ import Image from "../MyImage"
 import Link from "next/link"
 import { useUser } from "@/hooks/useAuth"
 import { useEffect, useRef, useState, useCallback } from "react"
-import { capitalizeWords } from "@/utils/capitalizeWords"
 import SendMessage from "./send-message"
 import SkeletonLoader from "../common/skeleton-loader"
 import type { Message, MessagePayload } from "@/types/chat"
@@ -211,7 +210,7 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
               </div>
             )}
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-sm sm:text-base truncate">{capitalizeWords(data?.receiver?.name)}</p>
+              <p className="font-semibold text-sm sm:text-base truncate capitalize">{data?.receiver?.name}</p>
             </div>
           </>
         )}
@@ -261,9 +260,8 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
                   </div>
 
                   <div className={`flex flex-col ${isSent ? "items-end" : "items-start"}`}>
-                    <div className="text-[10px] sm:text-xs font-medium text-gray-500 mb-1 px-1">
-                      {/* Show "You" if isSent is true */}
-                      {isSent ? "You" : capitalizeWords(sender.name)}
+                    <div className="text-[10px] sm:text-xs font-medium text-gray-500 mb-1 px-1 capitalize">
+                      {isSent ? "You" : sender.name}
                     </div>
 
                     <div

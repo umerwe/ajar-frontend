@@ -13,7 +13,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { capitalizeWords } from "@/utils/capitalizeWords";
 import { status } from "@/constants/booking";
 import { slugify } from "@/utils/formatStatus";
 
@@ -79,10 +78,10 @@ const SubCategories = () => {
                 }`}
             >
               <span
-                className={`text-sm text-gray-500 ${active && "text-aqua"
+                className={`text-sm text-gray-500 capitalize ${active && "text-aqua"
                   } `}
               >
-                {capitalizeWords(cat.name)}
+                {cat.name}
               </span>
               {active && <div className="ml-auto w-2 h-2 rounded-full bg-aqua"></div>}
             </Link>
@@ -130,10 +129,10 @@ const SubCategories = () => {
               href={getHref(cat)}
               className={`flex items-center gap-2 px-8 rounded-full transition-colors duration-200 ${active
                 ? "text-aqua border-2 border-t-aqua border-r-aqua border-b-blue border-l-blue bg-transparent"
-                : "bg-gray-100 text-gray-400 border border-transparent hover:border-aqua hover:text-aqua"
+                : "bg-gray-100 text-gray-400 border capitalize border-transparent hover:border-aqua hover:text-aqua"
                 }`}
             >
-              <span className="text-sm">{capitalizeWords(cat.name)}</span>
+              <span className="text-sm">{cat.name}</span>
             </Link>
           );
         })}
@@ -166,7 +165,7 @@ const SubCategories = () => {
                           : "bg-gray-100 text-gray-400 border border-transparent hover:border-aqua hover:text-aqua"
                           }`}
                       >
-                        <span className="text-sm">{capitalizeWords(cat.name)}</span>
+                        <span className="text-sm capitalize">{cat.name}</span>
                       </Link>
                     </DialogTrigger>
                   );

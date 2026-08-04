@@ -23,7 +23,7 @@ export async function getBookingId(id?: string) {
   return data.data;
 }
 
-export async function createBooking({ booking }: { booking: BookingRequest }) {
+export async function createBooking({ booking }: { booking: BookingRequest; redirectOnSuccess?: boolean }) {
   const { data } = await api.post(`/api/bookings`, booking);
   return data;
 }

@@ -2,7 +2,6 @@ import { MapPin, RotateCcw, Grid } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { capitalizeWords } from "@/utils/capitalizeWords"
 import { PriceRangeSlider } from "../../ui/priceRangeSlider"
 import { FilterContentProps } from "@/types/filter"
 
@@ -38,8 +37,8 @@ export const FilterContent = ({
                                 <SelectItem value="no-categories" disabled > No categories available </SelectItem>
                             ) : (
                                 subCategories?.map((subCategory) => (
-                                    <SelectItem key={subCategory._id} value={subCategory._id as string} >
-                                        {capitalizeWords(subCategory.name)}
+                                    <SelectItem key={subCategory._id} value={subCategory._id as string} className="capitalize">
+                                        {subCategory.name}
                                     </SelectItem>
                                 ))
                             )}
@@ -67,8 +66,8 @@ export const FilterContent = ({
                                 <SelectItem value="no-zones" disabled > No zones available </SelectItem>
                             ) : (
                                 zones.map((zone) => (
-                                    <SelectItem key={zone._id} value={zone._id as string} >
-                                        {capitalizeWords(zone.name)}
+                                    <SelectItem key={zone._id} value={zone._id as string} className="capitalize">
+                                        {zone.name}
                                     </SelectItem>
                                 ))
                             )}

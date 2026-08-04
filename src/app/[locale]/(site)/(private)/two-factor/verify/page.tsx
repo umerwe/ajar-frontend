@@ -1,4 +1,5 @@
 "use client"
+
 import EmailVerificationForm from "@/components/forms/email-verification-form";
 import Header from "@/components/ui/header";
 import { useEnableTwoFactor } from "@/hooks/useTwoFactor";

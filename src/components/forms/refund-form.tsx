@@ -12,7 +12,6 @@ import {
 import { Button } from "@/components/ui/button";
 import Header from "@/components/ui/header";
 import { useBooking } from "@/hooks/useBooking";
-import { capitalizeWords } from "@/utils/capitalizeWords";
 import { useSendRefundRequest, useGetRefundPreview } from "@/hooks/useRefund";
 import { Listing } from "@/types/listing";
 import { useSearchParams } from "next/navigation";
@@ -82,7 +81,7 @@ export default function RefundRequestForm() {
                                         <ChevronDown size={18} />
                                     </span>
                                     <select
-                                        className={`${inputClass} appearance-none cursor-pointer`}
+                                        className={`${inputClass} appearance-none cursor-pointer capitalize`}
                                         value={booking}
                                         onChange={(e) => setBooking(e.target.value)}
                                     >
@@ -90,9 +89,9 @@ export default function RefundRequestForm() {
                                             {bookings?.length ? "Select a booking" : "No bookings available"}
                                         </option>
                                         {bookings?.map((b: { _id: string; marketplaceListingId: Listing }) => (
-                                            <option key={b?._id} value={b?._id}>
+                                            <option key={b?._id} value={b?._id} className="capitalize">
                                                 {typeof b?.marketplaceListingId === "object"
-                                                    ? capitalizeWords(b?.marketplaceListingId?.name)
+                                                    ? b?.marketplaceListingId?.name
                                                     : "Booking " + b?._id.slice(-4)}
                                             </option>
                                         ))}

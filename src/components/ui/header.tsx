@@ -2,7 +2,6 @@
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { getStatusStyles } from "@/constants/booking";
-import { capitalizeWords } from "@/utils/capitalizeWords";
 import { ArrowLeft, Plus } from "lucide-react"
 import { useRouter } from "next/navigation";
 
@@ -29,8 +28,7 @@ const Header = ({ status, title, isBookingLoading, onAddClick }: HeaderProps) =>
             return "Booking Cancelled";
         }
         
-        const cleanStatus = status.replace(/_/g, " ");
-        return capitalizeWords(cleanStatus);
+        return status.replace(/_/g, " ");
     };
 
     return (
@@ -56,7 +54,7 @@ const Header = ({ status, title, isBookingLoading, onAddClick }: HeaderProps) =>
                 <Skeleton className="h-7 w-20 sm:w-24 rounded-none bg-gray-200" />
             ) : (
                 status && (
-                    <div className={`${getStatusStyles(status)} px-3 py-1 text-xs sm:text-sm font-semibold`}>
+                    <div className={`${getStatusStyles(status)} px-3 py-1 text-xs sm:text-sm font-semibold capitalize`}>
                         {formattedStatus(status)}
                     </div>
                 )

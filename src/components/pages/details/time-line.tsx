@@ -1,7 +1,7 @@
 "use client";
 
 import { CalendarDays, CheckCircle2, Circle } from "lucide-react";
-import { format } from "date-fns";
+import { formatBookingDate } from "@/utils/formatDate";
 
 interface Extension {
     extensionDate: string | Date;
@@ -56,15 +56,11 @@ const Timeline = ({ property }: TimelineProps) => {
 
         if (!isHourly) {
             // For date-only strings (YYYY-MM-DD), parse manually to avoid UTC→local shift
-            const raw = typeof date === "string" ? date : date.toISOString();
-            const dateOnly = raw.split("T")[0]; // "2026-05-31"
-            const [year, month, day] = dateOnly.split("-").map(Number);
-            const localDate = new Date(year, month - 1, day); // local midnight, no UTC shift
-            return format(localDate, "dd MMM yyyy");
+            return formatBookingDate(typeof date === "string" ? date : date.toISOString(), property.pricingMeta.unit);
         }
 
         // Hourly — parse normally and show with time in local tz
-        return format(new Date(date), "dd MMM yyyy, hh:mm a");
+        return formatBookingDate(typeof date === "string" ? date : date.toISOString(), property.pricingMeta.unit);
     };
 
     const isCompleted = property.status === "completed";
