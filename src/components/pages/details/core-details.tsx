@@ -22,12 +22,12 @@ const CoreDetails = ({ property }: { property: Listing }) => {
             <div className="text-xs sm:text-sm text-gray-900 font-medium flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 md:gap-20">
                 <div className="flex gap-1 items-center">
                     <MapPin className="w-4 h-4 text-aqua" />
-                    <span className="capitalize">{property?.zone?.name}</span>
+                    <span className="capitalize">{property?.location?.address}</span>
                 </div>
 
                 {/* Show on Map link */}
                 <a
-                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(property?.zone?.name)}`}
+                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(property?.location?.address)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="self-start sm:self-auto"
