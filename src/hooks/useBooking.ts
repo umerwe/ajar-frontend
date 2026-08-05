@@ -78,9 +78,9 @@ export function useSubmitPin() {
 
   return useMutation({
     mutationFn: submitPin,
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["bookings"] })
-      toast({ description: "PIN submitted successfully" })
+      toast({ description: data?.message || "PIN submitted successfully" })
       router.push('/booking/in_progress')
     },
     onError: (error) => {

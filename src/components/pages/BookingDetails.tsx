@@ -23,6 +23,8 @@ const BookingDetails = () => {
 
   const hasValidListing = !listingData?._id;
 
+  const showReturnOtp = data?.status === "in_progress" && !!data?.returnOtp;
+
 
   return (
     <div className="space-y-[25px]">
@@ -54,6 +56,16 @@ const BookingDetails = () => {
               <HostInfo
                 property={listingData}
               />
+
+              {showReturnOtp && (
+                <div>
+                  <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-[12px]">Return OTP</h2>
+                  <div className="inline-flex items-center px-5 py-2.5 rounded-lg border border-dashed border-aqua/40 bg-aqua/5">
+                    <span className="text-2xl font-bold text-aqua tracking-[0.4em]">{data.returnOtp}</span>
+                  </div>
+                  <p className="text-gray-400 text-xs sm:text-sm mt-2">Share this code with the host to confirm the return.</p>
+                </div>
+              )}
             </div>
 
             {/* RIGHT COLUMN */}
