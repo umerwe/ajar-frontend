@@ -100,6 +100,17 @@ interface Article {
   images?: string[]; // optional array of image URLs
 }
 
+interface FAQ {
+  _id: string;
+  question: string;
+  answer: string;
+  order: number;
+  languages?: unknown[];
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
 interface PricingActionsProps {
   property?: Listing
   bookingData?: Booking
