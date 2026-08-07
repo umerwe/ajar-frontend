@@ -1,5 +1,6 @@
 "use client";
 
+import { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -20,7 +21,9 @@ interface ConfirmDialogProps {
   confirmText?: string;
   cancelText?: string;
   isLoading?: boolean;
+  confirmDisabled?: boolean;
   variant?: "destructive" | "default" | "outline";
+  children?: ReactNode;
 }
 
 export const ConfirmDialog = ({
@@ -32,7 +35,9 @@ export const ConfirmDialog = ({
   confirmText = "Confirm",
   cancelText = "Cancel",
   isLoading = false,
+  confirmDisabled = false,
   variant = "default",
+  children,
 }: ConfirmDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -42,6 +47,7 @@ export const ConfirmDialog = ({
           <DialogDescription className="text-gray-600">
             {description}
           </DialogDescription>
+          {children}
         </DialogHeader>
 
         <DialogFooter className="grid grid-cols-2 gap-3 sm:justify-start mt-2">
@@ -56,7 +62,7 @@ export const ConfirmDialog = ({
           
           <Button
             onClick={onConfirm}
-            disabled={isLoading}
+            disabled={isLoading || confirmDisabled}
             className={`w-full h-10 rounded-full text-white ${variant === "destructive"
               ? "bg-red-500 hover:bg-red-600"
               : "bg-header hover:bg-aqua"

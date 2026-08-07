@@ -22,6 +22,15 @@ import { InactiveAccountDialog } from "@/components/dialogs/inactiveAccountDialo
 import { ConfirmDialog } from "@/components/dialogs/confirm-dialog"
 import RefundStatusDialog from "@/components/dialogs/RefundStatusDialog"
 import { toast } from "@/components/ui/toast"
+import { useGetBusinessSettings } from "@/hooks/useBusinessSettings"
+import { Checkbox } from "@/components/ui/checkbox"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
 type BookingPaymentResponse = {
   clientSecret?: string;
@@ -37,6 +46,7 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const { mutate: sendExtendRental, isPending: isExtendRentalPending } = useExtendRental();
   const { mutate: updateStatus, isPending: isStatusLoading } = useUpdateBookingStatus();
   const { data } = useUser();
+  const { data: cancellationPolicyData } = useGetBusinessSettings("cancellationPolicy");
   
   const [isRateOpen, setIsRateOpen] = useState(false)
   const [isGuestDialogOpen, setIsGuestDialogOpen] = useState(false);
@@ -46,6 +56,8 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
   const [isPinOpen, setIsPinOpen] = useState(false);
   const [isExtendOpen, setIsExtendOpen] = useState(false);
   const [isCancelConfirmOpen, setIsCancelConfirmOpen] = useState(false);
+  const [isPolicyOpen, setIsPolicyOpen] = useState(false);
+  const [isCancellationPolicyAccepted, setIsCancellationPolicyAccepted] = useState(false);
 
   const router = useRouter()
   const { label, link } = getActionDetails(bookingData?.status);
@@ -132,9 +144,17 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
     const targetStatus = bookingData.status === "pending" ? "request_cancelled" : "booking_cancelled";
     updateStatus(
       { bookingId: bookingData._id, status: targetStatus },
-      { onSuccess: () => setIsCancelConfirmOpen(false) }
+      { onSuccess: () => handleCancelConfirmOpenChange(false) }
     );
   }
+
+  const handleCancelConfirmOpenChange = (open: boolean) => {
+    setIsCancelConfirmOpen(open);
+
+    if (!open) {
+      setIsCancellationPolicyAccepted(false);
+    }
+  };
 
   const handleProtectedAction = () => {
     if (!data?.name) {
@@ -175,13 +195,17 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
     ? {
       title: "Cancel Booking Request?",
       description: "This will cancel your current booking request. This action cannot be undone.",
-      confirmText: "Confirm"
+      confirmText: "Confirm",
+      showPolicy: false
     }
     : {
       title: "Cancel Confirmed Booking?",
       description: "This will cancel your active booking. You may be eligible for a refund based on the policy.",
-      confirmText: "Confirm"
+      confirmText: "Confirm",
+      showPolicy: true
     };
+
+  const cancellationPolicyContent = cancellationPolicyData?.pageSettings?.content;
 
   const renderActionButton = () => {
     if (!bookingData) {
@@ -206,7 +230,7 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
       case "Cancel Request":
         return (
           <Button
-            onClick={() => setIsCancelConfirmOpen(true)}
+            onClick={() => handleCancelConfirmOpenChange(true)}
             variant="destructive"
             disabled={isStatusLoading}
           >
@@ -273,7 +297,7 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
               Submit Pin
             </Button>
             <Button
-              onClick={() => setIsCancelConfirmOpen(true)} // Trigger Dialog
+              onClick={() => handleCancelConfirmOpenChange(true)}
               variant="destructive"
               disabled={isStatusLoading}
             >
@@ -433,14 +457,56 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
       {/* Confirmation Dialog Integration */}
       <ConfirmDialog
         open={isCancelConfirmOpen}
-        onOpenChange={setIsCancelConfirmOpen}
+        onOpenChange={handleCancelConfirmOpenChange}
         onConfirm={handleCancelBooking}
         title={cancelConfig.title}
         description={cancelConfig.description}
         confirmText={cancelConfig.confirmText}
         variant="destructive"
         isLoading={isStatusLoading}
-      />
+        confirmDisabled={cancelConfig.showPolicy && !isCancellationPolicyAccepted}
+      >
+        {cancelConfig.showPolicy && (
+          <label className="mt-3 flex items-center gap-3 rounded-md border border-gray-100 bg-gray-50 px-3 py-2.5 text-sm text-gray-700">
+            <Checkbox
+              checked={isCancellationPolicyAccepted}
+              onCheckedChange={(checked) => setIsCancellationPolicyAccepted(checked === true)}
+            />
+            <span>
+              I agree to the{" "}
+              <button
+                type="button"
+                onClick={(event) => {
+                  event.preventDefault();
+                  setIsPolicyOpen(true);
+                }}
+                className="font-medium text-aqua underline-offset-2 hover:underline"
+              >
+                Cancellation Policy
+              </button>
+            </span>
+          </label>
+        )}
+      </ConfirmDialog>
+
+      <Dialog open={isPolicyOpen} onOpenChange={setIsPolicyOpen}>
+        <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Cancellation Policy</DialogTitle>
+            <DialogDescription>
+              Please review the policy before cancelling your booking.
+            </DialogDescription>
+          </DialogHeader>
+          {cancellationPolicyContent ? (
+            <div
+              className="text-sm leading-7 text-gray-700 [&_strong]:font-semibold [&_strong]:text-gray-900"
+              dangerouslySetInnerHTML={{ __html: cancellationPolicyContent }}
+            />
+          ) : (
+            <p className="text-sm text-gray-500">Cancellation policy is not available right now.</p>
+          )}
+        </DialogContent>
+      </Dialog>
 
       <RatingDialog
         open={isRateOpen}

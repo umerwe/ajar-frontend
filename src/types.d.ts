@@ -178,4 +178,5 @@ type SettingsPageName =
   | "recaptcha"
   | "firebase"
   | "pushNotifications"
-  | "termsAndConditions";
+  | "termsAndConditions"
+  | "cancellationPolicy";
