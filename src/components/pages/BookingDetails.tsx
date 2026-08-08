@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import Header from "@/components/ui/header"
 import ImageGalleryLayout from "@/components/pages/details/image-gallery-layout"
 import PricingActions from "@/components/pages/details/pricing-actions"
@@ -11,8 +12,16 @@ import SkeletonLoader from "@/components/common/skeleton-loader"
 import { useGetBookingId } from "@/hooks/useBooking"
 import NotFound from "@/components/common/not-found"
 import Timeline from "@/components/pages/details/time-line"
+import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
 const BookingDetails = () => {
+  const [isDamagedReportOpen, setIsDamagedReportOpen] = useState(false)
   const params = useParams()
   const category_id = params?.category_id as string
   const id = params?.id as string
@@ -24,6 +33,9 @@ const BookingDetails = () => {
   const hasValidListing = !listingData?._id;
 
   const showReturnOtp = data?.status === "in_progress" && !!data?.returnOtp;
+  const damagedReport = data?.damagedReport;
+  const showDamagedReport = data?.status === "completed" && !!damagedReport && data?.hasDamagedReport;
+  const attachmentBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
 
   return (
@@ -66,6 +78,19 @@ const BookingDetails = () => {
                   <p className="text-gray-400 text-xs sm:text-sm mt-2">Share this code with the host to confirm the return.</p>
                 </div>
               )}
+
+              {showDamagedReport && (
+                <div>
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    className="w-auto px-6"
+                    onClick={() => setIsDamagedReportOpen(true)}
+                  >
+                    Damage Report
+                  </Button>
+                </div>
+              )}
             </div>
 
             {/* RIGHT COLUMN */}
@@ -86,6 +111,77 @@ const BookingDetails = () => {
           <Timeline
             property={data}
           />
+
+          <Dialog open={isDamagedReportOpen} onOpenChange={setIsDamagedReportOpen}>
+            <DialogContent className="sm:max-w-lg">
+              <DialogHeader>
+                <DialogTitle>Damage Report</DialogTitle>
+              </DialogHeader>
+
+              <div className="space-y-4 py-2">
+                <div className="grid gap-3 text-sm">
+                  <div className="flex items-start justify-between gap-4 border-b pb-3">
+                    <span className="text-gray-500 font-medium">Issue Type</span>
+                    <span className="text-right font-semibold text-gray-900">{damagedReport?.issueType || "N/A"}</span>
+                  </div>
+
+                  <div className="flex items-start justify-between gap-4 border-b pb-3">
+                    <span className="text-gray-500 font-medium">Status</span>
+                    <span className="text-right font-semibold capitalize text-aqua">
+                      {damagedReport?.status?.replace(/_/g, " ") || "N/A"}
+                    </span>
+                  </div>
+
+                  <div className="flex items-start justify-between gap-4 border-b pb-3">
+                    <span className="text-gray-500 font-medium">Reported Charges</span>
+                    <span className="text-right font-semibold text-gray-900">
+                      ${Number(damagedReport?.damagedCharges || 0).toFixed(2)}
+                    </span>
+                  </div>
+
+                  {damagedReport?.approvedAmount !== undefined && (
+                    <div className="flex items-start justify-between gap-4 border-b pb-3">
+                      <span className="text-gray-500 font-medium">Approved Amount</span>
+                      <span className="text-right font-semibold text-gray-900">
+                        ${Number(damagedReport.approvedAmount || 0).toFixed(2)}
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="space-y-1 border-b pb-3">
+                    <span className="text-gray-500 font-medium">Report Text</span>
+                    <p className="text-gray-800">{damagedReport?.rentalText || "N/A"}</p>
+                  </div>
+
+                  {damagedReport?.adminNote && (
+                    <div className="space-y-1 border-b pb-3">
+                      <span className="text-gray-500 font-medium">Admin Note</span>
+                      <p className="text-gray-800">{damagedReport.adminNote}</p>
+                    </div>
+                  )}
+
+                  {damagedReport?.attachments?.length > 0 && (
+                    <div className="space-y-2">
+                      <span className="text-gray-500 font-medium">Attachments</span>
+                      <div className="flex flex-wrap gap-2">
+                        {damagedReport.attachments.map((attachment: string, index: number) => (
+                          <a
+                            key={`${attachment}-${index}`}
+                            href={attachment.startsWith("http") ? attachment : `${attachmentBaseUrl}${attachment}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="rounded-md border border-gray-200 px-3 py-1.5 text-xs font-medium text-aqua hover:bg-aqua/5"
+                          >
+                            Attachment {index + 1}
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
         </>
       )}
     </div>
