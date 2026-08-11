@@ -2,6 +2,13 @@ const isDateOnly = (value: string) => /^\d{4}-\d{2}-\d{2}$/.test(value);
 const DAY_MS = 1000 * 60 * 60 * 24;
 const HOUR_MS = 1000 * 60 * 60;
 
+export const PROCESSING_FEE_PERCENT = 3.5;
+export const PROCESSING_FEE_FIXED = 0.30;
+
+export const calculateProcessingFee = (subtotal: number) => {
+    return Math.round((subtotal * PROCESSING_FEE_PERCENT / 100 + PROCESSING_FEE_FIXED) * 100) / 100;
+};
+
 const toDateKey = (date: Date) => date.toISOString().split("T")[0];
 const toLocalDateKey = (date: Date) => {
     const year = date.getFullYear();

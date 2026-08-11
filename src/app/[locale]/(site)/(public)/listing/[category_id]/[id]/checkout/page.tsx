@@ -12,7 +12,7 @@ import type { BookingRequest } from "@/types/booking"
 import { type BookingFormData, bookingSchema } from "@/validations/booking"
 import SkeletonLoader from "@/components/common/skeleton-loader"
 import PrivateComponent from "@/components/private-component"
-import { calculateFrontendPrice } from "@/utils/priceCalculator"
+import { calculateFrontendPrice, calculateProcessingFee } from "@/utils/priceCalculator"
 import { useMemo, useState } from "react"
 import DateRangeCalendar from "@/components/DateRangeCalendar"
 import { toast } from "@/components/ui/toast"
@@ -125,8 +125,9 @@ const CheckoutPage = () => {
     const displayAdminFee = safeNumber(priceBreakdown?.adminFee, safeNumber(listing?.adminFee));
     const displayTax = safeNumber(priceBreakdown?.tax, safeNumber(listing?.tax));
 
-    // NEW: Total includes the refundable deposit
-    const displayTotal = safeNumber(priceBreakdown?.totalPrice, displayBasePrice + displayAdminFee + displayTax) + depositAmount;
+    const displaySubtotal = safeNumber(priceBreakdown?.totalPrice, displayBasePrice + displayAdminFee + displayTax) + depositAmount;
+    const displayProcessingFee = calculateProcessingFee(displaySubtotal);
+    const displayTotal = displaySubtotal + displayProcessingFee;
 
     const dynamicPrice = safeNumber(listing?.dynamicPricing?.price, NaN);
     const hasDynamicPricing = Boolean(
@@ -441,14 +442,19 @@ const CheckoutPage = () => {
                                                 </span>
                                                 <span className="text-base font-medium text-gray-900">${displayBasePrice.toFixed(2)}</span>
                                             </div>
-                                            <div className="flex justify-between items-center">
-                                                <span className="text-base text-gray-600">Admin Fee</span>
-                                                <span className="text-base font-medium text-gray-900">${displayAdminFee.toFixed(2)}</span>
-                                            </div>
-                                            <div className="flex justify-between items-center">
-                                                <span className="text-base text-gray-600">Tax</span>
-                                                <span className="text-base font-medium text-gray-900">${displayTax.toFixed(2)}</span>
-                                            </div>
+                                            
+                                            {displayAdminFee > 0 && (
+                                                <div className="flex justify-between items-center">
+                                                    <span className="text-base text-gray-600">Admin Fee</span>
+                                                    <span className="text-base font-medium text-gray-900">${displayAdminFee.toFixed(2)}</span>
+                                                </div>
+                                            )}
+                                            {displayTax > 0 && (
+                                                <div className="flex justify-between items-center">
+                                                    <span className="text-base text-gray-600">Tax</span>
+                                                    <span className="text-base font-medium text-gray-900">${displayTax.toFixed(2)}</span>
+                                                </div>
+                                            )}
 
                                             {hasDynamicPricing && listing?.dynamicPricing && (
                                                 <div className="flex justify-between items-start gap-4 rounded-lg bg-aqua/5 px-3 py-2 text-aqua">
@@ -472,13 +478,18 @@ const CheckoutPage = () => {
                                                 </div>
                                             )}
 
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-base text-gray-600">Processing Fee</span>
+                                                <span className="text-base font-medium text-gray-900">${displayProcessingFee.toFixed(2)}</span>
+                                            </div>
+
                                             <div className="flex justify-between items-center py-3 border-t">
                                                 <span className="text-base font-medium text-gray-900">Total Cost</span>
                                                 <span className="text-xl font-semibold text-gray-900">
                                                     ${displayTotal.toFixed(2)}
                                                 </span>
                                             </div>
-                                            <p className="text-[10px] text-gray-400 text-right italic">* Deposit is refundable after safe return.</p>
+                                            <p className="text-[10px] text-gray-400 text-right italic">* Processing fee is non-refundable.</p>
                                         </div>
                                     </div>
                                 </div>
