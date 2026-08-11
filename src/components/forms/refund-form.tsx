@@ -8,6 +8,7 @@ import {
     FileText,
     Receipt,
     MinusCircle,
+    Clock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/ui/header";
@@ -30,6 +31,12 @@ export default function RefundRequestForm() {
     // Fetch Preview Data based on selected booking
     const { data: previewData, isLoading: isPreviewLoading } = useGetRefundPreview(booking);
     const preview = previewData?.data;
+
+    // Early return = renter already had the item. Deposit stays on hold and
+    // platform fees are not refunded, so the summary reads differently.
+    const isEarlyReturn = Boolean(preview?.isEarlyReturn);
+    const breakdown = preview?.breakdown ?? [];
+    const hasExtensions = breakdown.length > 1;
 
     const bookings = data?.data?.bookings;
 
@@ -156,9 +163,28 @@ export default function RefundRequestForm() {
                             ) : (
                                 <div className="space-y-4">
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-gray-500">Paid Amount</span>
+                                        <span className="text-gray-500">
+                                            {isEarlyReturn ? "Rental Amount" : "Paid Amount"}
+                                        </span>
                                         <span className="font-medium text-gray-700">${preview?.totalBookingAmount?.toFixed(2)}</span>
                                     </div>
+
+                                    {/* Each extension is its own booking and gets refunded separately */}
+                                    {hasExtensions && (
+                                        <div className="space-y-1.5 pl-3 border-l-2 border-gray-200">
+                                            {breakdown.map((line: any) => (
+                                                <div key={line.booking} className="flex justify-between text-[11px]">
+                                                    <span className="text-gray-400">
+                                                        {line.isExtension ? "Extension" : "Booking"}
+                                                    </span>
+                                                    <span className="text-gray-500">
+                                                        ${line.price?.toFixed(2)} → ${line.refundAmount?.toFixed(2)}
+                                                    </span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+
                                     <div className="flex justify-between text-sm">
                                         <span className="text-gray-500">Deduction Fee</span>
                                         <span className="font-medium text-red-500">-${preview?.deductionFee?.toFixed(2)}</span>
@@ -167,7 +193,14 @@ export default function RefundRequestForm() {
                                     {(preview?.securityDeposit ?? 0) > 0 && (
                                         <div className="flex justify-between text-sm">
                                             <span className="text-gray-500">Security Deposit</span>
-                                            <span className="font-medium text-emerald-600">+${preview?.securityDeposit?.toFixed(2)}</span>
+                                            {isEarlyReturn ? (
+                                                <span className="font-medium text-amber-600 flex items-center gap-1">
+                                                    <Clock size={13} />
+                                                    On hold
+                                                </span>
+                                            ) : (
+                                                <span className="font-medium text-emerald-600">+${preview?.securityDeposit?.toFixed(2)}</span>
+                                            )}
                                         </div>
                                     )}
 
@@ -183,6 +216,17 @@ export default function RefundRequestForm() {
                                             </span>
                                         </div>
                                     </div>
+
+                                    {isEarlyReturn && (
+                                        <div className="bg-amber-50 p-3 rounded-xl flex gap-2 mt-4">
+                                            <Clock size={16} className="text-amber-500 shrink-0" />
+                                            <p className="text-[11px] text-amber-700">
+                                                {(preview?.securityDeposit ?? 0) > 0
+                                                    ? `Your security deposit of $${preview?.securityDeposit?.toFixed(2)} stays on hold until the damage dispute window closes, then it is returned automatically. Service fees are not refunded once a rental has started.`
+                                                    : "Service fees are not refunded once a rental has started."}
+                                            </p>
+                                        </div>
+                                    )}
 
                                     {!preview?.isEligible && (
                                         <div className="bg-red-50 p-3 rounded-xl flex gap-2 mt-4">

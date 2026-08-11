@@ -139,7 +139,6 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
     )
   }
 
-  // Handler for dynamic cancellation
   const handleCancelBooking = () => {
     const targetStatus = bookingData.status === "pending" ? "request_cancelled" : "booking_cancelled";
     updateStatus(
@@ -254,14 +253,25 @@ const PricingActions = ({ property, bookingData, category_id, id }: any) => {
         );
 
       case "Extend Rental":
-        return isExtension && !isLastExtensionPending ? (
-          <Button
-            onClick={() => setIsExtendOpen(true)}
-            variant="destructive"
-          >
-            {label}
-          </Button>
-        ) : null;
+        return (
+          <div className="flex flex-col gap-2">
+            {isExtension && !isLastExtensionPending && (
+              <Button
+                onClick={() => setIsExtendOpen(true)}
+                variant="destructive"
+              >
+                {label}
+              </Button>
+            )}
+            <Button
+              onClick={() => handleCancelConfirmOpenChange(true)}
+              variant="destructive"
+              disabled={isStatusLoading}
+            >
+              {isStatusLoading ? <Loader /> : "Cancel Booking"}
+            </Button>
+          </div>
+        );
 
       case "Booking Cancelled":
         if (!refundRequest) {

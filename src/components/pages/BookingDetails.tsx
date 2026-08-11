@@ -13,6 +13,7 @@ import { useGetBookingId } from "@/hooks/useBooking"
 import NotFound from "@/components/common/not-found"
 import Timeline from "@/components/pages/details/time-line"
 import { Button } from "@/components/ui/button"
+import { Clock } from "lucide-react"
 import {
   Dialog,
   DialogContent,
@@ -32,9 +33,32 @@ const BookingDetails = () => {
 
   const hasValidListing = !listingData?._id;
 
-  const showReturnOtp = data?.status === "in_progress" && !!data?.returnOtp;
+  // Cancelling mid-rental settles like a completion: the item was out, so the
+  // deposit stays on hold and the host can still raise a damage report.
+  const isEarlyReturn =
+    data?.status === "booking_cancelled" &&
+    data?.cancelledFromStatus === "in_progress";
+
+  // The host confirms the return with this PIN — on an early return that is
+  // also what starts the dispute window, so it must stay visible after cancelling
+  const isReturnConfirmed = !!data?.returnVerifiedAt;
+  const showReturnOtp =
+    !!data?.returnOtp &&
+    (data?.status === "in_progress" || (isEarlyReturn && !isReturnConfirmed));
+
+  const isSettledBooking = data?.status === "completed" || isEarlyReturn;
+
   const damagedReport = data?.damagedReport;
-  const showDamagedReport = data?.status === "completed" && !!damagedReport && data?.hasDamagedReport;
+  const showDamagedReport = isSettledBooking && !!damagedReport && data?.hasDamagedReport;
+
+  const securityDeposit = Number(data?.priceDetails?.securityDeposit || 0);
+  const showDepositOnHold =
+    isEarlyReturn && data?.depositStatus === "held" && securityDeposit > 0;
+
+  const disputeWindowEndsAt = data?.disputeWindowEndsAt
+    ? new Date(data.disputeWindowEndsAt)
+    : null;
+
   const attachmentBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
 
@@ -75,7 +99,32 @@ const BookingDetails = () => {
                   <div className="inline-flex items-center px-5 py-2.5 rounded-lg border border-dashed border-aqua/40 bg-aqua/5">
                     <span className="text-2xl font-bold text-aqua tracking-[0.4em]">{data.returnOtp}</span>
                   </div>
-                  <p className="text-gray-400 text-xs sm:text-sm mt-2">Share this code with the host to confirm the return.</p>
+                  <p className="text-gray-400 text-xs sm:text-sm mt-2">
+                    {isEarlyReturn
+                      ? "Hand the item back and share this code with the host. Your security deposit is released after they confirm."
+                      : "Share this code with the host to confirm the return."}
+                  </p>
+                </div>
+              )}
+
+              {showDepositOnHold && (
+                <div>
+                  <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-[12px]">Security Deposit</h2>
+                  <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 flex gap-3">
+                    <Clock className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+                    <div className="space-y-1">
+                      <p className="text-sm font-semibold text-amber-800">
+                        ${securityDeposit.toFixed(2)} on hold
+                      </p>
+                      <p className="text-xs text-amber-700 leading-relaxed">
+                        {!isReturnConfirmed
+                          ? "Return the item and share your Return OTP with the host. The dispute window starts once they confirm, and the deposit is released after it closes."
+                          : disputeWindowEndsAt
+                            ? `Returned automatically after ${disputeWindowEndsAt.toLocaleDateString()}, once the damage dispute window closes and no report has been raised.`
+                            : "Returned automatically once the damage dispute window closes and no report has been raised."}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               )}
 
