@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog"
 import Loader from "../common/loader"
 import { formatBookingDate } from "@/utils/formatDate"
+import { calculateProcessingFee } from "@/utils/priceCalculator"
 
 const UNIT_LABELS: Record<string, string> = {
     hour: "Hour",
@@ -156,7 +157,7 @@ export const ExtensionDialog = ({
 
     const handleSubmit = () => {
         if (!newCheckoutDate) return
-        const amount = totalPrice ?? 0
+        const amount = totalWithProcessingFee ?? 0
 
         if (unit === "hour") {
             onSubmit(newCheckoutDate.toISOString(), amount)
@@ -202,6 +203,8 @@ export const ExtensionDialog = ({
         : priceMeta?.priceFromListing
         
     const totalPrice = priceMeta ? extensionUnitPrices.reduce((sum, price) => sum + price, 0) : null
+    const processingFee = totalPrice !== null ? calculateProcessingFee(totalPrice) : null
+    const totalWithProcessingFee = totalPrice !== null && processingFee !== null ? totalPrice + processingFee : null
     
     const fmt = (n: number) =>
         n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
@@ -220,23 +223,7 @@ export const ExtensionDialog = ({
                 </DialogHeader>
 
                 {/* ── Scrollable Body ── */}
-                <div className="px-6 pt-5 pb-4 space-y-4 overflow-y-auto flex-1 min-h-0 custom-scrollbar">
-
-                    {/* Unit Tabs */}
-                    <div className="grid grid-cols-4 gap-1.5 bg-gray-100 rounded-2xl p-1">
-                        {["hour", "day", "month", "year"].map((u) => (
-                            <button
-                                key={u}
-                                disabled
-                                className={`py-2 rounded-xl text-xs font-semibold capitalize ${unit === u
-                                    ? "bg-white text-gray-900 shadow-sm"
-                                    : "text-gray-400 cursor-default"
-                                    }`}
-                            >
-                                {u.charAt(0).toUpperCase() + u.slice(1)}
-                            </button>
-                        ))}
-                    </div>
+                <div className="px-6 pb-4 space-y-4 overflow-y-auto flex-1 min-h-0 custom-scrollbar">
 
                     {/* Stepper */}
                     <div className="bg-gray-50 rounded-2xl p-4 flex items-center justify-between">
@@ -305,21 +292,24 @@ export const ExtensionDialog = ({
                                 <span className="text-gray-800">{qty}</span>
                             </div>
                             <div className="border-t border-gray-100 pt-2.5 flex justify-between">
-                                <span className="text-sm font-semibold text-gray-900">Extension total</span>
+                                <span className="text-sm font-semibold text-gray-900">Extension subtotal</span>
                                 <span className="text-sm font-bold text-gray-900">
                                     ${fmt(totalPrice!)}
                                 </span>
                             </div>
+                            <div className="flex justify-between text-sm text-gray-500">
+                                <span>Processing fee</span>
+                                <span className="text-gray-800 font-semibold">${fmt(processingFee!)}</span>
+                            </div>
+                            <p className="text-[10px] text-gray-400 italic">Processing fee is non-refundable.</p>
+                            <div className="border-t border-gray-100 pt-2.5 flex justify-between">
+                                <span className="text-sm font-semibold text-gray-900">Total</span>
+                                <span className="text-sm font-bold text-gray-900">
+                                    ${fmt(totalWithProcessingFee!)}
+                                </span>
+                            </div>
                         </div>
                     )}
-
-                    {/* Info Banner */}
-                    <div className="flex items-start gap-2.5 bg-blue-50 rounded-2xl p-3.5">
-                        <Info className="w-4 h-4 text-blue-400 mt-0.5 shrink-0" />
-                        <p className="text-xs text-blue-600 leading-relaxed">
-                            Extension amount will be held securely by card.
-                        </p>
-                    </div>
 
                 </div>
 
