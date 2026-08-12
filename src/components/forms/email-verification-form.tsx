@@ -1,128 +1,137 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
-import { Verification, VerificationSchema } from "@/validations/auth"
 import { zodResolver } from "@hookform/resolvers/zod"
-import Input from "../ui/auth-input"
+import { useTranslations } from "next-intl"
+import { useRouter } from "next/navigation"
+
 import Button from "../auth/button"
 import Header from "../auth/header"
-import { useResendVerificationByEmail, useVerificationByEmail } from "@/hooks/useVerification"
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
+import Input from "../ui/auth-input"
 import CongratulationsDialog from "../dialogs/congratulations"
 import { toast } from "../ui/toast"
 import { useTwoFactorVerify } from "@/hooks/useTwoFactor"
+import { useResendVerificationByEmail, useVerificationByEmail } from "@/hooks/useVerification"
+import { Verification, VerificationSchema } from "@/validations/auth"
 
-const EmailVerificationForm = ({ type, title, description, buttonText }: { type?: string, title?: string, description?: string, buttonText?: string }) => {
-    const router = useRouter();
-    const { mutate: verifyUserByEmail, isPending } = useVerificationByEmail();
-    const { mutate: resendVerificationByEmail, isPending: isResending } = useResendVerificationByEmail();
-    const { mutate: verifyTwoFactor, isPending: isVerifying } = useTwoFactorVerify();
+const EmailVerificationForm = ({
+    type,
+    title,
+    description,
+    buttonText,
+}: {
+    type?: string
+    title?: string
+    description?: string
+    buttonText?: string
+}) => {
+    const router = useRouter()
+    const t = useTranslations("translation")
+    const { mutate: verifyUserByEmail, isPending } = useVerificationByEmail()
+    const { mutate: resendVerificationByEmail, isPending: isResending } = useResendVerificationByEmail()
+    const { mutate: verifyTwoFactor, isPending: isVerifying } = useTwoFactorVerify()
 
-    const [timer, setTimer] = useState(0);
-    const [dialogOpen, setDialogOpen] = useState(false);
+    const [timer, setTimer] = useState(0)
+    const [dialogOpen, setDialogOpen] = useState(false)
 
     const { register, handleSubmit, formState: { errors } } = useForm<Verification>({
         resolver: zodResolver(VerificationSchema),
-        defaultValues: { otp: '' }
-    });
+        defaultValues: { otp: "" }
+    })
 
     const onSubmit = (formData: Verification) => {
-        const email = localStorage.getItem("email");
+        const email = localStorage.getItem("email")
 
         if (title) {
-            verifyTwoFactor({ token: formData.otp },
-                {
-                    onSuccess: () => {
+            verifyTwoFactor({ token: formData.otp }, {
+                onSuccess: () => {
+                    toast({
+                        title: t("twoFactorEnabled"),
+                        variant: "default",
+                    })
+                    router.replace("/two-factor")
+                },
+            })
+            return
+        }
+
+        verifyUserByEmail(
+            { otp: formData.otp, email: email as string },
+            {
+                onSuccess: (data) => {
+                    if (type === "password") {
+                        router.replace("/auth/reset-password")
                         toast({
-                            title: "Two Factor Authentication Enabled",
+                            title: t("emailVerifiedSuccessfully"),
                             variant: "default",
-                        });
-                        router.replace("/two-factor");
-                    },
-                }
-            )
-        }
-        else {
-            verifyUserByEmail(
-                { otp: formData.otp, email: email as string },
-                {
-                    onSuccess: (data) => {
-                        if (type === "password") {
-                            router.replace("/auth/reset-password");
-                            toast({
-                                title: "Email Verified Successfully",
-                                variant: "default",
-                            });
-                        } else {
-                            localStorage.setItem("token", data.token)
-                            setDialogOpen(true);
-                        }
-                    },
-                }
-            );
-        }
-    };
+                        })
+                        return
+                    }
+
+                    localStorage.setItem("token", data.token)
+                    setDialogOpen(true)
+                },
+            }
+        )
+    }
 
     const handleResendOtp = async () => {
-        const email = localStorage.getItem("email");
-        resendVerificationByEmail(email as string);
-        setTimer(60);
-        localStorage.setItem("otpTimer", (Date.now() + 60000).toString());
-    };
+        const email = localStorage.getItem("email")
+        resendVerificationByEmail(email as string)
+        setTimer(60)
+        localStorage.setItem("otpTimer", (Date.now() + 60000).toString())
+    }
 
     useEffect(() => {
-        const savedExpiry = localStorage.getItem("otpTimer");
+        const savedExpiry = localStorage.getItem("otpTimer")
         if (savedExpiry) {
-            const remaining = Math.floor((Number(savedExpiry) - Date.now()) / 1000);
-            if (remaining > 0) setTimer(remaining);
-            else localStorage.removeItem("otpTimer");
+            const remaining = Math.floor((Number(savedExpiry) - Date.now()) / 1000)
+            if (remaining > 0) setTimer(remaining)
+            else localStorage.removeItem("otpTimer")
         }
 
-        if (timer <= 0) return;
+        if (timer <= 0) return
         const interval = setInterval(() => {
             setTimer((prev) => {
                 if (prev <= 1) {
-                    localStorage.removeItem("otpTimer");
-                    clearInterval(interval);
-                    return 0;
+                    localStorage.removeItem("otpTimer")
+                    clearInterval(interval)
+                    return 0
                 }
-                return prev - 1;
-            });
-        }, 1000);
+                return prev - 1
+            })
+        }, 1000)
 
-        return () => clearInterval(interval);
-    }, [timer]);
+        return () => clearInterval(interval)
+    }, [timer])
 
     return (
         <>
-            <CongratulationsDialog
-                open={dialogOpen}
-            />
+            <CongratulationsDialog open={dialogOpen} />
 
             <div className={`bg-white rounded-md shadow-md border border-gray-100 px-4 py-8 sm:py-10 sm:px-6 w-full ${title ? "lg:w-[400px]" : "lg:w-[333px]"}`}>
                 <Header
-                    title={`${title ? title : "Email Verification"}`}
-                    description={`${description ? description : "Enter OTP to get your account verified"}`}
+                    title={title || t("emailVerification")}
+                    description={description || t("emailVerificationDescription")}
                     className="mb-6"
                 />
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
                     <Input
-                        label="Enter OTP"
+                        label={t("enterOtp")}
                         type="number"
                         placeholder={title ? "123456" : "1234"}
                         register={register("otp")}
                         error={errors.otp?.message}
                     />
 
-                    {
-                        !title &&
+                    {!title && (
                         <p className="text-xs text-center text-gray-500">
-                            Didn’t receive the code?{" "}
+                            {t("didntReceiveCode")}{" "}
                             {timer > 0 ? (
                                 <span className="text-gray-400">
-                                    Resend in <strong>{timer}s</strong>
+                                    {t("resendIn")} <strong>{timer}s</strong>
                                 </span>
                             ) : (
                                 <button
@@ -131,18 +140,17 @@ const EmailVerificationForm = ({ type, title, description, buttonText }: { type?
                                     disabled={isResending}
                                     className="text-aqua font-medium hover:underline disabled:opacity-60"
                                 >
-                                    {isResending ? "Resending..." : "Resend"}
+                                    {isResending ? t("resending") : t("resend")}
                                 </button>
                             )}
                         </p>
-                    }
+                    )}
 
-
-                    <Button text={`${buttonText ? buttonText : "Verify Account"}`} isPending={isPending || isVerifying} />
+                    <Button text={buttonText || t("verifyAccount")} isPending={isPending || isVerifying} />
                 </form>
             </div>
         </>
-    );
-};
+    )
+}
 
-export default EmailVerificationForm;
+export default EmailVerificationForm

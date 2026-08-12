@@ -3,6 +3,7 @@
 import SearchBar from "./search-bar";
 import ProfileDropdown from "../dropdown";
 import Brand from "../brand";
+import LanguageSwitcher from "./language-switcher";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useUser } from "@/hooks/useAuth";
 import { Button } from "../ui/button";
@@ -24,7 +25,7 @@ export default function Navbar() {
   const { data: user } = useUser();
 
   const isHomePage =
-    (pathname === "/en" || pathname === "/") &&
+    (pathname === "/en" || pathname === "/ar" || pathname === "/") &&
     searchParams.toString() === "";
 
   return (
@@ -32,6 +33,7 @@ export default function Navbar() {
       <nav className="w-full px-7 md:px-11 py-4 flex items-center justify-between">
         <Brand />
         <div className="flex items-center space-x-4">
+          <LanguageSwitcher />
           {
             user ?
               <ProfileDropdown />

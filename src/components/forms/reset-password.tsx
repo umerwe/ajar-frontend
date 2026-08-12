@@ -10,8 +10,10 @@ import Header from "../auth/header"
 import { useResetPassword } from "@/hooks/useAuth"
 import Footer from "../auth/footer"
 import CongratulationsDialog from "../dialogs/congratulations"
+import { useTranslations } from "next-intl"
 
 const ResetPasswordForm = () => {
+    const t = useTranslations("translation")
     const { mutateAsync, isPending } = useResetPassword()
     const [dialogOpen, setDialogOpen] = useState(false)
 
@@ -34,21 +36,21 @@ const ResetPasswordForm = () => {
         <>
             <CongratulationsDialog
                 open={dialogOpen}
-                title="Password Updated!"
-                description="Your password has been changed successfully."
+                title={t("passwordUpdated")}
+                description={t("passwordChangedSuccessfully")}
                 redirectTo="/auth/login"
             />
 
             <div className="bg-white rounded-md shadow-2xl px-4 py-8 sm:px-6 w-full lg:w-[330px]">
                 <Header
-                    title="Reset Password"
-                    description="Set your new password."
+                    title={t("resetPassword")}
+                    description={t("setNewPassword")}
                 />
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-7">
                     <Input
-                        label="Password"
-                        placeholder="Enter your password"
+                        label={t("password")}
+                        placeholder={t("enterYourPassword")}
                         type="password"
                         required
                         register={register("password")}
@@ -57,13 +59,13 @@ const ResetPasswordForm = () => {
 
                     <Button
                         isPending={isPending}
-                        text="Reset Password"
+                        text={t("resetPassword")}
                     />
 
                     <Footer
                         linkHref="/auth/verification"
-                        linkText="Verify Account"
-                        messageText="Back to verification?"
+                        linkText={t("verifyAccount")}
+                        messageText={t("backToVerification")}
                         className="-mt-4"
                     />
                 </form>

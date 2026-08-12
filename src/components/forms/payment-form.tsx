@@ -14,10 +14,12 @@ import { toast } from "@/components/ui/toast"
 import { StripeCardFormProps } from "@/types/payment"
 import { inputBaseClasses, stripeElementOptions } from "@/utils/stripe"
 import Loader from "../common/loader"
+import { useTranslations } from "next-intl"
 
 export const StripeCardForm = ({ clientSecret, amount, paymentIntentId, successRedirect }: StripeCardFormProps) => {
     const stripe = useStripe()
     const elements = useElements();
+    const t = useTranslations("translation")
 
     const [isLoading, setIsLoading] = useState(false)
 
@@ -53,7 +55,7 @@ export const StripeCardForm = ({ clientSecret, amount, paymentIntentId, successR
         // ✅ Show toast if there's an error
         if (error) {
             toast({
-                description: error.message || "Payment failed.",
+                description: error.message || t("paymentFailed"),
                 variant: "destructive",
             })
             setIsLoading(false)
@@ -79,7 +81,7 @@ export const StripeCardForm = ({ clientSecret, amount, paymentIntentId, successR
             <div className="max-h-[400px] overflow-y-auto px-1 space-y-6 mb-4">
 
                 <div className="space-y-4">
-                    <h3 className="font-semibold text-base">Payment method</h3>
+                    <h3 className="font-semibold text-base">{t("paymentMethod")}</h3>
 
                     {/* Card Number */}
                     <div className={inputBaseClasses}>
@@ -100,11 +102,11 @@ export const StripeCardForm = ({ clientSecret, amount, paymentIntentId, successR
 
                 {/* --- Billing Address Section --- */}
                 <div className="space-y-4">
-                    <h3 className="font-semibold text-base">Billing address</h3>
+                    <h3 className="font-semibold text-base">{t("billingAddress")}</h3>
 
                     <input
                         required
-                        placeholder="Full name"
+                        placeholder={t("fullName")}
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         className={inputBaseClasses}
@@ -115,7 +117,7 @@ export const StripeCardForm = ({ clientSecret, amount, paymentIntentId, successR
                             className={`${inputBaseClasses} appearance-none`}
                             defaultValue="PK"
                         >
-                            <option value="PK">Pakistan</option>
+                            <option value="PK">{t("pakistan")}</option>
                         </select>
                         <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
                             <svg className="h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
@@ -124,7 +126,7 @@ export const StripeCardForm = ({ clientSecret, amount, paymentIntentId, successR
 
                     <input
                         required
-                        placeholder="Address line 1"
+                        placeholder={t("addressLine1")}
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
                         className={inputBaseClasses}
@@ -143,13 +145,13 @@ export const StripeCardForm = ({ clientSecret, amount, paymentIntentId, successR
                         <Loader />
                     </>
                 ) : (
-                    `Pay $${Math.round(amount)}.00`
+                    t("payAmount", { amount: `${Math.round(amount)}.00` })
                 )}
             </Button>
 
             <div className="flex justify-center items-center gap-2 text-xs text-muted-foreground mt-4">
                 <Lock className="h-3 w-3" />
-                <span>Payments are secure and encrypted</span>
+                <span>{t("paymentsSecureEncrypted")}</span>
             </div>
         </form>
     )

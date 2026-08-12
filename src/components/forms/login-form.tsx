@@ -12,8 +12,11 @@ import Header from "../auth/header"
 import Footer from "../auth/footer"
 import { signIn } from "next-auth/react"
 import { FcGoogle } from "react-icons/fc"
+import { useTranslations } from "next-intl"
 
 const LoginForm = () => {
+  const t = useTranslations("translation")
+
   const {
     register,
     handleSubmit,
@@ -38,8 +41,8 @@ const LoginForm = () => {
   return (
     <div className="bg-white rounded-xl shadow-2xl px-4 py-8 sm:p-8 w-full lg:w-[120%]">
       <Header
-        title="Welcome Back!"
-        description="Let's create new account to explore more"
+        title={t("welcomeBack")}
+        description={t("loginDescription")}
       />
 
       <form
@@ -48,17 +51,17 @@ const LoginForm = () => {
           }`}
       >
         <Input
-          label="Email or Phone Number"
+          label={t("emailOrPhoneNumber")}
           type="email"
-          placeholder="Enter your email"
+          placeholder={t("enterYourEmail")}
           register={register("email")}
           error={errors.email?.message}
         />
 
         <Input
-          label="Password"
+          label={t("password")}
           type="password"
-          placeholder="Enter your password"
+          placeholder={t("enterYourPassword")}
           register={register("password")}
           error={errors.password?.message}
         />
@@ -71,17 +74,17 @@ const LoginForm = () => {
               onChange={(e) => setKeepSignedIn(e.target.checked)}
               className="h-4 w-4 text-aqua focus:ring-aqua border-gray-300 rounded"
             />
-            <span className="ml-2 text-gray-600">Keep me signed in</span>
+            <span className="ml-2 text-gray-600">{t("keepMeSignedIn")}</span>
           </label>
           <Link
             href="/auth/forgot-password"
             className="text-aqua hover:text-teal-600 font-medium"
           >
-            Forgot password
+            {t("forgotPassword")}
           </Link>
         </div>
 
-        <Button text="Sign In" isPending={isPending} />
+        <Button text={t("signIn")} isPending={isPending} />
 
         {/* <div className="flex items-center my-4">
           <div className="flex-grow border-t border-gray-300" />
@@ -93,7 +96,7 @@ const LoginForm = () => {
           href="/"
           className="flex items-center my-4 cursor-pointer">
           <div className="flex-grow border-t border-gray-300" />
-          <span className="mx-2 text-gray-500 hover:text-gray-900 text-sm">Continue as Guest</span>
+          <span className="mx-2 text-gray-500 hover:text-gray-900 text-sm">{t("continueAsGuest")}</span>
           <div className="flex-grow border-t border-gray-300" />
         </Link>
 
@@ -104,15 +107,15 @@ const LoginForm = () => {
         >
           <FcGoogle className="text-2xl" />
           <span className="text-gray-700 text-sm font-medium">
-            Sign in with Google
+            {t("signInWithGoogle")}
           </span>
         </button>
       </form>
 
       <Footer
         linkHref="/auth/signup"
-        linkText="Sign up here"
-        messageText="Don't have an account?"
+        linkText={t("signUpHere")}
+        messageText={t("dontHaveAccount")}
       />
     </div>
   )

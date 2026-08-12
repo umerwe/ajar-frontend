@@ -8,8 +8,10 @@ import Button from "../auth/button"
 import Header from "../auth/header"
 import { useForgotPassword } from "@/hooks/useAuth"
 import Footer from "../auth/footer"
+import { useTranslations } from "next-intl"
 
 const ForgotPasswordForm = () => {
+    const t = useTranslations("translation")
     const { mutateAsync, isPending } = useForgotPassword();
 
     const { register, handleSubmit, formState: { errors } } = useForm<ForgotPassword>({
@@ -26,14 +28,14 @@ const ForgotPasswordForm = () => {
     return (
         <div className="bg-white rounded-md shadow-2xl px-4 py-8 sm:px-6 w-full lg:w-[333px]">
             <Header
-                title="Forgot Password"
-                description="Enter your email to forgot your password"
+                title={t("forgotPassword")}
+                description={t("forgotPasswordDescription")}
             />
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-7">
                 <Input
-                    label="Email"
-                    placeholder="Enter your email"
+                    label={t("email")}
+                    placeholder={t("enterYourEmail")}
                     type="email"
                     required
                     register={register("email")}
@@ -42,13 +44,13 @@ const ForgotPasswordForm = () => {
 
                 <Button
                     isPending={isPending}
-                    text="Continue"
+                    text={t("continue")}
                 />
 
                 <Footer
                     linkHref="/auth/login"
-                    linkText="Login"
-                    messageText="Back to login?"
+                    linkText={t("login")}
+                    messageText={t("backToLogin")}
                     className="-mt-4"
                 />
             </form>
