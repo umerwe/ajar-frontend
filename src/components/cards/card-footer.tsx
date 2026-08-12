@@ -6,6 +6,7 @@ import { CardFooter } from "../ui/card"
 import { Button } from "../ui/button"
 import { Listing } from "@/types/listing"
 import { formatBookingDate } from "@/utils/formatDate"
+import { useTranslations } from "next-intl"
 
 interface CardBottomProps {
   property: Listing
@@ -18,6 +19,7 @@ interface CardBottomProps {
 }
 
 const CardBottom = ({ property, bookingId, totalPrice, dates }: CardBottomProps) => {
+  const t = useTranslations("translation")
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" })
@@ -51,7 +53,7 @@ const CardBottom = ({ property, bookingId, totalPrice, dates }: CardBottomProps)
               variant="outline"
               className={buttonStyles}
             >
-              View Details
+              {t("viewDetails")}
             </Button>
           </Link>
           :
@@ -65,7 +67,7 @@ const CardBottom = ({ property, bookingId, totalPrice, dates }: CardBottomProps)
           <div className="flex items-center text-[10px] sm:text-[12px]">
             <Calendar className="sm:w-4 sm:h-4 w-3 h-3 mr-1 text-[#8fa3bf]" strokeWidth={1.5} />
             <div className="pt-[1px]">
-              <span className="text-[#90A3BF] mr-2 hidden sm:inline">Dates:</span>
+              <span className="text-[#90A3BF] mr-2 hidden sm:inline">{t("dates")}:</span>
               <span className="text-[#858585] truncate">
                 {formatBookingDate(dates.checkIn, property.priceUnit)} - {formatBookingDate(dates.checkOut, property.priceUnit)}
               </span>

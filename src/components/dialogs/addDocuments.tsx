@@ -20,13 +20,15 @@ import { ChevronRight, FileUp, X, FileText } from "lucide-react";
 import { toast } from "../ui/toast";
 import Image from "@/components/MyImage";
 import { useUpdateUser } from "@/hooks/useAuth";
+import { useTranslations } from "next-intl";
 
-const AddDocumentDialog = ({ data, documents, userDocs = [] }: any) => {
+const AddDocumentDialog = ({ data, label, documents, userDocs = [] }: any) => {
     const [open, setOpen] = useState(false);
     const [selectedDocType, setSelectedDocType] = useState<string>("");
     const [docFile, setDocFile] = useState<File | null>(null);
     const [preview, setPreview] = useState<string | null>(null);
     const [expiryDate, setExpiryDate] = useState<string>("");
+    const t = useTranslations("translation");
 
     const { mutate, isPending } = useUpdateUser();
 
@@ -60,12 +62,12 @@ const AddDocumentDialog = ({ data, documents, userDocs = [] }: any) => {
 
     const handleSubmit = async () => {
         if (!selectedDocType || !docFile) {
-            toast({ title: "Error", description: "Missing fields", variant: "destructive" });
+            toast({ title: t("error"), description: t("missingDocumentFields"), variant: "destructive" });
             return;
         }
 
         if (selectedDocConfig?.hasExpiry && !expiryDate) {
-            toast({ title: "Error", description: "Expiry date is required", variant: "destructive" });
+            toast({ title: t("error"), description: t("expiryDateRequired"), variant: "destructive" });
             return;
         }
 
@@ -78,11 +80,11 @@ const AddDocumentDialog = ({ data, documents, userDocs = [] }: any) => {
 
         mutate(formData, {
             onSuccess: () => {
-                toast({ title: "Success", description: "Document uploaded" });
+                toast({ title: t("success"), description: t("documentUploaded") });
                 handleOpenChange(false);
             },
             onError: () => {
-                toast({ title: "Error", description: "Upload failed", variant: "destructive" });
+                toast({ title: t("error"), description: t("uploadFailed"), variant: "destructive" });
             }
         });
     };
@@ -93,7 +95,7 @@ const AddDocumentDialog = ({ data, documents, userDocs = [] }: any) => {
                 <div className="flex items-center justify-between px-4 py-4 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 cursor-pointer transition-colors">
                     <div className="flex items-center space-x-3">
                         <Icon className="h-5 w-5 text-aqua" />
-                        <span className="text-gray-900 font-medium">{data.label}</span>
+                        <span className="text-gray-900 font-medium">{label}</span>
                     </div>
                     <ChevronRight className="h-6 w-6 text-aqua" />
                 </div>
@@ -101,22 +103,22 @@ const AddDocumentDialog = ({ data, documents, userDocs = [] }: any) => {
 
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                    <DialogTitle>Add New Document</DialogTitle>
+                    <DialogTitle>{t("addNewDocument")}</DialogTitle>
                 </DialogHeader>
 
                 <div className="space-y-5 py-4">
                     <div className="space-y-2">
-                        <label className="text-sm font-medium">Document Type</label>
+                        <label className="text-sm font-medium">{t("documentType")}</label>
 
                         {/* ✅ Show message if all docs are submitted */}
                         {availableDocuments?.length === 0 ? (
                             <p className="text-sm text-gray-500 text-center py-4 bg-gray-50 rounded-lg border">
-                                All documents have been submitted.
+                                {t("allDocumentsSubmitted")}
                             </p>
                         ) : (
                             <Select onValueChange={setSelectedDocType} value={selectedDocType}>
                                 <SelectTrigger className="w-full bg-gray-50">
-                                    <SelectValue placeholder="Select type" />
+                                    <SelectValue placeholder={t("selectType")} />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {availableDocuments?.map((doc: any) => (
@@ -132,7 +134,7 @@ const AddDocumentDialog = ({ data, documents, userDocs = [] }: any) => {
                     {/* ✅ Show expiry date only if hasExpiry is true */}
                     {selectedDocConfig?.hasExpiry && (
                         <div className="space-y-2">
-                            <label className="text-sm font-medium">Expiry Date</label>
+                            <label className="text-sm font-medium">{t("expiryDate")}</label>
                             <input
                                 type="date"
                                 value={expiryDate}
@@ -145,7 +147,7 @@ const AddDocumentDialog = ({ data, documents, userDocs = [] }: any) => {
                     )}
 
                     <div className="space-y-2">
-                        <label className="text-sm font-medium">File</label>
+                        <label className="text-sm font-medium">{t("file")}</label>
                         {!docFile ? (
                             <div className="rounded-lg p-10 flex flex-col items-center justify-center bg-gray-50 transition relative">
                                 <input
@@ -154,7 +156,7 @@ const AddDocumentDialog = ({ data, documents, userDocs = [] }: any) => {
                                     onChange={(e) => setDocFile(e.target.files?.[0] || null)}
                                 />
                                 <FileUp className="h-10 w-10 text-gray-300 mb-2" />
-                                <span className="text-xs text-gray-400">Click to upload</span>
+                                <span className="text-xs text-gray-400">{t("clickToUpload")}</span>
                             </div>
                         ) : (
                             <div className="relative border rounded-lg p-2 bg-gray-50">
@@ -191,7 +193,7 @@ const AddDocumentDialog = ({ data, documents, userDocs = [] }: any) => {
                             }
                             variant="destructive"
                         >
-                            {isPending ? "Saving..." : "Save Document"}
+                            {isPending ? t("saving") : t("saveDocument")}
                         </Button>
                     </div>
                 </div>

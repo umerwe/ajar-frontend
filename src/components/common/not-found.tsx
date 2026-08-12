@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { Search } from "lucide-react";
+import { useTranslations } from "next-intl";
+
 import { Button } from "@/components/ui/button";
 
 interface NotFoundProps {
@@ -9,53 +11,47 @@ interface NotFoundProps {
 }
 
 const NotFound = ({ type = "listing" }: NotFoundProps) => {
-  // Dynamic titles
+  const t = useTranslations("translation");
+
   const titles: Record<string, string> = {
-    favourite: "No Favourites Found",
-    filter: "No Results Match Your Filters",
-    listing: "No Listings Found",
-    listingData: "Listing Not Found",
-    booking: "No Booking Found",
-    bookingDetails: "Booking Details Not Found",
-    chat: "No Chats Found",
-    article: "No Articles Found",
+    favourite: t("noFavouritesFound"),
+    filter: t("noResultsMatchFilters"),
+    listing: t("noListingsFound"),
+    listingData: t("listingNotFound"),
+    booking: t("noBookingFound"),
+    bookingDetails: t("bookingDetailsNotFound"),
+    chat: t("noChatsFound"),
+    article: t("noArticlesFound"),
   };
 
-  // Dynamic descriptions
   const descriptions: Record<string, string> = {
-    favourite: "You haven't added any listings to your favourites yet.",
-    filter: "Try adjusting your filters to find better results.",
-    listing: "There are no listings available right now. Please check again later.",
-    listingData: "The requested listing could not be found.",
-    booking: "There are no bookings available right now. Please check again later.",
-    bookingDetails: "The requested booking could not be found.",
-    chat: "You have no conversations yet.",
-    article: "There are no articles available right now. Please check again later.",
+    favourite: t("noFavouritesDescription"),
+    filter: t("noFilterResultsDescription"),
+    listing: t("noListingsDescription"),
+    listingData: t("listingNotFoundDescription"),
+    booking: t("noBookingDescription"),
+    bookingDetails: t("bookingDetailsNotFoundDescription"),
+    chat: t("noChatsDescription"),
+    article: t("noArticlesDescription"),
   };
 
-  // Dynamic button labels
   const buttonLabels: Record<string, string> = {
-    favourite: "Browse Listings",
-    listing: "Back to Home",
-    chat: "Start Chatting",
+    favourite: t("browseListings"),
+    listing: t("backToHome"),
+    chat: t("startChatting"),
   };
 
-  // Dynamic button links
   const buttonLinks: Record<string, string> = {
     favourite: "/",
     listing: "/",
     chat: "/chat",
   };
 
-  const title = titles[type || ""] || "No Data Found";
-  const description =
-    descriptions[type || ""] ||
-    "We couldn’t find any data. Please try again later.";
-
+  const title = titles[type] || t("noDataFound");
+  const description = descriptions[type] || t("noDataFoundDescription");
   const showButton = type !== "filter";
-
-  const buttonText = buttonLabels[type || ""] || "Go Home";
-  const buttonHref = buttonLinks[type || ""] || "/";
+  const buttonText = buttonLabels[type] || t("goHome");
+  const buttonHref = buttonLinks[type] || "/";
 
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-250px)] lg:min-h-[calc(100vh-200px)]">
@@ -65,13 +61,9 @@ const NotFound = ({ type = "listing" }: NotFoundProps) => {
             <Search className="w-16 h-16 text-gray-300 mx-auto" />
           </div>
 
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">
-            {title}
-          </h3>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">{title}</h3>
 
-          <p className="text-gray-600 mb-6">
-            {description}
-          </p>
+          <p className="text-gray-600 mb-6">{description}</p>
 
           {showButton && (
             <Button asChild variant="destructive">

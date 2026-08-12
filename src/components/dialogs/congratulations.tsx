@@ -10,15 +10,17 @@ import {
     DialogTitle,
     DialogDescription,
 } from "@/components/ui/dialog";
+import { useTranslations } from "next-intl";
 
 export default function CongratulationsDialog({
     open,
-    title = "Congratulations!",
-    description = "Your Account has been verified successfully.",
+    title,
+    description,
     redirectTo = "/",
     seconds = 4,
 }: CongratulationsDialogProps) {
     const router = useRouter();
+    const t = useTranslations("translation");
     const [timeLeft, setTimeLeft] = useState(seconds);
 
     useEffect(() => {
@@ -69,15 +71,15 @@ export default function CongratulationsDialog({
 
                 <DialogHeader>
                     <DialogTitle className="text-2xl text-center font-bold text-black">
-                        {title}
+                        {title || t("congratulations")}
                     </DialogTitle>
                     <DialogDescription className="text-gray-custom text-sm max-w-100 mx-auto">
-                        {description}
+                        {description || t("accountVerifiedSuccessfully")}
                     </DialogDescription>
                 </DialogHeader>
 
                 <p className="text-sm text-gray-custom mt-4">
-                    Redirecting Home page in <strong>{timeLeft}s</strong>...
+                    {t("redirectingHomeIn")} <strong>{timeLeft}s</strong>...
                 </p>
             </DialogContent>
         </Dialog>

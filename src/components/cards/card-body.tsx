@@ -3,6 +3,7 @@ import { Listing } from "@/types/listing";
 import { getStatusStyles } from "@/constants/booking";
 import { Star } from "lucide-react";
 import { formatStatus } from "@/utils/formatStatus";
+import { useTranslations } from "next-intl";
 
 type CardBodyProps = {
   property: Listing;
@@ -10,6 +11,8 @@ type CardBodyProps = {
 };
 
 const CardBody = ({ property, bookingStatus }: CardBodyProps) => {
+  const t = useTranslations("translation");
+
   return (
     <CardContent className="-mt-1">
       <div className="flex items-center justify-between">
@@ -48,7 +51,7 @@ const CardBody = ({ property, bookingStatus }: CardBodyProps) => {
       }
 
       <p className="text-[11px] sm:text-[13px] capitalize text-[#00CC99] font-medium mb-2 truncate 2xl:mt-0.5">
-        Location: {property?.location?.address || "N/A"}
+        {t("location")}: {property?.location?.address || t("notAvailable")}
       </p>
     </CardContent>
   );
