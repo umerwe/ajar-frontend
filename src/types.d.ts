@@ -136,6 +136,7 @@ interface CongratulationsDialogProps {
 
 interface EditProfileDialogProps  {
     data: any;
+    label: string;
     open: boolean;
     setOpen: Dispatch<SetStateAction<boolean>>;
     user: any;
