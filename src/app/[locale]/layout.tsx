@@ -32,10 +32,10 @@ export default async function RootLayout({
   const dehydratedState = dehydrate(queryClient)
 
   return (
-    <>
+    <div lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
       <Providers locale={locale} messages={messages} dehydratedState={dehydratedState}>
         <main className="flex-1">{children}</main>
       </Providers>
-    </>
+    </div>
   )
 }
