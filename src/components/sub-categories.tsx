@@ -15,12 +15,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { status } from "@/constants/booking";
 import { slugify } from "@/utils/formatStatus";
+import { useTranslations } from "next-intl";
 
 const SubCategories = () => {
   const { data = [], isLoading } = useSubCategories();
   const searchParams = useSearchParams();
   const params = useParams();
   const router = useRouter();
+  const t = useTranslations("translation");
 
   if (isLoading) {
     return <SkeletonLoader variant="subcategories" count={7} />;
@@ -29,7 +31,7 @@ const SubCategories = () => {
   const subCategoryParam =
     searchParams.get("category_id") || (params.category_id as string | null);
 
-  const allSubCategory = { name: "All", slug: "all", icon: "/ai-logo.png" };
+  const allSubCategory = { name: t("all"), slug: "all", icon: "/ai-logo.png" };
   const subCategories = [allSubCategory, ...data];
 
   const activeSubCategory =
@@ -145,13 +147,13 @@ const SubCategories = () => {
                 variant="secondary"
                 className="rounded-full pl-8 py-5 bg-aqua/10 flex items-center gap-2"
               >
-                Show all
+                {t("showAll")}
                 <ChevronDownIcon className="w-4 h-4" />
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-2xl">
               <DialogHeader>
-                <DialogTitle>All Categories</DialogTitle>
+                <DialogTitle>{t("allCategories")}</DialogTitle>
               </DialogHeader>
               <div className="flex flex-wrap gap-3 mt-4">
                 {subCategories.map((cat, i) => {

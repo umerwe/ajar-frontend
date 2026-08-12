@@ -13,9 +13,11 @@ import { useGetUnreadCount, useMarkAllRead, useNotification } from "@/hooks/useN
 import { Notification } from "@/types/notification";
 import { getNotificationLink } from "@/utils/getNotificationLink";
 import { useGetBusinessSettings } from "@/hooks/useBusinessSettings";
+import { useTranslations } from "next-intl";
 
 const NotificationContent = (props: React.HTMLAttributes<HTMLDivElement>) => {
   const { data, isLoading } = useNotification({});
+  const t = useTranslations("translation");
   const notifications = data?.data;
 
   return (
@@ -24,12 +26,12 @@ const NotificationContent = (props: React.HTMLAttributes<HTMLDivElement>) => {
       className="absolute right-0 mt-2 w-72 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50 md:w-80"
     >
       <div className="px-4 py-3 border-b border-gray-100 flex justify-between items-center">
-        <p className="text-base font-semibold text-gray-900">Notifications</p>
+        <p className="text-base font-semibold text-gray-900">{t("notifications")}</p>
         <Link
           href="/notifications"
           className="text-xs text-aqua cursor-pointer"
         >
-          Show All
+          {t("showAll")}
         </Link>
       </div>
 
@@ -60,7 +62,7 @@ const NotificationContent = (props: React.HTMLAttributes<HTMLDivElement>) => {
             </Link>
           ))
         ) : (
-          <p className="px-4 py-3 text-sm text-gray-500">No new notifications.</p>
+          <p className="px-4 py-3 text-sm text-gray-500">{t("noNewNotifications")}</p>
         )}
       </div>
     </div>

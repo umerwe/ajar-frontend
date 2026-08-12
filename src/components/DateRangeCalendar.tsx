@@ -4,6 +4,7 @@ import { format, parseISO, setHours, setMinutes, startOfDay } from "date-fns"
 import { useState, useRef, useEffect, useMemo } from "react"
 import "react-day-picker/dist/style.css"
 import { Calendar, Clock } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 interface BlockedSlot {
     from: string;
@@ -41,6 +42,7 @@ const DateRangeCalendar = ({
     isLoadingDates?: boolean
     onMonthChange?: (month: string) => void
 }) => {
+    const t = useTranslations("translation")
     const [openCalendar, setOpenCalendar] = useState<"start" | "end" | null>(null)
     const [startRange, setStartRange] = useState<Date | undefined>(undefined)
     const [endRange, setEndRange] = useState<Date | undefined>(undefined)
@@ -156,11 +158,11 @@ const DateRangeCalendar = ({
         if (type === "start" && startRange) {
             const localStart = new Date(`${format(startRange, "yyyy-MM-dd")}T${time}:00`);
             if (endDate && localStart >= new Date(endDate)) {
-                setError("Start must be before end");
+                setError(t("startMustBeBeforeEnd"));
                 return;
             }
             if (endDate && hasBlockedRange(localStart.toISOString(), endDate)) {
-                setError("Selected range includes unavailable time");
+                setError(t("selectedRangeIncludesUnavailableTime"));
                 return;
             }
             setStartTime(time);
@@ -169,11 +171,11 @@ const DateRangeCalendar = ({
         } else if (type === "end" && endRange) {
             const localEnd = new Date(`${format(endRange, "yyyy-MM-dd")}T${time}:00`);
             if (startDate && localEnd <= new Date(startDate)) {
-                setError("End must be after start");
+                setError(t("endMustBeAfterStart"));
                 return;
             }
             if (startDate && hasBlockedRange(startDate, localEnd.toISOString())) {
-                setError("Selected range includes unavailable time");
+                setError(t("selectedRangeIncludesUnavailableTime"));
                 return;
             }
             setEndTime(time);
@@ -190,7 +192,7 @@ const DateRangeCalendar = ({
             if (isHourly) {
                 const localStart = new Date(`${format(day, "yyyy-MM-dd")}T${startTime}:00`);
                 if (endDate && hasBlockedRange(localStart.toISOString(), endDate)) {
-                    setError("Selected range includes unavailable time");
+                    setError(t("selectedRangeIncludesUnavailableTime"));
                     return;
                 }
                 setStartRange(day);
@@ -198,7 +200,7 @@ const DateRangeCalendar = ({
             } else {
                 const nextStartDate = format(day, "yyyy-MM-dd");
                 if (endDate && hasBlockedRange(nextStartDate, endDate)) {
-                    setError("Selected range includes unavailable dates");
+                    setError(t("selectedRangeIncludesUnavailableDates"));
                     return;
                 }
                 setStartRange(day);
@@ -209,7 +211,7 @@ const DateRangeCalendar = ({
             if (isHourly) {
                 const localEnd = new Date(`${format(day, "yyyy-MM-dd")}T${endTime}:00`);
                 if (startDate && hasBlockedRange(startDate, localEnd.toISOString())) {
-                    setError("Selected range includes unavailable time");
+                    setError(t("selectedRangeIncludesUnavailableTime"));
                     return;
                 }
                 setEndRange(day);
@@ -217,7 +219,7 @@ const DateRangeCalendar = ({
             } else {
                 const nextEndDate = format(day, "yyyy-MM-dd");
                 if (startDate && hasBlockedRange(startDate, nextEndDate)) {
-                    setError("Selected range includes unavailable dates");
+                    setError(t("selectedRangeIncludesUnavailableDates"));
                     return;
                 }
                 setEndRange(day);
@@ -250,9 +252,9 @@ const DateRangeCalendar = ({
                     onClick={() => setOpenCalendar(openCalendar === "start" ? null : "start")}>
                     <div className="flex items-center gap-2 mb-1">
                         <Calendar className="w-4 h-4 text-gray-600" />
-                        <span className="text-xs font-medium text-gray-900">Lease Start</span>
+                        <span className="text-xs font-medium text-gray-900">{t("leaseStart")}</span>
                     </div>
-                    <p className="text-sm text-gray-500">{startDate ? formatLocal(startDate) : "Select Date"}</p>
+                    <p className="text-sm text-gray-500">{startDate ? formatLocal(startDate) : t("selectDate")}</p>
                 </div>
 
                 {openCalendar === "start" && (
@@ -261,12 +263,12 @@ const DateRangeCalendar = ({
                         {dynamicPricingRange && (
                             <div className="flex items-center gap-2 border-t pt-3 text-[11px] text-gray-500">
                                 <span className="h-1.5 w-1.5 rounded-full bg-aqua" />
-                                <span>Dynamic pricing active on marked dates</span>
+                                <span>{t("dynamicPricingActive")}</span>
                             </div>
                         )}
                         {isHourly && startRange && (
                             <div className="border-t pt-3">
-                                <label className="text-xs font-semibold text-gray-500 mb-2 block">Select Start Time</label>
+                                <label className="text-xs font-semibold text-gray-500 mb-2 block">{t("selectStartTime")}</label>
                                 <div className="grid grid-cols-4 gap-2 max-h-40 overflow-y-auto pr-1 custom-scrollbar">
                                     {timeSlots.map((time) => {
                                         const blocked = isTimeBlocked(time, startRange);
@@ -297,9 +299,9 @@ const DateRangeCalendar = ({
                     onClick={() => setOpenCalendar(openCalendar === "end" ? null : "end")}>
                     <div className="flex items-center gap-2 mb-1">
                         <Clock className="w-4 h-4 text-gray-600" />
-                        <span className="text-xs font-medium text-gray-900">Lease End</span>
+                        <span className="text-xs font-medium text-gray-900">{t("leaseEnd")}</span>
                     </div>
-                    <p className="text-sm text-gray-500">{endDate ? formatLocal(endDate) : "Select Date"}</p>
+                    <p className="text-sm text-gray-500">{endDate ? formatLocal(endDate) : t("selectDate")}</p>
                 </div>
 
                 {openCalendar === "end" && (
@@ -308,12 +310,12 @@ const DateRangeCalendar = ({
                         {dynamicPricingRange && (
                             <div className="flex items-center gap-2 border-t pt-3 text-[11px] text-gray-500">
                                 <span className="h-1.5 w-1.5 rounded-full bg-aqua" />
-                                <span>Dynamic pricing active on marked dates</span>
+                                <span>{t("dynamicPricingActive")}</span>
                             </div>
                         )}
                         {isHourly && endRange && (
                             <div className="border-t pt-3">
-                                <label className="text-xs font-semibold text-gray-500 mb-2 block">Select End Time</label>
+                                <label className="text-xs font-semibold text-gray-500 mb-2 block">{t("selectEndTime")}</label>
                                 <div className="grid grid-cols-4 gap-2 max-h-40 overflow-y-auto pr-1 custom-scrollbar">
                                     {timeSlots.map((time) => {
                                         const blocked = isTimeBlocked(time, endRange);

@@ -10,6 +10,7 @@ import { Listing } from "@/types/listing"
 import SkeletonLoader from "./common/skeleton-loader"
 import NotFound from "./common/not-found"
 import Error from "./common/error"
+import { useTranslations } from "next-intl"
 
 interface ListingContentProps {
   isHome?: boolean
@@ -18,6 +19,7 @@ interface ListingContentProps {
 
 const ListingContent = ({ isHome, initialCategory }: ListingContentProps) => {
   const [currentPage, setCurrentPage] = useState(1)
+  const t = useTranslations("translation")
   const limit = 8
 
   const { data, isLoading, isError, isFetching } = useGetMarketplaceListings({
@@ -69,7 +71,7 @@ const ListingContent = ({ isHome, initialCategory }: ListingContentProps) => {
       {isHome && totalCount > filteredListings.length && (
         <div className="flex justify-center mt-4">
           <Link href="/listing">
-            <Button variant="destructive">Show more</Button>
+            <Button variant="destructive">{t("showMore")}</Button>
           </Link>
         </div>
       )}
