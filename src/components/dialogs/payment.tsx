@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog"
 import { StripeCardForm } from "../forms/payment-form"
 import { PaymentDialogProps } from "@/types/payment"
+import { useTranslations } from "next-intl"
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!)
 
@@ -19,11 +20,13 @@ export const PaymentDialog = ({
   clientSecret,
   amount
 }: PaymentDialogProps) => {
+  const t = useTranslations("translation")
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-xs sm:max-w-md overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Complete Payment</DialogTitle>
+          <DialogTitle>{t("completePayment")}</DialogTitle>
         </DialogHeader>
 
         {clientSecret && (

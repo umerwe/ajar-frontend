@@ -21,6 +21,7 @@ import MyImage from "@/components/MyImage"
 import { useUser } from "@/hooks/useAuth"
 import { useRouter } from "@/i18n/navigation"
 import { formatBookingDate } from "@/utils/formatDate"
+import { useTranslations } from "next-intl"
 
 const safeNumber = (value: unknown, fallback = 0) => {
     const numericValue = Number(value);
@@ -45,6 +46,7 @@ const CheckoutPage = () => {
     const params = useParams()
     const router = useRouter();
     const id = params?.id as string
+    const t = useTranslations("translation")
 
     const { data: listing, isLoading } = useGetMarketplaceListing(id);
     const { data } = useUser();
@@ -173,8 +175,8 @@ const CheckoutPage = () => {
         if (selectedRangeHasUnavailableDates(data.startDate, data.endDate)) {
             toast({
                 description: isHourly
-                    ? "Selected time range includes unavailable time. Please choose another range."
-                    : "Selected date range includes unavailable dates. Please choose another range.",
+                    ? t("selectedTimeRangeUnavailable")
+                    : t("selectedDateRangeUnavailable"),
                 variant: "destructive",
             });
             return;
@@ -189,7 +191,7 @@ const CheckoutPage = () => {
                 const dateStr = current.toISOString().split("T")[0];
                 if (isDateBlocked(dateStr)) {
                     toast({
-                        description: `Date ${dateStr} is already booked. Please select different dates.`,
+                        description: t("dateAlreadyBooked", { date: dateStr }),
                         variant: "destructive",
                     });
                     return;
@@ -212,8 +214,8 @@ const CheckoutPage = () => {
 
         if (!payment.clientSecret || !payment.paymentIntentId) {
             toast({
-                title: "Payment Failed",
-                description: "Payment details were not received. Please try again.",
+                title: t("paymentFailed"),
+                description: t("paymentDetailsNotReceived"),
                 variant: "destructive",
             });
             return;
@@ -234,7 +236,7 @@ const CheckoutPage = () => {
         <PrivateComponent>
             <div className="min-h-screen">
                 <div className="px-4 md:px-0">
-                    <Header title="Booking Submission" />
+                    <Header title={t("bookingSubmission")} />
                     {isLoading ? (
                         <SkeletonLoader variant="checkout" />
                     ) : (
@@ -251,20 +253,20 @@ const CheckoutPage = () => {
                                                     <ShieldCheck className="w-5 h-5 text-white" />
                                                 </div>
                                                 <div>
-                                                    <h3 className="text-sm font-semibold text-gray-900">Rental Policies</h3>
-                                                    <p className="text-xs text-gray-500">Security deposit and liability terms apply.</p>
+                                                    <h3 className="text-sm font-semibold text-gray-900">{t("rentalPolicies")}</h3>
+                                                    <p className="text-xs text-gray-500">{t("securityDepositTermsApply")}</p>
                                                 </div>
                                             </div>
                                             <Dialog>
                                                 <DialogTrigger asChild>
                                                     <button type="button" className="text-aqua text-sm font-medium hover:underline flex items-center gap-1">
-                                                        View Details <Info className="w-3 h-3" />
+                                                        {t("viewDetails")} <Info className="w-3 h-3" />
                                                     </button>
                                                 </DialogTrigger>
                                                 <DialogContent className="max-w-md bg-white rounded-2xl shadow-xl border-0">
                                                     <DialogHeader>
                                                         <DialogTitle className="text-xl font-bold text-gray-900 border-b pb-3">
-                                                            Rental policies & terms
+                                                            {t("rentalPoliciesAndTerms")}
                                                         </DialogTitle>
                                                     </DialogHeader>
 
@@ -272,14 +274,14 @@ const CheckoutPage = () => {
                                                         {policies.securityDepositRules?.depositRequired && (
                                                             <div className="space-y-2">
                                                                 <h4 className="text-sm font-semibold text-gray-500">
-                                                                    Security deposit
+                                                                    {t("securityDeposit")}
                                                                 </h4>
                                                                 <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
                                                                     <p className="text-sm text-gray-700 leading-relaxed font-medium">
                                                                         ${policies.securityDepositRules.depositAmount}
                                                                         {policies.securityDepositRules?.disputeWindowDays ? (
                                                                             <span className="block text-xs text-gray-500 mt-1 normal-case">
-                                                                                Dispute window: {policies.securityDepositRules.disputeWindowDays} day(s)
+                                                                                {t("disputeWindow")}: {policies.securityDepositRules.disputeWindowDays} {t("daysShort")}
                                                                             </span>
                                                                         ) : null}
                                                                     </p>
@@ -291,7 +293,7 @@ const CheckoutPage = () => {
                                                         {policies.securityDepositRules?.depositConditions && (
                                                             <div className="space-y-2">
                                                                 <h4 className="text-sm font-semibold text-gray-500">
-                                                                    Deposit conditions
+                                                                    {t("depositConditions")}
                                                                 </h4>
                                                                 <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
                                                                     <p className="text-sm text-gray-700 leading-relaxed font-medium first-letter:uppercase">
@@ -304,11 +306,11 @@ const CheckoutPage = () => {
                                                         {/* Damage & Liability Section */}
                                                         <div className="space-y-2">
                                                             <h4 className="text-sm font-semibold text-gray-500">
-                                                                Damage & liability
+                                                                {t("damageAndLiability")}
                                                             </h4>
                                                             <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
                                                                 <p className="text-sm text-gray-700 leading-relaxed font-medium first-letter:uppercase">
-                                                                    {policies.damageLiabilityTerms?.responsibilityClause || "No specific liability description provided for this zone."}
+                                                                    {policies.damageLiabilityTerms?.responsibilityClause || t("noLiabilityDescription")}
                                                                 </p>
                                                             </div>
                                                         </div>
@@ -326,9 +328,9 @@ const CheckoutPage = () => {
                                                                     }, index: number) => (
                                                                         <div key={`${limit.appliesToPriceUnit}-${index}`} className="bg-gray-50 p-4 rounded-xl border border-gray-100">
                                                                             <p className="text-sm text-gray-700 leading-relaxed font-medium first-letter:uppercase">
-                                                                                {limit.appliesToPriceUnit} rental: {limit.minimumDuration?.value ?? 0} {limit.minimumDuration?.unit ?? limit.appliesToPriceUnit} minimum
+                                                                                {limit.appliesToPriceUnit} {t("rental")}: {limit.minimumDuration?.value ?? 0} {limit.minimumDuration?.unit ?? limit.appliesToPriceUnit} {t("minimum")}
                                                                                 {" - "}
-                                                                                {limit.maximumDuration?.value ?? 0} {limit.maximumDuration?.unit ?? limit.appliesToPriceUnit} maximum
+                                                                                {limit.maximumDuration?.value ?? 0} {limit.maximumDuration?.unit ?? limit.appliesToPriceUnit} {t("maximum")}
                                                                             </p>
                                                                         </div>
                                                                     ))}
@@ -341,8 +343,8 @@ const CheckoutPage = () => {
                                                             <div className={`w-2 h-2 rounded-full ${policies.extensionAllowed ? 'bg-green-500' : 'bg-red-500'}`} />
                                                             <p className="text-xs font-bold text-gray-700">
                                                                 {policies.extensionAllowed
-                                                                    ? "Extension allowed"
-                                                                    : "Extension not allowed"
+                                                                    ? t("extensionAllowed")
+                                                                    : t("extensionNotAllowed")
                                                                 }
                                                             </p>
                                                         </div>
@@ -353,7 +355,7 @@ const CheckoutPage = () => {
                                     )}
 
                                     <div>
-                                        <h2 className="text-base font-semibold text-gray-900 mb-4">Reservation Dates</h2>
+                                        <h2 className="text-base font-semibold text-gray-900 mb-4">{t("reservationDates")}</h2>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                             <DateRangeCalendar
                                                 isHourly={isHourly}
@@ -377,13 +379,13 @@ const CheckoutPage = () => {
                                     </div>
 
                                     <div>
-                                        <h2 className="text-base font-semibold text-gray-900 mb-4">Comments</h2>
+                                        <h2 className="text-base font-semibold text-gray-900 mb-4">{t("comments")}</h2>
                                         <textarea
                                             {...register("specialRequest")}
                                             onChange={handleInputChange}
                                             rows={6}
                                             className="w-full px-4 py-4 bg-gray-100 border-0 rounded-lg focus:ring-1 focus:ring-aqua outline-none transition resize-none text-sm text-gray-500 placeholder:text-gray-500"
-                                            placeholder="Enter any special requests"
+                                            placeholder={t("enterSpecialRequests")}
                                         ></textarea>
                                     </div>
 
@@ -392,7 +394,7 @@ const CheckoutPage = () => {
                                         disabled={isPending}
                                         className="w-full sm:w-48 bg-header text-white py-3 rounded-full font-medium text-sm md:text-base hover:bg-teal-600 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
-                                        {isPending ? "Processing..." : "Submit Booking"}
+                                        {isPending ? t("processing") : t("submitBooking")}
                                     </button>
                                 </div>
 
@@ -427,31 +429,31 @@ const CheckoutPage = () => {
                                                     <span className="bg-aqua text-white px-3 py-1 rounded-l-2xl rounded-b-2xl text-sm font-medium">
                                                         {Number(listing?.averageRating || 0).toFixed(1)}/5
                                                     </span>
-                                                    <span className="text-sm text-gray-500">{listing?.totalReviews || 0} reviews</span>
+                                                    <span className="text-sm text-gray-500">{listing?.totalReviews || 0} {t("reviews")}</span>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                                        <h2 className="text-lg font-semibold text-gray-900 mb-4">Payment Details</h2>
+                                        <h2 className="text-lg font-semibold text-gray-900 mb-4">{t("paymentDetails")}</h2>
                                         <div className="space-y-3">
                                             <div className="flex justify-between items-center">
                                                 <span className="text-base text-gray-600">
-                                                    Base price {priceBreakdown ? `(${priceBreakdown.duration} ${listing?.priceUnit}${priceBreakdown.duration > 1 ? 's' : ''})` : ""}
+                                                    {t("basePrice")} {priceBreakdown ? `(${priceBreakdown.duration} ${listing?.priceUnit}${priceBreakdown.duration > 1 ? 's' : ''})` : ""}
                                                 </span>
                                                 <span className="text-base font-medium text-gray-900">${displayBasePrice.toFixed(2)}</span>
                                             </div>
                                             
                                             {displayAdminFee > 0 && (
                                                 <div className="flex justify-between items-center">
-                                                    <span className="text-base text-gray-600">Admin Fee</span>
+                                                    <span className="text-base text-gray-600">{t("adminFee")}</span>
                                                     <span className="text-base font-medium text-gray-900">${displayAdminFee.toFixed(2)}</span>
                                                 </div>
                                             )}
                                             {displayTax > 0 && (
                                                 <div className="flex justify-between items-center">
-                                                    <span className="text-base text-gray-600">Tax</span>
+                                                    <span className="text-base text-gray-600">{t("tax")}</span>
                                                     <span className="text-base font-medium text-gray-900">${displayTax.toFixed(2)}</span>
                                                 </div>
                                             )}
@@ -459,7 +461,7 @@ const CheckoutPage = () => {
                                             {hasDynamicPricing && listing?.dynamicPricing && (
                                                 <div className="flex justify-between items-start gap-4 rounded-lg bg-aqua/5 px-3 py-2 text-aqua">
                                                     <div>
-                                                        <span className="text-sm font-medium">Special Offer</span>
+                                                        <span className="text-sm font-medium">{t("specialOffer")}</span>
                                                         <p className="text-[11px] text-gray-500">
                                                             {formatBookingDate(listing.dynamicPricing.startDate, listing.priceUnit)} - {formatBookingDate(listing.dynamicPricing.endDate, listing.priceUnit)}
                                                         </p>
@@ -473,23 +475,23 @@ const CheckoutPage = () => {
                                             {/* NEW: Refundable Deposit Line Item */}
                                             {depositAmount > 0 && (
                                                 <div className="flex justify-between items-center text-aqua">
-                                                    <span className="text-base">Refundable Deposit</span>
+                                                    <span className="text-base">{t("refundableDeposit")}</span>
                                                     <span className="text-base font-medium">${depositAmount.toFixed(2)}</span>
                                                 </div>
                                             )}
 
                                             <div className="flex justify-between items-center">
-                                                <span className="text-base text-gray-600">Processing Fee</span>
+                                                <span className="text-base text-gray-600">{t("processingFee")}</span>
                                                 <span className="text-base font-medium text-gray-900">${displayProcessingFee.toFixed(2)}</span>
                                             </div>
 
                                             <div className="flex justify-between items-center py-3 border-t">
-                                                <span className="text-base font-medium text-gray-900">Total Cost</span>
+                                                <span className="text-base font-medium text-gray-900">{t("totalCost")}</span>
                                                 <span className="text-xl font-semibold text-gray-900">
                                                     ${displayTotal.toFixed(2)}
                                                 </span>
                                             </div>
-                                            <p className="text-[10px] text-gray-400 text-right italic">* Processing fee is non-refundable.</p>
+                                            <p className="text-[10px] text-gray-400 text-right italic">* {t("processingFeeNonRefundable")}</p>
                                         </div>
                                     </div>
                                 </div>

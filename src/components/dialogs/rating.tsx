@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import { useSendReview } from "@/hooks/useReview"
 import Loader from "@/components/common/loader"
+import { useTranslations } from "next-intl"
 
 interface RatingDialogProps {
   open: boolean
@@ -19,6 +20,7 @@ export const RatingDialog = ({ open, onClose, bookingId }: RatingDialogProps) =>
   const { mutate, isPending } = useSendReview()
   const [rating, setRating] = useState(3)
   const [review, setReview] = useState("")
+  const t = useTranslations("translation")
 
   const handleSubmit = () => {
     const formData = {
@@ -43,7 +45,7 @@ export const RatingDialog = ({ open, onClose, bookingId }: RatingDialogProps) =>
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-xs sm:max-w-sm px-0 py-3 gap-0">
         <VisuallyHidden>
-          <DialogTitle>Rate Our App Experience</DialogTitle>
+          <DialogTitle>{t("rateExperience")}</DialogTitle>
         </VisuallyHidden>
 
         {/* Header with close button */}
@@ -54,7 +56,7 @@ export const RatingDialog = ({ open, onClose, bookingId }: RatingDialogProps) =>
           {/* Title */}
           <div className="text-center mb-6">
             <h2 className="text-xl font-semibold text-gray-900">
-              How would you rate your experience?
+              {t("howWouldYouRateExperience")}
             </h2>
           </div>
 
@@ -79,9 +81,9 @@ export const RatingDialog = ({ open, onClose, bookingId }: RatingDialogProps) =>
 
           {/* Review Section */}
           <div className="space-y-3">
-            <label className="text-sm font-medium text-gray-700">Review</label>
+            <label className="text-sm font-medium text-gray-700">{t("review")}</label>
             <Textarea
-              placeholder="Type Here...."
+              placeholder={t("typeHere")}
               value={review}
               onChange={(e) => setReview(e.target.value)}
               className="min-h-[100px] mt-1 resize-none"
@@ -95,7 +97,7 @@ export const RatingDialog = ({ open, onClose, bookingId }: RatingDialogProps) =>
             onClick={handleSubmit}
             disabled={isPending}
           >
-            {isPending ? <Loader/> : "Submit Review"}
+            {isPending ? <Loader/> : t("submitReview")}
           </Button>
         </div>
       </DialogContent>

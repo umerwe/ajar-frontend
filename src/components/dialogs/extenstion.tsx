@@ -14,20 +14,7 @@ import {
 import Loader from "../common/loader"
 import { formatBookingDate } from "@/utils/formatDate"
 import { calculateProcessingFee } from "@/utils/priceCalculator"
-
-const UNIT_LABELS: Record<string, string> = {
-    hour: "Hour",
-    day: "Day",
-    month: "Month",
-    year: "Year",
-}
-
-const UNIT_PLURAL: Record<string, string> = {
-    hour: "Hours",
-    day: "Days",
-    month: "Months",
-    year: "Years",
-}
+import { useTranslations } from "next-intl"
 
 type PriceMeta = {
     priceFromListing: number
@@ -111,6 +98,7 @@ export const ExtensionDialog = ({
     pricingUnit?: string
     dynamicPricing?: DynamicPricing | null
 }) => {
+    const t = useTranslations("translation")
     const unit = pricingUnit ?? "day"
     const [qty, setQty] = useState(1);
 
@@ -173,8 +161,8 @@ export const ExtensionDialog = ({
         setQty((prev) => Math.max(1, prev + delta))
     }
 
-    const unitLabel = UNIT_LABELS[unit] ?? unit
-    const unitPlural = UNIT_PLURAL[unit] ?? unit
+    const unitLabel = t(`${unit}Unit`)
+    const unitPlural = t(`${unit}UnitPlural`)
 
     // --- ACCURATE PERIOD CALCULATOR LOOP ---
     const extensionUnitPrices = useMemo(() => {
@@ -216,9 +204,9 @@ export const ExtensionDialog = ({
 
                 {/* ── Pinned Header ── */}
                 <DialogHeader className="px-6 pt-6 pb-4 shrink-0 border-b border-gray-100">
-                    <DialogTitle className="text-xl font-bold text-gray-900">Extend Booking</DialogTitle>
+                    <DialogTitle className="text-xl font-bold text-gray-900">{t("extendBooking")}</DialogTitle>
                     <DialogDescription className="text-gray-500 text-sm">
-                        Choose how long you'd like to extend your rental.
+                        {t("chooseExtensionDuration")}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -228,7 +216,7 @@ export const ExtensionDialog = ({
                     {/* Stepper */}
                     <div className="bg-gray-50 rounded-2xl p-4 flex items-center justify-between">
                         <div>
-                            <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Duration</p>
+                            <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">{t("duration")}</p>
                             <p className="text-3xl font-bold text-gray-900 leading-none">
                                 {qty}{" "}
                                 <span className="text-lg font-medium text-gray-500">
@@ -258,7 +246,7 @@ export const ExtensionDialog = ({
                         <div className="flex items-center gap-2 bg-emerald-50/60 border border-emerald-100 rounded-2xl p-3.5 text-emerald-800">
                             <Sparkles className="w-4 h-4 text-emerald-500 shrink-0" />
                             <p className="text-[11px] font-medium leading-snug">
-                                Special Offer: ${fmt(dynamicPricing.price)}/{unit} from {formatStringDate(dynamicPricing.startDate)} to {formatStringDate(dynamicPricing.endDate)}
+                                {t("specialOffer")}: ${fmt(dynamicPricing.price)}/{unit} {t("from")} {formatStringDate(dynamicPricing.startDate)} {t("to")} {formatStringDate(dynamicPricing.endDate)}
                             </p>
                         </div>
                     )}
@@ -273,7 +261,7 @@ export const ExtensionDialog = ({
                             )}
                         </div>
                         <div>
-                            <p className="text-xs text-gray-400 uppercase tracking-wider">New checkout date</p>
+                            <p className="text-xs text-gray-400 uppercase tracking-wider">{t("newCheckoutDate")}</p>
                             <p className="text-sm font-semibold text-gray-800 mt-0.5">
                                 {formatDate(newCheckoutDate)}
                             </p>
@@ -284,7 +272,7 @@ export const ExtensionDialog = ({
                     {priceMeta && (
                         <div className="rounded-2xl border border-gray-100 p-4 space-y-2.5">
                             <div className="flex justify-between text-sm text-gray-500">
-                                <span>Price / {unitLabel.toLowerCase()}</span>
+                                <span>{t("price")} / {unitLabel.toLowerCase()}</span>
                                 <span className="text-gray-800 font-semibold">${fmt(displayUnitPrice ?? priceMeta.priceFromListing)}</span>
                             </div>
                             <div className="flex justify-between text-sm text-gray-500">
@@ -292,18 +280,18 @@ export const ExtensionDialog = ({
                                 <span className="text-gray-800">{qty}</span>
                             </div>
                             <div className="border-t border-gray-100 pt-2.5 flex justify-between">
-                                <span className="text-sm font-semibold text-gray-900">Extension subtotal</span>
+                                <span className="text-sm font-semibold text-gray-900">{t("extensionSubtotal")}</span>
                                 <span className="text-sm font-bold text-gray-900">
                                     ${fmt(totalPrice!)}
                                 </span>
                             </div>
                             <div className="flex justify-between text-sm text-gray-500">
-                                <span>Processing fee</span>
+                                <span>{t("processingFee")}</span>
                                 <span className="text-gray-800 font-semibold">${fmt(processingFee!)}</span>
                             </div>
-                            <p className="text-[10px] text-gray-400 italic">Processing fee is non-refundable.</p>
+                            <p className="text-[10px] text-gray-400 italic">{t("processingFeeNonRefundable")}</p>
                             <div className="border-t border-gray-100 pt-2.5 flex justify-between">
-                                <span className="text-sm font-semibold text-gray-900">Total</span>
+                                <span className="text-sm font-semibold text-gray-900">{t("total")}</span>
                                 <span className="text-sm font-bold text-gray-900">
                                     ${fmt(totalWithProcessingFee!)}
                                 </span>
@@ -321,7 +309,7 @@ export const ExtensionDialog = ({
                         variant="destructive"
                         className="w-full py-6"
                     >
-                        {isPending ? <Loader /> : "Confirm Extend Booking"}
+                        {isPending ? <Loader /> : t("confirmExtendBooking")}
                     </Button>
                 </DialogFooter>
 

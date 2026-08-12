@@ -14,6 +14,7 @@ import Loader from "../common/loader"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { pinSchema, PinFormValues } from "@/validations/pin"
+import { useTranslations } from "next-intl"
 
 export const PinDialog = ({
   open,
@@ -28,6 +29,8 @@ export const PinDialog = ({
   amount: number
   isPending?: boolean
 }) => {
+  const t = useTranslations("translation")
+
   const {
     handleSubmit,
     register,
@@ -46,22 +49,21 @@ export const PinDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Enter PIN for Payment</DialogTitle>
+          <DialogTitle>{t("enterPinForPayment")}</DialogTitle>
           <DialogDescription>
-            Enter the PIN sent to leaser email to authorize the payment of $
-            {Math.round(amount)}.00.
+            {t("enterPinPaymentDescription", { amount: `${Math.round(amount)}.00` })}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(submitHandler)}>
           <div className="grid gap-4 py-4">
             <div className="flex flex-col gap-2">
-              <Label htmlFor="pin">PIN / OTP</Label>
+              <Label htmlFor="pin">{t("pinOtp")}</Label>
 
               <Input
                 id="pin"
                 type="password" 
-                placeholder="Enter 4 digit PIN"
+                placeholder={t("enterFourDigitPin")}
                 maxLength={4}
                 register={register("pin")}
                 error={errors.pin?.message}
@@ -75,7 +77,7 @@ export const PinDialog = ({
               disabled={isPending}
               className="bg-header hover:bg-header/90 text-white"
             >
-              {isPending ? <Loader /> : "Submit"}
+              {isPending ? <Loader /> : t("submit")}
             </Button>
           </DialogFooter>
         </form>
