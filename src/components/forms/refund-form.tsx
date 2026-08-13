@@ -16,8 +16,10 @@ import { useBooking } from "@/hooks/useBooking";
 import { useSendRefundRequest, useGetRefundPreview } from "@/hooks/useRefund";
 import { Listing } from "@/types/listing";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 export default function RefundRequestForm() {
+    const t = useTranslations("translation");
     const searchParams = useSearchParams();
     const bookingIdFromUrl = searchParams.get('bookingId');
 
@@ -65,12 +67,12 @@ export default function RefundRequestForm() {
 
     return (
         <div className="min-h-screen bg-white">
-            <Header title="Refund Request" />
+            <Header title={t("refundRequest")} />
 
             <div className="max-w-6xl mx-auto px-4 pt-8 pb-16">
                 <div className="mb-8">
-                    <h1 className="text-xl md:text-2xl font-semibold text-gray-800">Submit Refund</h1>
-                    <p className="text-sm text-gray-400 mt-1">Please fill in the details below to submit your refund request.</p>
+                    <h1 className="text-xl md:text-2xl font-semibold text-gray-800">{t("submitRefund")}</h1>
+                    <p className="text-sm text-gray-400 mt-1">{t("submitRefundDescription")}</p>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -79,7 +81,7 @@ export default function RefundRequestForm() {
                         <div className="bg-white border border-gray-100 rounded-3xl shadow-sm p-6 md:p-8 space-y-6">
                             {/* Booking Selection */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Booking</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">{t("booking")}</label>
                                 <div className="relative">
                                     <span className={`${iconClass} text-slate-400`}>
                                         <FileText size={18} />
@@ -93,13 +95,13 @@ export default function RefundRequestForm() {
                                         onChange={(e) => setBooking(e.target.value)}
                                     >
                                         <option value="">
-                                            {bookings?.length ? "Select a booking" : "No bookings available"}
+                                            {bookings?.length ? t("selectBooking") : t("noBookingsAvailable")}
                                         </option>
                                         {bookings?.map((b: { _id: string; marketplaceListingId: Listing }) => (
                                             <option key={b?._id} value={b?._id} className="capitalize">
                                                 {typeof b?.marketplaceListingId === "object"
                                                     ? b?.marketplaceListingId?.name
-                                                    : "Booking " + b?._id.slice(-4)}
+                                                    : `${t("booking")} ${b?._id.slice(-4)}`}
                                             </option>
                                         ))}
                                     </select>
@@ -109,7 +111,7 @@ export default function RefundRequestForm() {
                             {/* Refund Reason */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Reason for Refund <span className="text-red-500 ml-1">*</span>
+                                    {t("reasonForRefund")} <span className="text-red-500 ml-1">*</span>
                                 </label>
                                 <div className="relative">
                                     <span className={`${iconClass} text-aqua`}>
@@ -117,7 +119,7 @@ export default function RefundRequestForm() {
                                     </span>
                                     <input
                                         type="text"
-                                        placeholder="e.g. Item not as described..."
+                                        placeholder={t("refundReasonPlaceholder")}
                                         value={refundReason}
                                         onChange={(e) => setRefundReason(e.target.value)}
                                         className={inputClass}
@@ -127,13 +129,13 @@ export default function RefundRequestForm() {
 
                             {/* Note */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Additional Note</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">{t("additionalNote")}</label>
                                 <div className="relative">
                                     <span className="absolute left-3.5 top-4 text-aqua pointer-events-none">
                                         <MessageSquare size={18} />
                                     </span>
                                     <textarea
-                                        placeholder="Any additional details..."
+                                        placeholder={t("additionalDetailsPlaceholder")}
                                         value={note}
                                         onChange={(e) => setNote(e.target.value)}
                                         rows={4}
@@ -149,11 +151,11 @@ export default function RefundRequestForm() {
                         <div className="bg-gray-50 border border-gray-100 rounded-3xl p-6 sticky top-24">
                             <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
                                 <Receipt size={20} className="text-aqua" />
-                                Refund Summary
+                                {t("refundSummary")}
                             </h2>
 
                             {!booking ? (
-                                <p className="text-sm text-gray-400 text-center py-8">Select a booking to see refund breakdown.</p>
+                                <p className="text-sm text-gray-400 text-center py-8">{t("selectBookingForRefundBreakdown")}</p>
                             ) : isPreviewLoading ? (
                                 <div className="space-y-4 animate-pulse">
                                     <div className="h-4 bg-gray-200 rounded w-full"></div>
@@ -164,7 +166,7 @@ export default function RefundRequestForm() {
                                 <div className="space-y-4">
                                     <div className="flex justify-between text-sm">
                                         <span className="text-gray-500">
-                                            {isEarlyReturn ? "Rental Amount" : "Paid Amount"}
+                                            {isEarlyReturn ? t("rentalAmount") : t("paidAmount")}
                                         </span>
                                         <span className="font-medium text-gray-700">${preview?.totalBookingAmount?.toFixed(2)}</span>
                                     </div>
@@ -175,10 +177,13 @@ export default function RefundRequestForm() {
                                             {breakdown.map((line: any) => (
                                                 <div key={line.booking} className="flex justify-between text-[11px]">
                                                     <span className="text-gray-400">
-                                                        {line.isExtension ? "Extension" : "Booking"}
+                                                        {line.isExtension ? t("extension") : t("booking")}
                                                     </span>
                                                     <span className="text-gray-500">
-                                                        ${line.price?.toFixed(2)} → ${line.refundAmount?.toFixed(2)}
+                                                        {t("refundBreakdownAmount", {
+                                                            price: `$${line.price?.toFixed(2)}`,
+                                                            refundAmount: `$${line.refundAmount?.toFixed(2)}`,
+                                                        })}
                                                     </span>
                                                 </div>
                                             ))}
@@ -186,17 +191,17 @@ export default function RefundRequestForm() {
                                     )}
 
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-gray-500">Deduction Fee</span>
+                                        <span className="text-gray-500">{t("deductionFee")}</span>
                                         <span className="font-medium text-red-500">-${preview?.deductionFee?.toFixed(2)}</span>
                                     </div>
 
                                     {(preview?.securityDeposit ?? 0) > 0 && (
                                         <div className="flex justify-between text-sm">
-                                            <span className="text-gray-500">Security Deposit</span>
+                                            <span className="text-gray-500">{t("securityDeposit")}</span>
                                             {isEarlyReturn ? (
                                                 <span className="font-medium text-amber-600 flex items-center gap-1">
                                                     <Clock size={13} />
-                                                    On hold
+                                                    {t("onHold")}
                                                 </span>
                                             ) : (
                                                 <span className="font-medium text-emerald-600">+${preview?.securityDeposit?.toFixed(2)}</span>
@@ -206,11 +211,11 @@ export default function RefundRequestForm() {
 
                                     <div className="border-t border-gray-200 pt-4 mt-4 space-y-2">
                                         <div className="flex justify-between text-sm">
-                                            <span className="text-gray-500">Estimated Refund</span>
+                                            <span className="text-gray-500">{t("estimatedRefund")}</span>
                                             <span className="font-medium text-gray-700">${preview?.estimatedRefund?.toFixed(2)}</span>
                                         </div>
                                         <div className="flex justify-between items-center">
-                                            <span className="text-sm font-semibold text-gray-800">Total to Wallet</span>
+                                            <span className="text-sm font-semibold text-gray-800">{t("totalToWallet")}</span>
                                             <span className="text-xl font-bold text-aqua">
                                                 ${preview?.totalToWallet?.toFixed(2) ?? "0.00"}
                                             </span>
@@ -222,8 +227,8 @@ export default function RefundRequestForm() {
                                             <Clock size={16} className="text-amber-500 shrink-0" />
                                             <p className="text-[11px] text-amber-700">
                                                 {(preview?.securityDeposit ?? 0) > 0
-                                                    ? `Your security deposit of $${preview?.securityDeposit?.toFixed(2)} stays on hold until the damage dispute window closes, then it is returned automatically. Service fees are not refunded once a rental has started.`
-                                                    : "Service fees are not refunded once a rental has started."}
+                                                    ? t("securityDepositHoldRefundMessage", { amount: `$${preview?.securityDeposit?.toFixed(2)}` })
+                                                    : t("serviceFeesNotRefundedAfterRentalStarted")}
                                             </p>
                                         </div>
                                     )}
@@ -231,7 +236,7 @@ export default function RefundRequestForm() {
                                     {!preview?.isEligible && (
                                         <div className="bg-red-50 p-3 rounded-xl flex gap-2 mt-4">
                                             <MinusCircle size={16} className="text-red-500 shrink-0" />
-                                            <p className="text-[11px] text-red-600">This booking is outside the refund window. No funds will be returned.</p>
+                                            <p className="text-[11px] text-red-600">{t("outsideRefundWindow")}</p>
                                         </div>
                                     )}
 
@@ -241,7 +246,7 @@ export default function RefundRequestForm() {
                                         variant="destructive"
                                         className="w-full mt-4 py-6 rounded-2xl shadow-lg shadow-red-100"
                                     >
-                                        {isPending ? "Submitting..." : "Confirm & Submit"}
+                                        {isPending ? t("submitting") : t("confirmAndSubmit")}
                                     </Button>
                                 </div>
                             )}

@@ -8,6 +8,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Info, Clock } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 interface RefundBreakdownLine {
   booking: string;
@@ -33,12 +34,12 @@ interface RefundStatusDialogProps {
 
 // The deposit follows its own path on an early return — it is held first, then
 // released, deducted, or partially returned once the dispute window resolves.
-const DEPOSIT_STATE: Record<string, { label: string; className: string }> = {
-  held: { label: "On hold", className: "text-amber-600" },
-  disputed: { label: "Under dispute", className: "text-amber-600" },
-  released: { label: "Returned", className: "text-emerald-600" },
-  partially_refunded: { label: "Partially returned", className: "text-emerald-600" },
-  deducted: { label: "Deducted for damage", className: "text-red-500" },
+const DEPOSIT_STATE: Record<string, { key: string; className: string }> = {
+  held: { key: "onHold", className: "text-amber-600" },
+  disputed: { key: "underDispute", className: "text-amber-600" },
+  released: { key: "returned", className: "text-emerald-600" },
+  partially_refunded: { key: "partiallyReturned", className: "text-emerald-600" },
+  deducted: { key: "deductedForDamage", className: "text-red-500" },
 };
 
 const RefundStatusDialog = ({
@@ -48,6 +49,8 @@ const RefundStatusDialog = ({
   refundNote,
   booking,
 }: RefundStatusDialogProps) => {
+  const t = useTranslations("translation");
+
   if (!refundRequest) return null;
 
   const refundAmount = refundRequest.totalRefundAmount ?? 0;
@@ -74,14 +77,14 @@ const RefundStatusDialog = ({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>
-            {isEarlyReturn ? "Early Return Request" : "Refund Request"}
+            {isEarlyReturn ? t("earlyReturnRequest") : t("refundRequest")}
           </DialogTitle>
         </DialogHeader>
 
         <div className="py-6 space-y-5">
           {/* Status Row */}
           <div className="flex justify-between items-center border-b pb-3">
-            <span className="text-gray-500 font-medium">Status</span>
+            <span className="text-gray-500 font-medium">{t("status")}</span>
             <span
               className={`font-semibold uppercase tracking-wider ${
                 refundRequest.status === "accept"
@@ -97,7 +100,7 @@ const RefundStatusDialog = ({
 
           {/* Amount Row */}
           <div className="flex justify-between items-center border-b pb-3">
-            <span className="text-gray-500 font-medium">Refund Amount</span>
+            <span className="text-gray-500 font-medium">{t("refundAmount")}</span>
             <span className="text-lg font-semibold text-gray-900">
               ${totalRefundAmount?.toFixed(2)}
             </span>
@@ -109,7 +112,7 @@ const RefundStatusDialog = ({
               {lines.map((line) => (
                 <div key={line.booking} className="flex justify-between text-xs">
                   <span className="text-gray-400">
-                    {line.isExtension ? "Extension" : "Booking"}
+                    {line.isExtension ? t("extension") : t("booking")}
                   </span>
                   <span className="text-gray-500">
                     ${line.refundAmount?.toFixed(2)}
@@ -122,20 +125,20 @@ const RefundStatusDialog = ({
           {/* Security Deposit — reflects where the deposit actually stands */}
           {securityDeposit > 0 && (
             <div className="flex justify-between items-center border-b pb-3">
-              <span className="text-gray-500 font-medium">Security Deposit</span>
+              <span className="text-gray-500 font-medium">{t("securityDeposit")}</span>
               {isEarlyReturn ? (
                 depositState ? (
                   <span
                     className={`font-semibold flex items-center gap-1.5 ${depositState.className}`}
                   >
                     {isDepositPending && <Clock className="w-4 h-4" />}
-                    {depositState.label}
+                    {t(depositState.key)}
                   </span>
                 ) : (
                   <span className="font-semibold text-gray-500">—</span>
                 )
               ) : (
-                <span className="font-semibold text-emerald-600">Included</span>
+                <span className="font-semibold text-emerald-600">{t("included")}</span>
               )}
             </div>
           )}
@@ -145,8 +148,7 @@ const RefundStatusDialog = ({
             <div className="p-4 bg-blue-50 rounded-xl border border-blue-100 flex gap-3">
               <Info className="w-5 h-5 text-aqua shrink-0" />
               <p className="text-xs text-blue-800 leading-relaxed">
-                Your request is currently under review by our administration team.
-                Funds will be credited to your wallet once approved.
+                {t("refundRequestUnderReview")}
               </p>
             </div>
           )}
@@ -159,9 +161,7 @@ const RefundStatusDialog = ({
               <div className="p-4 bg-amber-50 rounded-xl border border-amber-100 flex gap-3">
                 <Clock className="w-5 h-5 text-amber-500 shrink-0" />
                 <p className="text-xs text-amber-800 leading-relaxed">
-                  Your security deposit of ${securityDeposit.toFixed(2)} is held until
-                  the damage dispute window closes, then returned automatically.
-                  Service fees are not refunded once a rental has started.
+                  {t("securityDepositHoldRefundMessage", { amount: `$${securityDeposit.toFixed(2)}` })}
                 </p>
               </div>
             )}
@@ -171,8 +171,7 @@ const RefundStatusDialog = ({
             <div className="p-4 bg-red-50 rounded-xl border border-red-100 flex gap-3">
               <Info className="w-5 h-5 text-red-500 shrink-0" />
               <p className="text-xs text-red-700 leading-relaxed">
-                Your security deposit was used to settle an approved damage report.
-                See the damage report on your booking for the full breakdown.
+                {t("securityDepositUsedForDamage")}
               </p>
             </div>
           )}
@@ -183,7 +182,7 @@ const RefundStatusDialog = ({
               <Info className="w-5 h-5 text-red-500 shrink-0" />
               <div className="space-y-1">
                 <p className="text-xs font-semibold text-red-600 uppercase">
-                  Reason for Rejection
+                  {t("reasonForRejection")}
                 </p>
                 <p className="text-sm text-gray-700 italic">&quot;{refundNote}&quot;</p>
               </div>
@@ -196,7 +195,7 @@ const RefundStatusDialog = ({
           className="w-full"
           onClick={() => onOpenChange(false)}
         >
-          Close
+          {t("close")}
         </Button>
       </DialogContent>
     </Dialog>

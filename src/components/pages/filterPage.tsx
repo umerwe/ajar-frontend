@@ -13,8 +13,10 @@ import NotFound from "../common/not-found"
 import { useSubCategories } from "@/hooks/useSubCategory"
 import type { FilterContentProps, FilterPageProps, FilterState } from "@/types/filter"
 import { FilterContent } from "./filter/filterContent"
+import { useTranslations } from "next-intl"
 
 const FilterPage = ({ location, minPrice, maxPrice, category }: FilterPageProps) => {
+  const t = useTranslations("translation")
   const router = useRouter()
   const { data, isLoading } = useGetZones()
   const { data: subCategories, isLoading: isSubCategoriesLoading } = useSubCategories()
@@ -124,14 +126,14 @@ const FilterPage = ({ location, minPrice, maxPrice, category }: FilterPageProps)
           className="max-w-44 gap-2 text-aqua hover:bg-aqua/10 border-aqua"
         >
           <Filter className="h-4 w-4 text-aqua" />
-          Filters
+          {t("filters")}
         </Button>
       </div>
 
       <Dialog open={isFilterDialogOpen} onOpenChange={setIsFilterDialogOpen}>
         <DialogContent className="max-w-xs">
           <DialogHeader className="flex flex-row items-center justify-between">
-            <DialogTitle>Filter Properties</DialogTitle>
+            <DialogTitle>{t("filterProperties")}</DialogTitle>
           </DialogHeader>
           <div className="overflow-y-auto max-h-96">
             <FilterContent {...filterContentProps} />
@@ -141,7 +143,7 @@ const FilterPage = ({ location, minPrice, maxPrice, category }: FilterPageProps)
 
       <div className="flex flex-col md:flex-row gap-4 md:gap-6 mt-12 md:mt-5">
         <div className="hidden md:block w-full md:w-80 bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden h-fit md:sticky md:top-6">
-          <h2 className="text-xl font-semibold px-6 pt-6">Filter</h2>
+          <h2 className="text-xl font-semibold px-6 pt-6">{t("filter")}</h2>
           <div className="p-6">
             <FilterContent {...filterContentProps} />
           </div>

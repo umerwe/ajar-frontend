@@ -1,7 +1,7 @@
 "use client";
 
 import {Globe2} from "lucide-react";
-import {useLocale} from "next-intl";
+import {useLocale, useTranslations} from "next-intl";
 import {useSearchParams} from "next/navigation";
 
 import {localeLabels, locales} from "@/i18n/routing";
@@ -18,6 +18,7 @@ import {
 type Locale = (typeof locales)[number];
 
 export default function LanguageSwitcher() {
+  const t = useTranslations("translation");
   const locale = useLocale() as Locale;
   const pathname = usePathname();
   const router = useRouter();
@@ -40,7 +41,7 @@ export default function LanguageSwitcher() {
           variant="ghost"
           size="icon"
           className="bg-white text-aqua hover:text-aqua"
-          aria-label="Change language"
+          aria-label={t("changeLanguage")}
         >
           <Globe2 className="size-5" />
         </Button>

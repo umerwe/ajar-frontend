@@ -3,8 +3,10 @@
 import { useParams } from "next/navigation";
 import { ShieldAlert, Info } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 const AccountStatus = () => {
+  const t = useTranslations("translation");
   const params = useParams();
   const reason = params?.reason as string;
 
@@ -26,13 +28,13 @@ const AccountStatus = () => {
         </div>
 
         <h1 className="text-2xl font-bold text-gray-900 mb-2">
-          {isBlocked ? "Account Blocked" : "Account Inactive"}
+          {isBlocked ? t("accountBlocked") : t("accountInactive")}
         </h1>
 
         <p className="text-gray-600 mb-8">
           {isBlocked
-            ? "Your account has been restricted due to a violation of our terms of service or suspicious activity."
-            : "Your account is currently inactive. This might be because it is pending verification or has been temporarily disabled."
+            ? t("accountBlockedDescription")
+            : t("accountStatusInactiveDescription")
           }
         </p>
 
@@ -41,7 +43,7 @@ const AccountStatus = () => {
             href="/auth/login" 
             className="block w-full bg-header text-white py-3 rounded-xl font-medium hover:bg-teal-700 transition shadow-sm"
           >
-            Back to Login
+            {t("backToLogin")}
           </Link>
         </div>
       </div>
