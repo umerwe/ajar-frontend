@@ -1,8 +1,11 @@
 import { Button } from "@/components/ui/button"
 import { Listing } from "@/types/listing"
 import { ChevronRight, MapPin, Star } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 const CoreDetails = ({ property }: { property: Listing }) => {
+    const t = useTranslations("translation")
+
     return (
         <div>
             <h1 className="text-xl font-semibold text-gray-800 flex flex-col sm:flex-row sm:items-center gap-2">
@@ -36,7 +39,7 @@ const CoreDetails = ({ property }: { property: Listing }) => {
                         variant="link"
                         className="p-0 h-auto text-aqua font-medium cursor-pointer"
                     >
-                        Show on map
+                        {t("showOnMap")}
                          <ChevronRight className="w-4 h-4 ml-1" />
                     </Button>
                 </a>

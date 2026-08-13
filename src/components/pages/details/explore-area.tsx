@@ -4,13 +4,25 @@ import { Listing } from '@/types/listing';
 import { ChevronRight, MapPin } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { useMemo } from 'react';
+import { useTranslations } from 'next-intl';
+
+const MapLoadingFallback = () => {
+    const t = useTranslations("translation");
+
+    return (
+        <div className="w-full h-full bg-gray-100 animate-pulse flex items-center justify-center text-xs text-gray-400">
+            {t("loadingMap")}
+        </div>
+    );
+};
 
 const LocationMap = dynamic(() => import("@/components/LocationMap"), {
     ssr: false,
-    loading: () => <div className="w-full h-full bg-gray-100 animate-pulse flex items-center justify-center text-xs text-gray-400">Loading Map...</div>
+    loading: () => <MapLoadingFallback />
 });
 
 const ExploreArea = ({ property }: { property: Listing }) => {
+    const t = useTranslations("translation");
     const location = property.location;
     const hasLocation = typeof location?.lat === "number" && typeof location?.lng === "number";
 
@@ -22,7 +34,7 @@ const ExploreArea = ({ property }: { property: Listing }) => {
 
     return (
         <div className='space-y-4'>
-            <h2 className="text-lg md:text-xl font-semibold text-gray-800">Location</h2>
+            <h2 className="text-lg md:text-xl font-semibold text-gray-800">{t("location")}</h2>
 
             <div className="border-2 border-gray-200 rounded-2xl overflow-hidden bg-white shadow-sm">
                 <div className="w-full h-48 md:h-56 bg-gray-50 relative">
@@ -30,7 +42,7 @@ const ExploreArea = ({ property }: { property: Listing }) => {
                         <LocationMap location={location} />
                     ) : (
                         <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">
-                            No location data available
+                            {t("noLocationDataAvailable")}
                         </div>
                     )}
                 </div>
@@ -39,7 +51,7 @@ const ExploreArea = ({ property }: { property: Listing }) => {
                     <div className="flex items-center gap-2">
                         <MapPin className="w-5 h-5 text-aqua" />
                         <span className="text-sm font-medium text-gray-900 capitalize">
-                            {location?.address || "Unknown Location"}
+                            {location?.address || t("unknownLocation")}
                         </span>
                     </div>
 
@@ -50,7 +62,7 @@ const ExploreArea = ({ property }: { property: Listing }) => {
                             rel="noopener noreferrer"
                             className="text-aqua text-sm font-medium flex items-center hover:underline"
                         >
-                            Navigate
+                            {t("navigate")}
                             <ChevronRight className="w-4 h-4 ml-1" />
                         </a>
                     )}

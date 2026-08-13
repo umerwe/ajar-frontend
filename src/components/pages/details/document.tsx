@@ -12,10 +12,12 @@ import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import Image from "@/components/MyImage";
 import { formatText } from "@/utils/formatText";
+import { useTranslations } from "next-intl";
 
 const Document = ({ property }: { property: Listing }) => {
     const [open, setOpen] = useState(false);
     const [lightboxOpen, setLightboxOpen] = useState(false);
+    const t = useTranslations("translation");
     const document = property.documents?.[0];
    
     const imageUrl =
@@ -29,14 +31,14 @@ const Document = ({ property }: { property: Listing }) => {
                     <Button
                         variant="destructive"
                     >
-                        Documents
+                        {t("documents")}
                     </Button>
                 </DialogTrigger>
 
                 <DialogContent className="max-w-md rounded-2xl shadow-xl border border-gray-200">
                     <DialogHeader>
                         <DialogTitle className="text-lg font-semibold text-gray-800">
-                            Document Details
+                            {t("documentDetails")}
                         </DialogTitle>
                     </DialogHeader>
 
@@ -44,7 +46,7 @@ const Document = ({ property }: { property: Listing }) => {
                         <div className="space-y-4 mt-3">
                             {/* Name */}
                             <div className="flex justify-between items-center">
-                                <span className="text-sm text-gray-500">Name</span>
+                                <span className="text-sm text-gray-500">{t("name")}</span>
                                 <span className="text-sm font-medium text-gray-900 capitalize">
                                     {formatText(document.name)}
                                 </span>
@@ -52,7 +54,7 @@ const Document = ({ property }: { property: Listing }) => {
 
                             {/* File URL (image preview) */}
                             <div>
-                                <span className="text-sm text-gray-500">File</span>
+                                <span className="text-sm text-gray-500">{t("file")}</span>
                                 <Image
                                     src={imageUrl}
                                     alt={document.name}
@@ -65,7 +67,7 @@ const Document = ({ property }: { property: Listing }) => {
                         </div>
                     ) : (
                         <p className="text-center text-gray-500 py-4">
-                            No document available.
+                            {t("noDocumentAvailable")}
                         </p>
                     )}
                 </DialogContent>

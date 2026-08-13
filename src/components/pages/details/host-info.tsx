@@ -8,9 +8,11 @@ import { MessageCircleMore } from 'lucide-react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 
 const HostInfo = ({ property }: { property: Listing }) => {
     const router = useRouter();
+    const t = useTranslations("translation");
     const { data: user } = useUser();
     const { mutate } = useCreateChat();
     const { data } = useGetChatList();
@@ -60,7 +62,7 @@ const HostInfo = ({ property }: { property: Listing }) => {
     return (
         <div>
             <div className="flex items-center mb-[20px]">
-                <h2 className="text-lg md:text-xl font-semibold text-gray-800">Hosted by</h2>
+                <h2 className="text-lg md:text-xl font-semibold text-gray-800">{t("hostedBy")}</h2>
             </div>
             <div className="flex items-center justify-between max-w-100 space-x-3">
                 <div className="flex gap-3">
