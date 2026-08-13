@@ -8,6 +8,7 @@ import Link from "next/link"
 import Header from "@/components/ui/header"
 import Loader from "@/components/common/loader"
 import { StripeCardForm } from "@/components/forms/payment-form"
+import { useTranslations } from "next-intl"
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!)
 
@@ -32,6 +33,7 @@ const isBookingPaymentSession = (value: unknown): value is BookingPaymentSession
 }
 
 const BookingPaymentPage = () => {
+  const t = useTranslations("translation")
   const [paymentSession, setPaymentSession] = useState<BookingPaymentSession | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
@@ -54,7 +56,7 @@ const BookingPaymentPage = () => {
 
   return (
     <div className="min-h-screen px-4 md:px-0">
-      <Header title="Complete Booking Payment" />
+      <Header title={t("completeBookingPayment")} />
 
       <div className="mx-auto mt-8 w-full max-w-lg rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-6">
         {isLoading ? (
@@ -68,9 +70,9 @@ const BookingPaymentPage = () => {
                 <CreditCard className="h-5 w-5" />
               </div>
               <div>
-                <h1 className="text-lg font-semibold text-gray-900">Secure card payment</h1>
+                <h1 className="text-lg font-semibold text-gray-900">{t("secureCardPayment")}</h1>
                 <p className="text-sm text-gray-500">
-                  Pay ${paymentSession.amount.toFixed(2)} to submit your booking request.
+                  {t("payToSubmitBookingRequest", { amount: `$${paymentSession.amount.toFixed(2)}` })}
                 </p>
               </div>
             </div>
@@ -86,15 +88,15 @@ const BookingPaymentPage = () => {
           </>
         ) : (
           <div className="py-10 text-center">
-            <h1 className="mb-2 text-xl font-semibold text-gray-900">Payment session expired</h1>
+            <h1 className="mb-2 text-xl font-semibold text-gray-900">{t("paymentSessionExpired")}</h1>
             <p className="mb-6 text-sm text-gray-500">
-              Please create the booking again to continue payment.
+              {t("createBookingAgainToContinuePayment")}
             </p>
             <Link
               href="/"
               className="inline-flex items-center justify-center rounded-full bg-header px-6 py-3 text-sm font-medium text-white transition hover:bg-aqua"
             >
-              Go to Home
+              {t("goHome")}
             </Link>
           </div>
         )}
