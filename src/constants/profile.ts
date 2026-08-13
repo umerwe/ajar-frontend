@@ -1,12 +1,12 @@
 import { Heart, ShieldCheck, Pencil, CalendarCheck, Lock, Wallet, Landmark, HelpCircle } from "lucide-react"
 
 export const profileMenuItems = [
-    { label: "View Profile", href: "/profile" },
-    { label: "Bookings", href: "/booking/all" },
-    { label: "Favourites", href: "/favourites" },
-    { label: "Chat", href: "/chat" },
-    { label: "Terms & Conditions", href: "#" },
-    { label: "Help Center", href: "/help-center" },
+    { key: "viewProfile", href: "/profile" },
+    { key: "bookings", href: "/booking/all" },
+    { key: "favorites", href: "/favourites" },
+    { key: "chat", href: "/chat" },
+    { key: "termsAndConditions", href: "#" },
+    { key: "helpCenter", href: "/help-center" },
 ];
 
 export const profileItems = [
