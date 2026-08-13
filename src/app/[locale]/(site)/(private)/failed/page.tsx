@@ -2,8 +2,11 @@
 
 import Link from 'next/link'
 import { XCircle } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 const CancelPage = () => {
+    const t = useTranslations("translation")
+
     return (
         <div className="min-h-[calc(100vh-66px)] flex items-center justify-center p-4">
             <div className="w-full max-w-md bg-white rounded-2xl shadow-xl border py-12 px-7 text-center">
@@ -18,18 +21,19 @@ const CancelPage = () => {
 
                 {/* Title */}
                 <h1 className="text-2xl font-semibold text-gray-900 mb-1">
-                    Payment Failed
+                    {t("paymentFailed")}
                 </h1>
 
                 {/* Description */}
                 <p className="text-gray-600 mb-8 text-base leading-relaxed">
-                    Your payment could not be completed. Please try again.                </p>
+                    {t("paymentCouldNotBeCompleted")}
+                </p>
 
                 <Link
                     href="/"
                     className="inline-flex items-center justify-center w-full px-8 py-3 text-white bg-red-600 rounded-full hover:bg-red-700 transition-all duration-200 font-medium text-base shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                 >
-                    Go to Home
+                    {t("goHome")}
                 </Link>
             </div>
         </div>

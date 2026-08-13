@@ -4,8 +4,10 @@ import { useEffect, useState } from "react"
 import { useParams, useRouter, useSearchParams } from "next/navigation"
 import { Loader2 } from "lucide-react"
 import api from "@/lib/axios"
+import { useTranslations } from "next-intl"
 
 const PaymentProcessing = () => {
+    const t = useTranslations("translation");
     const router = useRouter();
     const searchParams = useSearchParams();
     const { id } = useParams();
@@ -15,7 +17,7 @@ const PaymentProcessing = () => {
         ? redirectParam
         : "/success";
 
-    const [message, setMessage] = useState("Confirming your payment...")
+    const [message, setMessage] = useState(t("confirmingPayment"))
 
     useEffect(() => {
         if (!paymentIntentId) return
@@ -28,19 +30,19 @@ const PaymentProcessing = () => {
                 const data = res.data
 
                 if (data.status === "succeeded" || data.stripeStatus === "requires_capture") {
-                    setMessage(data.message || "Payment successful!")
+                    setMessage(data.message || t("paymentSuccessful"))
                     router.replace(successRedirect)
                 } else if (data.status === "failed") {
-                    setMessage(data.message || "Payment failed")
+                    setMessage(data.message || t("paymentFailed"))
                     router.replace("/failed")
                 } else if (data.status === "pending") {
                     setMessage(
-                        data.message || "Payment is still being confirmed. Please wait a moment..."
+                        data.message || t("paymentStillConfirming")
                     )
                 }
             } catch (err) {
                 setMessage(
-                    "Error verifying payment. Please wait a moment or refresh the page."
+                    t("errorVerifyingPayment")
                 )
             }
         }
@@ -54,7 +56,7 @@ const PaymentProcessing = () => {
                 <div className="mb-4 flex justify-center">
                     <Loader2 className="animate-spin w-12 h-12 text-aqua" />
                 </div>
-                <h1 className="text-2xl font-semibold text-gray-900 mb-2">Processing Payment</h1>
+                <h1 className="text-2xl font-semibold text-gray-900 mb-2">{t("processingPayment")}</h1>
                 <p className="text-gray-600 text-base leading-relaxed">{message}</p>
             </div>
         </div>

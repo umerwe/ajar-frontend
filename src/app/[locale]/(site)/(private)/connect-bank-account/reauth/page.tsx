@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AlertCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function BankReauthPage() {
+    const t = useTranslations("translation");
     const router = useRouter();
     const [countdown, setCountdown] = useState(3);
 
@@ -33,9 +35,9 @@ export default function BankReauthPage() {
                 </div>
 
                 <div className="space-y-2">
-                    <h2 className="text-lg font-semibold text-gray-900">Session Expired</h2>
+                    <h2 className="text-lg font-semibold text-gray-900">{t("sessionExpired")}</h2>
                     <p className="text-sm text-gray-500">
-                        Your Stripe onboarding session has expired. We'll redirect you to start a fresh connection.
+                        {t("stripeSessionExpiredDescription")}
                     </p>
                 </div>
 
@@ -44,7 +46,7 @@ export default function BankReauthPage() {
                     <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
                         <span className="text-sm font-semibold text-gray-700">{countdown}</span>
                     </div>
-                    <p className="text-sm text-gray-400">Redirecting you back...</p>
+                    <p className="text-sm text-gray-400">{t("redirectingYouBack")}</p>
                 </div>
 
                 {/* Progress bar */}
@@ -59,7 +61,7 @@ export default function BankReauthPage() {
                     onClick={() => router.replace("/connect-bank-account")}
                     className="text-xs text-gray-400 underline underline-offset-2 hover:text-gray-600 transition"
                 >
-                    Redirect now
+                    {t("redirectNow")}
                 </button>
             </div>
         </div>

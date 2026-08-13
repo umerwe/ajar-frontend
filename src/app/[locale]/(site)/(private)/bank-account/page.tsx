@@ -24,8 +24,10 @@ import { toast } from '@/components/ui/toast'
 import { BankAccount } from '@/types/wallet'
 import Header from '@/components/ui/header'
 import SkeletonLoader from '@/components/common/skeleton-loader'
+import { useTranslations } from 'next-intl'
 
 const BankAccountPage = () => {
+    const t = useTranslations("translation");
     const { data, isLoading } = useGetBankAccountDetails();
     const bankAccounts: BankAccount[] = data?.bankAccounts || [];
 
@@ -67,14 +69,14 @@ const BankAccountPage = () => {
         try {
             if (editingAccount) {
                 await updateBankMutation.mutateAsync({ id: editingAccount._id, payload: formData });
-                toast({ title: "Account updated successfully" });
+                toast({ title: t("accountUpdatedSuccessfully") });
             } else {
                 await addBankMutation.mutateAsync(formData);
-                toast({ title: "Account added successfully" });
+                toast({ title: t("accountAddedSuccessfully") });
             }
             setIsOpen(false);
         } catch (error) {
-            toast({ title: "An error occurred" });
+            toast({ title: t("anErrorOccurred") });
         }
     };
 
@@ -82,19 +84,20 @@ const BankAccountPage = () => {
         if (!accountToDelete) return;
         try {
             await deleteBankMutation.mutateAsync(accountToDelete);
-            toast({ title: "Account deleted" });
+            toast({ title: t("accountDeleted") });
             setIsDeleteDialogOpen(false);
             setAccountToDelete(null);
         } catch (error) {
-            toast({ title: "Failed to delete account" });
+            toast({ title: t("failedToDeleteAccount") });
         }
     };
 
     return (
         <div>
             <Header
-                title="Bank Accounts"
+                title={t("bankAccounts")}
                 onAddClick={handleOpenAdd}
+                addLabel={t("addBank")}
             />
 
             <div className="max-w-2xl mx-auto p-6 space-y-4">
@@ -130,11 +133,11 @@ const BankAccountPage = () => {
 
                                         <div className="mt-6 space-y-3 border-t pt-5 border-slate-50">
                                             <div className="flex items-center">
-                                                <span className="text-slate-400 text-xs uppercase tracking-wider w-36">Account Number</span>
+                                                <span className="text-slate-400 text-xs uppercase tracking-wider w-36">{t("accountNumber")}</span>
                                                 <span className="text-slate-700 font-mono text-sm">{bank.accountNumber}</span>
                                             </div>
                                             <div className="flex items-center">
-                                                <span className="text-slate-400 text-xs uppercase tracking-wider w-36">IBAN</span>
+                                                <span className="text-slate-400 text-xs uppercase tracking-wider w-36">{t("iban")}</span>
                                                 <span className="text-slate-700 font-mono text-sm">{bank.ibanNumber}</span>
                                             </div>
                                         </div>
@@ -144,7 +147,7 @@ const BankAccountPage = () => {
 
                             {bankAccounts.length === 0 && (
                                 <div className="text-center py-20 text-slate-400 border-2 border-dashed rounded-2xl">
-                                    No bank accounts added yet.
+                                    {t("noBankAccountsAddedYet")}
                                 </div>
                             )}
                         </>
@@ -156,30 +159,30 @@ const BankAccountPage = () => {
                 <DialogContent className="sm:max-w-[425px] rounded-3xl">
                     <DialogHeader>
                         <DialogTitle className="text-xl font-semibold">
-                            {editingAccount ? 'Edit Bank Account' : 'Add New Bank Account'}
+                            {editingAccount ? t("editBankAccount") : t("addNewBankAccount")}
                         </DialogTitle>
                     </DialogHeader>
                     <form onSubmit={handleSubmit} className="space-y-5 pt-2 pb-2">
                         <div className="space-y-2">
-                            <Label htmlFor="bankName">Bank Name</Label>
-                            <Input id="bankName" value={formData.bankName} onChange={(e) => setFormData({ ...formData, bankName: e.target.value })} placeholder="e.g. HBL" required />
+                            <Label htmlFor="bankName">{t("bankName")}</Label>
+                            <Input id="bankName" value={formData.bankName} onChange={(e) => setFormData({ ...formData, bankName: e.target.value })} placeholder={t("bankNamePlaceholder")} required />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="accountName">Account Holder Name</Label>
-                            <Input id="accountName" value={formData.accountName} onChange={(e) => setFormData({ ...formData, accountName: e.target.value })} placeholder="John Doe" required />
+                            <Label htmlFor="accountName">{t("accountHolderName")}</Label>
+                            <Input id="accountName" value={formData.accountName} onChange={(e) => setFormData({ ...formData, accountName: e.target.value })} placeholder={t("accountHolderNamePlaceholder")} required />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="accountNumber">Account Number</Label>
-                            <Input id="accountNumber" value={formData.accountNumber} onChange={(e) => setFormData({ ...formData, accountNumber: e.target.value })} placeholder="0000 0000 0000" required />
+                            <Label htmlFor="accountNumber">{t("accountNumber")}</Label>
+                            <Input id="accountNumber" value={formData.accountNumber} onChange={(e) => setFormData({ ...formData, accountNumber: e.target.value })} placeholder={t("accountNumberPlaceholder")} required />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="ibanNumber">IBAN Number</Label>
-                            <Input id="ibanNumber" value={formData.ibanNumber} onChange={(e) => setFormData({ ...formData, ibanNumber: e.target.value })} placeholder="PK00..." required />
+                            <Label htmlFor="ibanNumber">{t("ibanNumber")}</Label>
+                            <Input id="ibanNumber" value={formData.ibanNumber} onChange={(e) => setFormData({ ...formData, ibanNumber: e.target.value })} placeholder={t("ibanNumberPlaceholder")} required />
                         </div>
                         <DialogFooter className="pt-2">
                             <Button type="submit" variant="destructive" className='w-full h-11 rounded-full' disabled={addBankMutation.isPending || updateBankMutation.isPending}>
                                 {(addBankMutation.isPending || updateBankMutation.isPending) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                {editingAccount ? 'Update Bank Account' : 'Add Bank Account'}
+                                {editingAccount ? t("updateBankAccount") : t("addBankAccount")}
                             </Button>
                         </DialogFooter>
                     </form>
@@ -190,17 +193,17 @@ const BankAccountPage = () => {
             <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
                 <DialogContent className="sm:max-w-[400px] rounded-3xl">
                     <DialogHeader>
-                        <DialogTitle className="text-xl font-semibold text-center">Delete Account</DialogTitle>
+                        <DialogTitle className="text-xl font-semibold text-center">{t("deleteAccount")}</DialogTitle>
                         <DialogDescription className="py-4 text-center">
-                            Are you sure you want to delete this bank account? This action cannot be undone.
+                            {t("deleteBankAccountConfirmation")}
                         </DialogDescription>
                     </DialogHeader>
                     <div className="flex flex-row gap-3">
                         <Button variant="outline" className="flex-1 rounded-full h-11" onClick={() => setIsDeleteDialogOpen(false)}>
-                            Cancel
+                            {t("cancel")}
                         </Button>
                         <Button variant="destructive" className="flex-1 rounded-full h-11" onClick={confirmDelete} disabled={deleteBankMutation.isPending}>
-                            {deleteBankMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Delete"}
+                            {deleteBankMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : t("delete")}
                         </Button>
                     </div>
                 </DialogContent>

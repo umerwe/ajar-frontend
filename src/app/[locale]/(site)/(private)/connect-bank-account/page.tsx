@@ -7,8 +7,10 @@ import { Button } from "@/components/ui/button";
 import { useCheckBankConnectionStatus, useCreateConnectedAccount } from "@/hooks/useWallet";
 import Loader from "@/components/common/loader";
 import { BanknoteIcon, CheckCircle2, XCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function BankAccountStatusPage() {
+  const t = useTranslations("translation");
   const { data: userData } = useUser();
   const { data: bankStatus, isLoading, error } = useCheckBankConnectionStatus();
   const { mutate: createConnectedAccount, isPending: isConnecting } = useCreateConnectedAccount();
@@ -46,7 +48,7 @@ export default function BankAccountStatusPage() {
   return (
     <div className="min-h-screen">
       <div className="px-3 sm:px-7">
-        <Header title="Bank Account Status" />
+        <Header title={t("bankAccountStatus")} />
       </div>
 
       {isLoading ? (
@@ -71,12 +73,12 @@ export default function BankAccountStatusPage() {
               </div>
               <div>
                 <p className={`font-semibold text-base ${bankAttached ? "text-gray-800" : "text-gray-700"}`}>
-                  {bankAttached ? "Bank Account Connected" : "No Bank Account Linked"}
+                  {bankAttached ? t("bankAccountConnected") : t("noBankAccountLinked")}
                 </p>
                 <p className="text-sm text-gray-500 mt-0.5">
                   {bankAttached
-                    ? "Your account is verified and ready for payouts."
-                    : "Connect your bank to start receiving withdrawals."}
+                    ? t("accountVerifiedReadyForPayouts")
+                    : t("connectBankToReceiveWithdrawals")}
                 </p>
               </div>
             </div>
@@ -90,14 +92,14 @@ export default function BankAccountStatusPage() {
                 <div className="flex items-start gap-3 bg-blue-50 rounded-xl p-4">
                   <BanknoteIcon className="w-5 h-5 text-blue-500 mt-0.5 shrink-0" />
                   <p className="text-sm text-blue-700">
-                    You'll be redirected to Stripe to securely complete KYC verification and link your bank account.
+                    {t("stripeKycRedirectDescription")}
                   </p>
                 </div>
               )}
 
               {error && "response" in (error as any) && (error as any).response?.status !== 404 && (
                 <p className="text-red-500 text-sm text-center">
-                  Failed to check bank account status. Please try again later.
+                  {t("failedToCheckBankAccountStatus")}
                 </p>
               )}
 
@@ -108,8 +110,8 @@ export default function BankAccountStatusPage() {
                       <CheckCircle2 className="w-5 h-5 text-green-600" />
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-green-700">Payouts Enabled</p>
-                      <p className="text-xs text-green-600 mt-0.5">Withdrawals will reflect in your bank within 2–5 business days.</p>
+                      <p className="text-sm font-semibold text-green-700">{t("payoutsEnabled")}</p>
+                      <p className="text-xs text-green-600 mt-0.5">{t("withdrawalsReflectInBank")}</p>
                     </div>
                   </div>
 
@@ -118,8 +120,8 @@ export default function BankAccountStatusPage() {
                       <BanknoteIcon className="w-5 h-5 text-blue-600" />
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-blue-700">Ready to Withdraw</p>
-                      <p className="text-xs text-blue-600 mt-0.5">Go to your wallet to initiate a withdrawal anytime.</p>
+                      <p className="text-sm font-semibold text-blue-700">{t("readyToWithdraw")}</p>
+                      <p className="text-xs text-blue-600 mt-0.5">{t("goToWalletToWithdraw")}</p>
                     </div>
                   </div>
                 </div>
@@ -130,7 +132,7 @@ export default function BankAccountStatusPage() {
                   variant="destructive"
                   disabled={isConnecting}
                 >
-                  {isConnecting ? <Loader /> : "Connect Bank Account"}
+                  {isConnecting ? <Loader /> : t("connectBankAccount")}
                 </Button>
               )}
             </div>
