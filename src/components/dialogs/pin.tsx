@@ -51,7 +51,7 @@ export const PinDialog = ({
         <DialogHeader>
           <DialogTitle>{t("enterPinForPayment")}</DialogTitle>
           <DialogDescription>
-            {t("enterPinPaymentDescription", { amount: `${Math.round(amount)}.00` })}
+            {t("enterPinPaymentDescription", { amount: `$${Math.round(amount)}.00` })}
           </DialogDescription>
         </DialogHeader>
 

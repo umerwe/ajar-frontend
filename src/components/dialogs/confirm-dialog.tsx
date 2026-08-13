@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import Loader from "@/components/common/loader";
+import { useTranslations } from "next-intl";
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -32,13 +33,17 @@ export const ConfirmDialog = ({
   onConfirm,
   title,
   description,
-  confirmText = "Confirm",
-  cancelText = "Cancel",
+  confirmText,
+  cancelText,
   isLoading = false,
   confirmDisabled = false,
   variant = "default",
   children,
 }: ConfirmDialogProps) => {
+  const t = useTranslations("translation");
+  const resolvedConfirmText = confirmText ?? t("confirm");
+  const resolvedCancelText = cancelText ?? t("cancel");
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
@@ -57,7 +62,7 @@ export const ConfirmDialog = ({
             onClick={() => onOpenChange(false)}
             className="w-full h-10 rounded-full border-gray-300"
           >
-            {cancelText}
+            {resolvedCancelText}
           </Button>
           
           <Button
@@ -68,7 +73,7 @@ export const ConfirmDialog = ({
               : "bg-header hover:bg-aqua"
               }`}
           >
-            {isLoading ? <Loader /> : confirmText}
+            {isLoading ? <Loader /> : resolvedConfirmText}
           </Button>
         </DialogFooter>
       </DialogContent>

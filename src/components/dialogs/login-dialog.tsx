@@ -10,6 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 
 interface LoginDialogProps {
   open: boolean
@@ -20,6 +21,7 @@ export const LoginDialog = ({
   open,
   onOpenChange,
 }: LoginDialogProps) => {
+  const t = useTranslations("translation")
   const router = useRouter()
 
   const handleLoginRedirect = () => {
@@ -31,9 +33,9 @@ export const LoginDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[400px]">
         <DialogHeader className="text-left">
-          <DialogTitle className="text-xl font-semibold">Login Required</DialogTitle>
+          <DialogTitle className="text-xl font-semibold">{t("loginRequired")}</DialogTitle>
           <DialogDescription className="text-gray-600">
-            You need to login before this.
+            {t("loginRequiredDescription")}
           </DialogDescription>
         </DialogHeader>
 
@@ -44,13 +46,13 @@ export const LoginDialog = ({
             onClick={() => onOpenChange(false)}
             className="w-full rounded-full border-gray-300"
           >
-            Cancel
+            {t("cancel")}
           </Button>
           <Button
             onClick={handleLoginRedirect}
             className="w-full bg-header hover:bg-teal-600 text-white rounded-full"
           >
-            Login
+            {t("login")}
           </Button>
         </DialogFooter>
       </DialogContent>

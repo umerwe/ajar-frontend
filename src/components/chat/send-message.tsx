@@ -9,8 +9,10 @@ import api from "@/lib/axios";
 import Image from "@/components/MyImage";
 import { toast } from "../ui/toast";
 import { SendMessageProps, FileItem } from "@/types/chat";
+import { useTranslations } from "next-intl";
 
 const SendMessage = ({ onSend, isSending, chatId, receiverId }: SendMessageProps) => {
+  const t = useTranslations("translation");
   const [files, setFiles] = useState<FileItem[]>([]);
 
   const {
@@ -68,7 +70,7 @@ const SendMessage = ({ onSend, isSending, chatId, receiverId }: SendMessageProps
         );
       } catch (error) {
         toast({
-          title: "File Upload Failed",
+          title: t("fileUploadFailed"),
           variant: "destructive",
         });
         setFiles(prev =>
@@ -124,7 +126,7 @@ const SendMessage = ({ onSend, isSending, chatId, receiverId }: SendMessageProps
         <div className="flex-1 relative">
           <input
             type="text"
-            placeholder="Type message..."
+            placeholder={t("typeMessage")}
             {...register("text")}
             className="w-full px-3 py-2 text-sm border rounded-lg"
           />

@@ -7,6 +7,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { AlertTriangle } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export const InactiveAccountDialog = ({
   open,
@@ -15,6 +16,7 @@ export const InactiveAccountDialog = ({
   open: boolean;
   onOpenChange: (v: boolean) => void;
 }) => {
+  const t = useTranslations("translation");
   const router = useRouter();
 
   return (
@@ -25,12 +27,10 @@ export const InactiveAccountDialog = ({
             <div className="p-2 rounded-full bg-red-100">
               <AlertTriangle className="size-5 text-red-500" />
             </div>
-            <DialogTitle className="text-lg">Account Inactive</DialogTitle>
+            <DialogTitle className="text-lg">{t("accountInactive")}</DialogTitle>
           </div>
           <DialogDescription className="text-sm text-muted-foreground leading-relaxed">
-            Your account is currently inactive because one or more of your
-            documents have expired. Please update your documents to restore
-            full access.
+            {t("accountInactiveDescription")}
           </DialogDescription>
         </DialogHeader>
 
@@ -39,7 +39,7 @@ export const InactiveAccountDialog = ({
             variant="outline"
             onClick={() => onOpenChange(false)}
           >
-            Cancel
+            {t("cancel")}
           </Button>
           <Button
             variant="destructive"
@@ -49,7 +49,7 @@ export const InactiveAccountDialog = ({
               router.push("/profile");
             }}
           >
-            Update Documents
+            {t("updateDocuments")}
           </Button>
         </DialogFooter>
       </DialogContent>
