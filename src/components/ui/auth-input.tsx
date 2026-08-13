@@ -46,7 +46,7 @@ const AuthInput = <T extends FieldValues>({
             <div className="relative">
                 {type && iconMap[type] && (
                     <span className="absolute left-3 top-1/2 -translate-y-1/2">
-                        {label === "Nationality" ?
+                        {register?.name === "nationality" ?
                             <Flag className="h-5 w-5 text-teal-500" /> :
                             iconMap[type]}
                     </span>

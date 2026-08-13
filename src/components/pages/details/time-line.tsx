@@ -2,6 +2,7 @@
 
 import { CalendarDays, CheckCircle2, Circle } from "lucide-react";
 import { formatBookingDate } from "@/utils/formatDate";
+import { useTranslations } from "next-intl";
 
 interface Extension {
     extensionDate: string | Date;
@@ -50,6 +51,8 @@ const statusColorMap: Record<string, string> = {
 };
 
 const Timeline = ({ property }: TimelineProps) => {
+    const t = useTranslations("translation");
+
     const formatDate = (date: string | Date | undefined) => {
         if (!date) return null;
         const isHourly = property.pricingMeta.unit === "hour";
@@ -68,19 +71,19 @@ const Timeline = ({ property }: TimelineProps) => {
 
     const baseSteps: Step[] = [
         {
-            label: "CHECK-IN",
+            label: t("checkIn").toUpperCase(),
             date: formatDate(property.dates.checkIn),
             show: true,
             completed: isApproved,
         },
         {
-            label: "CHECK-OUT",
+            label: t("checkOut").toUpperCase(),
             date: formatDate(property.dates.checkOut),
             show: true,
             completed: isCompleted,
         },
         {
-            label: "HANDOVER COMPLETED",
+            label: t("handoverCompleted").toUpperCase(),
             date: formatDate(property.bookingDates?.handover),
             show: !!property.bookingDates?.handover,
             completed: !!property.bookingDates?.handover,
@@ -88,7 +91,7 @@ const Timeline = ({ property }: TimelineProps) => {
     ];
 
     const extensionSteps: Step[] = (property.extensions || []).map((ext, index) => ({
-        label: property.extensions.length > 1 ? `EXTENSION ${index + 1}` : "EXTENDED END",
+        label: property.extensions.length > 1 ? `${t("extension").toUpperCase()} ${index + 1}` : t("extendedEnd").toUpperCase(),
         date: formatDate(ext.extensionDate),
         show: true,
         isStatic: true,
@@ -97,7 +100,7 @@ const Timeline = ({ property }: TimelineProps) => {
     }));
 
     const returnStep: Step = {
-        label: "RETURN COMPLETED",
+        label: t("returnCompleted").toUpperCase(),
         date: formatDate(property.bookingDates?.returnDate),
         show: !!property.bookingDates?.returnDate,
         completed: !!property.bookingDates?.returnDate,
@@ -111,7 +114,7 @@ const Timeline = ({ property }: TimelineProps) => {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-6 sm:mb-8">
                 <div className="flex items-center gap-2 text-slate-500 font-medium">
                     <CalendarDays className="w-5 h-5" />
-                    <span>Timeline</span>
+                    <span>{t("timeline")}</span>
                 </div>
             </div>
 

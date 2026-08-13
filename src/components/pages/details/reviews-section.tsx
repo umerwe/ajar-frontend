@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Star, StarHalf, User, Calendar } from "lucide-react";
 import MyImage from "@/components/MyImage";
 import { format } from "date-fns";
+import { useTranslations } from "next-intl";
 
 interface Review {
   _id: string;
@@ -52,6 +53,8 @@ const StarRating = ({ rating }: { rating: number }) => {
 };
 
 const ReviewCard = ({ review }: { review: Review }) => {
+  const t = useTranslations("translation");
+
   return (
     <div className="border-b border-gray-100 dark:border-gray-800 last:border-0 py-6 first:pt-0">
       <div className="flex gap-4">
@@ -79,7 +82,7 @@ const ReviewCard = ({ review }: { review: Review }) => {
           <div className="flex items-center justify-between flex-wrap gap-2 mb-2">
             <div>
               <h4 className="font-semibold text-gray-900 dark:text-white capitalize">
-                {review.userId?.name || "Anonymous User"}
+                {review.userId?.name || t("anonymousUser")}
               </h4>
               <div className="flex items-center gap-2 mt-1">
                 <StarRating rating={review.stars} />
@@ -109,6 +112,7 @@ export default function ReviewsSection({
   totalReviews,
 }: ReviewsSectionProps) {
   const [filterRating, setFilterRating] = useState<number | null>(null);
+  const t = useTranslations("translation");
 
   let filteredReviews = [...reviews];
   if (filterRating) {
@@ -129,7 +133,7 @@ export default function ReviewsSection({
       {/* Header */}
       <div className="mb-6">
         <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-          Reviews
+          {t("reviews")}
         </h2>
         <div className="flex items-center gap-3 mt-2">
           <div className="flex items-center gap-2">
@@ -139,7 +143,7 @@ export default function ReviewsSection({
             <div>
               <StarRating rating={averageRating} />
               <span className="text-sm text-gray-500 dark:text-gray-400">
-                ({totalReviews} {totalReviews === 1 ? "review" : "reviews"})
+                ({totalReviews} {totalReviews === 1 ? t("review") : t("reviews")})
               </span>
             </div>
           </div>
@@ -149,7 +153,7 @@ export default function ReviewsSection({
       {/* Rating Distribution */}
       <div className="mb-8 pb-6 border-b border-gray-100 dark:border-gray-800">
         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-          Filter by rating
+          {t("filterByRating")}
         </label>
         <div className="space-y-2">
           {ratingDistribution.map(({ rating, percentage, count }) => (
