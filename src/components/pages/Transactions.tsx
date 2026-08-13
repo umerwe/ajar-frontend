@@ -6,15 +6,17 @@ import { Wallet } from 'lucide-react';
 import Header from '@/components/ui/header';
 import SkeletonLoader from '@/components/common/skeleton-loader';
 import { formatWalletDate } from '@/utils/formatDate';
+import { useTranslations } from 'next-intl';
 
 const Transactions = () => {
+    const t = useTranslations("translation");
     const { data, isLoading } = useGetWallet();
     const transactions = data?.transactions;
 
     return (
         <div>
             <Header
-                title='Transactions'
+                title={t("transactions")}
             />
 
             {
@@ -34,12 +36,12 @@ const Transactions = () => {
                                             <div>
                                                 <h3 className="font-medium text-slate-800 text-base">
                                                     {tx.status === 'failed'
-                                                        ? 'Transaction Failed'
+                                                        ? t("transactionFailed")
                                                         : tx.source === 'withdraw'
-                                                            ? 'Withdrawal'
+                                                            ? t("withdrawal")
                                                             : tx.type === 'credit'
-                                                                ? 'Wallet Credited'
-                                                                : 'Wallet Debited'}
+                                                                ? t("walletCredited")
+                                                                : t("walletDebited")}
                                                 </h3>
 
                                                 <p className="text-xs text-slate-400 font-medium">
@@ -60,7 +62,7 @@ const Transactions = () => {
                                 ))
                             ) : (
                                 <div className="text-center py-10">
-                                    <p className="text-slate-400 text-sm">No transactions found</p>
+                                    <p className="text-slate-400 text-sm">{t("noTransactionsFound")}</p>
                                 </div>
                             )}
                         </div>

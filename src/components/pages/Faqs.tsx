@@ -5,9 +5,11 @@ import Error from "@/components/common/error";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetFaqs } from "@/hooks/useFaqs";
 import { ChevronDown, HelpCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 import React from "react";
 
 const Faqs = () => {
+    const t = useTranslations("translation");
     const { data, isLoading, isError } = useGetFaqs();
     const [openFaqId, setOpenFaqId] = React.useState<string | null>(null);
     const faqs: FAQ[] = data?.data || [];
@@ -18,7 +20,7 @@ const Faqs = () => {
 
     return (
         <div>
-            <Header title="FAQs" />
+            <Header title={t("faqs")} />
 
             <div className="max-w-3xl mx-auto my-6 md:my-10">
                 <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
@@ -28,8 +30,8 @@ const Faqs = () => {
                                 <HelpCircle className="h-5 w-5 text-aqua" />
                             </div>
                             <div>
-                                <h2 className="text-lg font-semibold text-gray-900">Frequently Asked Questions</h2>
-                                <p className="text-sm text-gray-500">Find quick answers about Ajar.</p>
+                                <h2 className="text-lg font-semibold text-gray-900">{t("frequentlyAskedQuestions")}</h2>
+                                <p className="text-sm text-gray-500">{t("faqIntro")}</p>
                             </div>
                         </div>
                     </div>
@@ -46,7 +48,7 @@ const Faqs = () => {
                                 ))}
                             </div>
                         ) : faqs.length === 0 ? (
-                            <p className="py-8 text-center text-sm text-gray-500">No FAQs available.</p>
+                            <p className="py-8 text-center text-sm text-gray-500">{t("noFaqsAvailable")}</p>
                         ) : (
                             faqs.map((faq) => {
                                 const isOpen = openFaqId === faq._id;

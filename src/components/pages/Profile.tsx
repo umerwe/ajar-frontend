@@ -14,10 +14,12 @@ import { profileItems } from "@/constants/profile";
 import ChangePasswordDialog from "@/components/dialogs/changePassword";
 import EditProfileDialog from "@/components/dialogs/editProfile";
 import AddDocumentDialog from "@/components/dialogs/addDocuments";
+import { useTranslations } from "next-intl";
 
 export default function Profile() {
     const { data: user = [], isLoading, isError } = useUser();
     const { data: documents = [] } = useGetUserDocument();
+    const t = useTranslations("translation");
 
     const [openEditProfile, setOpenEditProfile] = React.useState(false);
     const [openChangePassword, setOpenChangePassword] = React.useState(false);
@@ -29,7 +31,7 @@ export default function Profile() {
     return (
         <>
             <div className="px-3 sm:px-7">
-                <Header title="Profile" />
+                <Header title={t("profile")} />
             </div>
 
             <div className="mx-auto max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl rounded-md my-6 md:my-10">
@@ -54,7 +56,7 @@ export default function Profile() {
                                 </div>
                                 <div className="text-center">
                                     <h2 className="text-lg font-semibold capitalize text-gray-900">
-                                        {user?.name || "User"}
+                                        {user?.name || t("user")}
                                     </h2>
                                     <p className="text-sm text-gray-500">{user.email}</p>
                                 </div>
@@ -67,11 +69,14 @@ export default function Profile() {
                         {profileItems.map((item, index) => {
                             const Icon = item.icon;
 
-                            if (item.label === "Edit Profile") {
+                            const label = t(item.key);
+
+                            if (item.key === "editProfile") {
                                 return (
                                     <EditProfileDialog
                                         key={index}
                                         data={item}
+                                        label={label}
                                         open={openEditProfile}
                                         setOpen={setOpenEditProfile}
                                         user={user}
@@ -80,11 +85,12 @@ export default function Profile() {
                                     />
                                 );
                             }
-                            if (item.label === "Add Documents") {
+                            if (item.key === "addDocuments") {
                                 return (
                                     <AddDocumentDialog
                                         key={index}
                                         data={item}
+                                        label={label}
                                         documents={documents}
                                         userDocs={user?.documents || []}
                                     />
@@ -92,11 +98,12 @@ export default function Profile() {
                             }
 
 
-                            if (item.label === "Change Password") {
+                            if (item.key === "changePassword") {
                                 return (
                                     <ChangePasswordDialog
                                         key={index}
                                         data={item}
+                                        label={label}
                                         openChangePassword={openChangePassword}
                                         setOpenChangePassword={setOpenChangePassword}
                                     />
@@ -111,7 +118,7 @@ export default function Profile() {
                                 >
                                     <div className="flex items-center space-x-3">
                                         <Icon className="h-5 w-5 text-aqua" />
-                                        <span className="text-gray-900 font-medium">{item.label}</span>
+                                        <span className="text-gray-900 font-medium">{label}</span>
                                     </div>
                                     <ChevronRight className="h-6 w-6 text-aqua" />
                                 </Link>
