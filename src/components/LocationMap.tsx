@@ -1,6 +1,7 @@
 "use client";
 
 import { GoogleMap, MarkerF, useJsApiLoader } from "@react-google-maps/api";
+import { useTranslations } from "next-intl";
 
 interface Location {
   lat: number;
@@ -23,6 +24,7 @@ const mapOptions: google.maps.MapOptions = {
 };
 
 const LocationMap = ({ location }: LocationMapProps) => {
+  const t = useTranslations("translation");
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
   const center = { lat: location.lat, lng: location.lng };
 
@@ -33,7 +35,7 @@ const LocationMap = ({ location }: LocationMapProps) => {
   if (!apiKey) {
     return (
       <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">
-        Google Maps API key missing
+        {t("googleMapsApiKeyMissing")}
       </div>
     );
   }
@@ -41,7 +43,7 @@ const LocationMap = ({ location }: LocationMapProps) => {
   if (loadError) {
     return (
       <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">
-        Unable to load map
+        {t("unableToLoadMap")}
       </div>
     );
   }
@@ -49,7 +51,7 @@ const LocationMap = ({ location }: LocationMapProps) => {
   if (!isLoaded) {
     return (
       <div className="w-full h-full bg-gray-100 animate-pulse flex items-center justify-center text-xs text-gray-400">
-        Loading Map...
+        {t("loadingMap")}
       </div>
     );
   }

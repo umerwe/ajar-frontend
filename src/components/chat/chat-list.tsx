@@ -11,8 +11,10 @@ import SkeletonLoader from "../common/skeleton-loader";
 import clsx from "clsx";
 import { Chat, Participant } from "@/types/chat";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 const ChatList = ({ id }: { id?: string }) => {
+    const t = useTranslations("translation");
     const { data: user } = useUser();
     const { mutate } = useMessageSeen();
     const [searchQuery, setSearchQuery] = useState("");
@@ -45,7 +47,7 @@ const ChatList = ({ id }: { id?: string }) => {
     return (
         <div className="bg-white border border-gray-200 px-2 flex flex-col h-full">
             <div className="pt-4 md:pt-6 pl-2">
-                <Header title="Chat" />
+                <Header title={t("chat")} backToHome />
             </div>
 
             <div className="p-4 border-b border-gray-200 flex items-center gap-3">
@@ -53,7 +55,7 @@ const ChatList = ({ id }: { id?: string }) => {
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                     <Input
                         type="text"
-                        placeholder="Search messages, people"
+                        placeholder={t("searchMessagesPeople")}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-black"
@@ -129,7 +131,7 @@ const ChatList = ({ id }: { id?: string }) => {
                     })
                 ) : (
                     <div className="p-5 text-center text-gray-500 text-sm">
-                        No chats found
+                        {t("noChatsFound")}
                     </div>
                 )}
             </div>

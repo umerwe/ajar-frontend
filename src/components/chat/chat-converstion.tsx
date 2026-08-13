@@ -10,8 +10,10 @@ import SendMessage from "./send-message"
 import SkeletonLoader from "../common/skeleton-loader"
 import type { Message, MessagePayload } from "@/types/chat"
 import { MessageSquare, ArrowLeft } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 const ChatConversation = ({ id: chatId }: { id?: string }) => {
+  const t = useTranslations("translation");
   const { data: user } = useUser();
   const { mutate } = useSendMessage();
   const [messages, setMessages] = useState<Message[]>([]);
@@ -261,7 +263,7 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
 
                   <div className={`flex flex-col ${isSent ? "items-end" : "items-start"}`}>
                     <div className="text-[10px] sm:text-xs font-medium text-gray-500 mb-1 px-1 capitalize">
-                      {isSent ? "You" : sender.name}
+                      {isSent ? t("you") : sender.name}
                     </div>
 
                     <div
@@ -311,8 +313,8 @@ const ChatConversation = ({ id: chatId }: { id?: string }) => {
             <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gray-100 flex items-center justify-center shadow-sm">
               <MessageSquare className="h-7 w-7 sm:h-8 sm:w-8 text-gray-400" />
             </div>
-            <h3 className="text-sm font-semibold text-gray-900 mt-3">No messages yet</h3>
-            <p className="text-xs text-gray-500 mt-1">Say hello to start the conversation!</p>
+            <h3 className="text-sm font-semibold text-gray-900 mt-3">{t("noMessagesYet")}</h3>
+            <p className="text-xs text-gray-500 mt-1">{t("sayHelloToStartConversation")}</p>
           </div>
         )}
       </div>

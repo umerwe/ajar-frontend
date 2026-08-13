@@ -6,8 +6,10 @@ import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { formatText } from "@/utils/formatText";
 import { statusOptions } from "../constants/booking";
 import { slugify } from "@/utils/formatStatus";
+import { useTranslations } from "next-intl";
 
 const StatusOptions = () => {
+    const t = useTranslations("translation");
     const params = useParams();
     const statusParam = (params.status as string) || "all";
 
@@ -18,9 +20,25 @@ const StatusOptions = () => {
     };
 
     const getCurrentLabel = () => {
-        if (!statusParam || slugify(statusParam) === "all") return "All Status";
-        // If the URL is /booking/booking_cancelled, this will return "Booking Cancelled"
-        return formatText(statusParam.replace("_", " "));
+        if (!statusParam || slugify(statusParam) === "all") return t("allStatus");
+        return getStatusLabel(statusParam);
+    };
+
+    const getStatusLabel = (status: string) => {
+        const key = slugify(status);
+        const labels: Record<string, string> = {
+            all: t("allStatus"),
+            pending: t("pending"),
+            approved: t("approved"),
+            in_progress: t("inProgress"),
+            rejected: t("rejected"),
+            completed: t("completed"),
+            request_cancelled: t("requestCancelled"),
+            booking_cancelled: t("bookingCancelled"),
+            expired: t("expired"),
+        };
+
+        return labels[key] || formatText(status.replace("_", " "));
     };
 
     const mobileButton = (
@@ -52,7 +70,7 @@ const StatusOptions = () => {
                                 }`}
                         >
                             <span className={`text-sm ${active ? "text-aqua" : ""}`}>
-                                {status === "All" ? "All Status" : status}
+                                {getStatusLabel(status)}
                             </span>
                             {active && <span className="h-2 w-2 rounded-full bg-aqua" />}
                         </Link>
@@ -80,7 +98,7 @@ const StatusOptions = () => {
                                 }
                             `}
                         >
-                            {status}
+                            {getStatusLabel(status)}
                         </Link>
                     );
                 })}
