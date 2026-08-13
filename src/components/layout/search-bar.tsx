@@ -13,10 +13,12 @@ import { useRouter } from "next/navigation";
 import { useGetZones } from "@/hooks/useZone";
 import Loader from "@/components/common/loader";
 import SkeletonLoader from "@/components/common/skeleton-loader";
+import { useTranslations } from "next-intl";
 
 export default function SearchBar() {
   const { data, isLoading } = useGetZones();
   const zones = data?.zones;
+  const t = useTranslations("translation");
 
   const [zoneId, setZoneId] = useState("");
   const router = useRouter();
@@ -45,11 +47,11 @@ export default function SearchBar() {
                   <House className="text-gray-500 flex-shrink-0 w-5 h-5 sm:w-6 sm:h-6" />
                   <div className="min-w-0 flex-1">
                     <p className="text-xs sm:text-sm text-gray-500 font-medium">
-                      Location
+                      {t("location")}
                     </p>
                     <p className="font-semibold text-sm sm:text-base capitalize text-gray-800 truncate">
                       {zones?.find((z: Zone) => z._id === zoneId)?.name ||
-                        "Select a location"}
+                        t("selectLocation")}
                     </p>
                   </div>
                   <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500" />
@@ -79,7 +81,7 @@ export default function SearchBar() {
               className="font-semibold text-sm sm:text-base lg:text-lg bg-transparent text-aqua rounded-xl h-10 sm:h-12 w-full lg:w-32 lg:min-w-32 lg:px-8 mx-3 sm:mx-4 lg:mx-6 disabled:cursor-no-drop"
               disabled={zoneId === "" || isLoading}
             >
-              {isLoading ? <Loader /> : "Search"}
+              {isLoading ? <Loader /> : t("search")}
             </Button>
           </div>
         </div>

@@ -6,8 +6,10 @@ import SkeletonLoader from "@/components/common/skeleton-loader"
 import Error from "@/components/common/error"
 import Header from "@/components/ui/header"
 import NotFound from "@/components/common/not-found"
+import { useTranslations } from "next-intl"
 
 const Favourites = () => {
+  const t = useTranslations("translation")
   const { data, isLoading, isError } = useGetFavourite()
 
   const listings =
@@ -21,7 +23,7 @@ const Favourites = () => {
 
   return (
     <div>
-      <Header title="My Favourites" />
+      <Header title={t("myFavourites")} />
 
       {isLoading ? (
         <SkeletonLoader />

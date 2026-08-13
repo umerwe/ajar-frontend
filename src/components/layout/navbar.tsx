@@ -9,8 +9,10 @@ import { useUser } from "@/hooks/useAuth";
 import { Button } from "../ui/button";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
+import { useTranslations } from "next-intl";
 
 export default function Navbar() {
+  const t = useTranslations("translation");
   const { data: session } = useSession()
 
   useEffect(() => {
@@ -43,7 +45,7 @@ export default function Navbar() {
                 className="h-0"
                 onClick={() => router.push('/auth/login')}
               >
-                Sign In
+                {t("signIn")}
               </Button>
           }
         </div>

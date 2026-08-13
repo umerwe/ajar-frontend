@@ -11,12 +11,14 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { useGetArticle } from "@/hooks/useArticles";
+import { useTranslations } from "next-intl";
 
 export default function ArticleDetailDialog({
     open,
     onOpenChange,
     articleId,
 }: ArticleDetailDialogProps) {
+    const t = useTranslations("translation");
     const { data: articleDetail, isLoading: isLoadingDetail } = useGetArticle(articleId as string);
 
     return (
@@ -24,7 +26,7 @@ export default function ArticleDetailDialog({
             <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
                 {isLoadingDetail ? (
                     <div className="flex flex-col items-center justify-center py-20 space-y-4">
-                        <DialogTitle className="sr-only">Loading Details</DialogTitle>
+                        <DialogTitle className="sr-only">{t("loadingDetails")}</DialogTitle>
                         <Loader2 className="h-10 w-10 animate-spin text-aqua" />
                     </div>
                 ) : articleDetail ? (
@@ -60,8 +62,8 @@ export default function ArticleDetailDialog({
                     </>
                 ) : (
                     <div className="py-10 text-center text-muted-foreground">
-                        <DialogTitle className="sr-only">Error</DialogTitle>
-                        Failed to load article details.
+                        <DialogTitle className="sr-only">{t("error")}</DialogTitle>
+                        {t("failedToLoadArticleDetails")}
                     </div>
                 )}
             </DialogContent>

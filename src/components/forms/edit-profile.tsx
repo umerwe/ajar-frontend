@@ -11,6 +11,7 @@ import { EditProfileFormValues, EditProfileSchema } from "@/validations/profile"
 import { toast } from "../ui/toast";
 import { useRemoveDocumentFile } from "@/hooks/useDocument";
 import { ConfirmDialog } from "@/components/dialogs/confirm-dialog";
+import { useTranslations } from "next-intl";
 
 
 export default function EditProfileForm({
@@ -21,6 +22,7 @@ export default function EditProfileForm({
 }: ProfileProps) {
     const { mutate, isPending } = useUpdateUser();
     const { mutate: removeFile, isPending: isRemoving } = useRemoveDocumentFile(); // ← add this
+    const t = useTranslations("translation");
 
     const { register, handleSubmit, formState: { errors } } = useForm<EditProfileFormValues>({
         resolver: zodResolver(EditProfileSchema),
@@ -54,7 +56,7 @@ export default function EditProfileForm({
             onSuccess: () => {
                 setOpen(false);
                 toast({
-                    title: "User Updated Successfully",
+                    title: t("profileUpdatedSuccessfully"),
                     variant: "default",
                 });
             },
@@ -73,10 +75,10 @@ export default function EditProfileForm({
         removeFile(fileUrl, {
             onSuccess: () => {
                 setFileToRemove(null);
-                toast({ title: "File removed successfully", variant: "default" });
+                toast({ title: t("fileRemovedSuccessfully"), variant: "default" });
             },
             onError: () => {
-                toast({ title: "Failed to remove file", variant: "destructive" });
+                toast({ title: t("failedToRemoveFile"), variant: "destructive" });
             },
         });
     };
@@ -84,23 +86,23 @@ export default function EditProfileForm({
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <Input
-                label="Name"
-                placeholder="Enter your name"
+                label={t("name")}
+                placeholder={t("enterYourName")}
                 type="text"
                 register={register("name")}
                 error={errors.name?.message}
             />
 
             <Input
-                label="Phone Number"
-                placeholder="Enter your phone number"
+                label={t("phoneNumber")}
+                placeholder={t("enterYourPhoneNumber")}
                 type="text"
                 register={register("phone")}
                 error={errors.phone?.message}
             />
 
             <Input
-                label="Date of Birth"
+                label={t("dateOfBirth")}
                 type="date"
                 register={register("dob")}
                 error={errors.dob?.message}
@@ -108,8 +110,8 @@ export default function EditProfileForm({
             />
 
             <Input
-                label="Nationality"
-                placeholder="Enter your country"
+                label={t("nationality")}
+                placeholder={t("enterYourCountry")}
                 type="text"
                 register={register("nationality")}
                 error={errors.nationality?.message}
@@ -118,7 +120,7 @@ export default function EditProfileForm({
             {user?.documents && user.documents.length > 0 && (
                 <div className="mt-6">
                     <h3 className="text-base font-semibold text-gray-900 mb-4">
-                        Documents
+                        {t("documents")}
                     </h3>
                     <div className="space-y-3">
                         {user.documents.map((doc: any) => (
@@ -171,7 +173,7 @@ export default function EditProfileForm({
             )}
 
             <Button variant="destructive" className="w-full" type="submit" disabled={isPending}>
-                {isPending ? <Loader /> : "Save Changes"}
+                {isPending ? <Loader /> : t("saveChanges")}
             </Button>
 
             <ConfirmDialog
@@ -182,9 +184,9 @@ export default function EditProfileForm({
                 onConfirm={() => {
                     if (fileToRemove) handleRemoveFile(fileToRemove);
                 }}
-                title="Remove Document"
-                description="Are you sure you want to remove this document?"
-                confirmText="Remove"
+                title={t("removeDocument")}
+                description={t("removeDocumentConfirmation")}
+                confirmText={t("remove")}
                 isLoading={isRemoving}
                 variant="destructive"
             />
