@@ -5,6 +5,7 @@ import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu"
 import { CheckIcon, ChevronRightIcon, CircleIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { useTranslations } from "next-intl"
 
 function DropdownMenu({
   ...props
@@ -243,6 +244,8 @@ interface DropdownBtnProps {
 }
 
 export function DropdownBtn({ children }: DropdownBtnProps) {
+  const t = useTranslations("translation")
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -250,9 +253,9 @@ export function DropdownBtn({ children }: DropdownBtnProps) {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-36" align="end">
         <DropdownMenuGroup>
-          <DropdownMenuItem>5 adults</DropdownMenuItem>
-          <DropdownMenuItem>6 adults</DropdownMenuItem>
-          <DropdownMenuItem>7 adults</DropdownMenuItem>
+          <DropdownMenuItem>{t("adultsCount", { count: 5 })}</DropdownMenuItem>
+          <DropdownMenuItem>{t("adultsCount", { count: 6 })}</DropdownMenuItem>
+          <DropdownMenuItem>{t("adultsCount", { count: 7 })}</DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>

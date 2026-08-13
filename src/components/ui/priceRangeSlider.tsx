@@ -1,10 +1,14 @@
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { PriceRangeSliderProps } from "@/types/filter"
+import { useTranslations } from "next-intl"
 
-export const PriceRangeSlider = ({ priceRange, onValueChange }: PriceRangeSliderProps) => (
+export const PriceRangeSlider = ({ priceRange, onValueChange }: PriceRangeSliderProps) => {
+    const t = useTranslations("translation")
+
+    return (
     <div className="space-y-4">
-        <Label className="text-sm font-medium text-gray-700">Price Range</Label>
+        <Label className="text-sm font-medium text-gray-700">{t("priceRange")}</Label>
 
         <div className="text-sm text-gray-600 font-semibold text-center py-2">
             ${priceRange[0].toLocaleString()} - ${priceRange[1].toLocaleString()}
@@ -24,4 +28,5 @@ export const PriceRangeSlider = ({ priceRange, onValueChange }: PriceRangeSlider
             <span>$100,000</span>
         </div>
     </div>
-)
+    )
+}

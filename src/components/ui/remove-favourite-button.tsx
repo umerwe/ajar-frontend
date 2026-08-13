@@ -6,6 +6,7 @@ import { X } from "lucide-react";
 import { useToggleFavourite } from "@/hooks/useFavourite";
 import { cn } from "@/lib/utils";
 import { ConfirmDialog } from "@/components/dialogs/confirm-dialog";
+import { useTranslations } from "next-intl";
 
 interface RemoveFavouriteButtonProps {
   listingId: string;
@@ -13,6 +14,7 @@ interface RemoveFavouriteButtonProps {
 }
 
 export const RemoveFavouriteButton = ({ listingId, className }: RemoveFavouriteButtonProps) => {
+  const t = useTranslations("translation");
   const toggleFavourite = useToggleFavourite();
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
@@ -49,9 +51,9 @@ export const RemoveFavouriteButton = ({ listingId, className }: RemoveFavouriteB
         open={isConfirmOpen}
         onOpenChange={setIsConfirmOpen}
         onConfirm={confirmRemove}
-        title="Remove Favourite"
-        description="Are you sure you want to remove this listing from your favourites?"
-        confirmText="Remove"
+        title={t("removeFavourite")}
+        description={t("removeFavouriteConfirmation")}
+        confirmText={t("remove")}
         isLoading={toggleFavourite.isPending}
         variant="destructive"
       />

@@ -4,28 +4,39 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { getStatusStyles } from "@/constants/booking";
 import { ArrowLeft, Plus } from "lucide-react"
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 interface HeaderProps {
     status?: string
     title: string
     isBookingLoading?: boolean
     onAddClick?: () => void;
+    addLabel?: string;
+    backToHome?: boolean;
 }
 
-const Header = ({ status, title, isBookingLoading, onAddClick }: HeaderProps) => {
+const Header = ({ status, title, isBookingLoading, onAddClick, addLabel, backToHome }: HeaderProps) => {
+    const t = useTranslations("translation");
     const router = useRouter();
 
     const formattedStatus = (status: string) => {
         if (!status) return "";
 
-        // 1. Special case for In Progress
-        if (status.toLowerCase() === "in_progress") {
-            return "In Progress";
-        }
+        const normalizedStatus = status.toLowerCase();
+        const statusLabels: Record<string, string> = {
+            pending: t("pending"),
+            approved: t("approved"),
+            in_progress: t("inProgress"),
+            completed: t("completed"),
+            request_cancelled: t("requestCancelled"),
+            booking_cancelled: t("bookingCancelled"),
+            rejected: t("rejected"),
+            expired: t("expired"),
+            cancelled: t("cancelled"),
+        };
 
-        // 2. Special case for Booking Cancelled
-        if (status.toLowerCase() === "booking_cancelled") {
-            return "Booking Cancelled";
+        if (statusLabels[normalizedStatus]) {
+            return statusLabels[normalizedStatus];
         }
         
         return status.replace(/_/g, " ");
@@ -34,19 +45,19 @@ const Header = ({ status, title, isBookingLoading, onAddClick }: HeaderProps) =>
     return (
         <div className="flex items-center justify-between bg-white">
             <div className="flex items-center gap-2 sm:gap-3">
-                <Button variant="ghost" size="icon" className="bg-gray-100 rounded-lg" onClick={title === "Chat" ? () => router.push('/') : () => router.back()}>
+                <Button variant="ghost" size="icon" className="bg-gray-100 rounded-lg" onClick={backToHome ? () => router.push('/') : () => router.back()}>
                     <ArrowLeft className="w-[18px] h-[18px]" />
                 </Button>
                 <h1 className="text-base sm:text-lg font-medium text-gray-900">{title}</h1>
             </div>
 
-            {title === "Bank Accounts" && (
+            {onAddClick && (
                 <Button
                     onClick={onAddClick}
                     variant="destructive"
                     className='w-32 rounded-full h-9'
                 >
-                    <Plus className="w-4 h-4 mr-1" /> Add Bank
+                    <Plus className="w-4 h-4 mr-1" /> {addLabel}
                 </Button>
             )}
 
