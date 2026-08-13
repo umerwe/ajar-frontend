@@ -117,7 +117,7 @@ export default function ProfileDropdown() {
   const notificationButton = (
     <button
       className="rounded-full cursor-pointer text-aqua hover:bg-gray-200 transition-colors flex"
-      aria-label="Notifications"
+      aria-label={t("notifications")}
       onClick={() => mutate()}
     >
       <BellIcon className="h-6 w-6" />

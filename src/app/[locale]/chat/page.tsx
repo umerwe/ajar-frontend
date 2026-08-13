@@ -5,8 +5,10 @@ import ChatList from "@/components/chat/chat-list";
 import { useSearchParams } from "next/navigation";
 import { MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 const ChatPage = () => {
+  const t = useTranslations("translation");
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
 
@@ -35,10 +37,10 @@ const ChatPage = () => {
               <MessageSquare className="w-8 h-8 text-gray-400" />
             </div>
             <h2 className="text-xl font-semibold text-gray-700 mb-1">
-              No Chat Selected
+              {t("noChatSelected")}
             </h2>
             <p className="text-gray-500 text-sm max-w-sm">
-              Select a conversation to start chatting.
+              {t("selectConversationToStartChatting")}
             </p>
           </div>
         )}

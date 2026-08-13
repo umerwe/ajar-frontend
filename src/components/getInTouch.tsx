@@ -4,8 +4,10 @@ import { ArrowRight } from 'lucide-react'
 import { useCreateChat } from '@/hooks/useChat'
 import { useRouter } from 'next/navigation'
 import { toast } from '@/components/ui/toast'
+import { useTranslations } from 'next-intl'
 
 const GetInTouch = () => {
+    const t = useTranslations("translation");
     const router = useRouter();
     const { mutate } = useCreateChat();
     const handleClick = () => {
@@ -19,8 +21,8 @@ const GetInTouch = () => {
                 },
                 onError: () => {
                     toast({
-                        title: "Error",
-                        description: "Something went wrong",
+                        title: t("error"),
+                        description: t("somethingWentWrong"),
                         variant: "destructive"
                     })
                 }
@@ -40,10 +42,10 @@ const GetInTouch = () => {
                 <div className="flex flex-col lg:flex-row items-center justify-between">
                     <div className="text-center lg:text-left mb-8 lg:mb-0">
                         <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">
-                            Still have questions?
+                            {t("stillHaveQuestions")}
                         </h3>
                         <p className="text-gray-600">
-                            Can&apos;t find the answer you&apos;re looking for? Please chat to our friendly team.
+                            {t("cantFindAnswerChatTeam")}
                         </p>
                     </div>
 
@@ -51,7 +53,7 @@ const GetInTouch = () => {
                         <Button
                             onClick={handleClick}
                             className="bg-white hover:bg-gray-200 text-black px-7 py-6 rounded-md text-base font-medium shadow-sm border border-gray-200">
-                            Get in Touch
+                            {t("getInTouch")}
                             <ArrowRight className="w-4 h-4 ml-2" />
                         </Button>
 

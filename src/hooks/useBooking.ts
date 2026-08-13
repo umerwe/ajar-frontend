@@ -2,8 +2,9 @@ import { toast } from "@/components/ui/toast";
 import { extendRental, submitPin, updateBookingStatus } from "@/services/booking";
 import { createBooking, getBooking, getBookingId } from "@/services/booking";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { getApiErrorMessage } from "@/utils/getApiErrorMessage";
 
 export function useBooking(status?: string, currentPage?: number, isRefundable?: string) {
   return useQuery({
@@ -21,6 +22,7 @@ export function useGetBookingId(id?: string) {
 }
 
 export function useCreateBooking() {
+  const t = useTranslations("translation");
   const router = useRouter();
   const queryClient = useQueryClient();
 
@@ -34,16 +36,15 @@ export function useCreateBooking() {
         queryKey: ["listingBookedDates"],
       });
 
-      toast({ description: "Booking request submitted successfully." })
+      toast({ description: t("bookingRequestSubmittedSuccessfully") })
       if (variables.redirectOnSuccess !== false) {
         router.replace(`/booking/pending`);
       }
 
     },
     onError: (error) => {
-      const err = error as AxiosError<ErrorResponse>;
       toast({
-        description: err.response?.data?.message || "Something went wrong.",
+        description: getApiErrorMessage(error, t("somethingWentWrong")),
         variant: "destructive",
       });
     },
@@ -51,6 +52,7 @@ export function useCreateBooking() {
 }
 
 export function useUpdateBookingStatus() {
+  const t = useTranslations("translation");
   const router = useRouter();
   const queryClient = useQueryClient();
   return useMutation({
@@ -58,14 +60,13 @@ export function useUpdateBookingStatus() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["bookings"] })
       queryClient.invalidateQueries({ queryKey: ["bookingId"] })
-      toast({ description: "Booking cancelled successfully." })
+      toast({ description: t("bookingCancelledSuccessfully") })
       router.replace(`/booking/all`);
     },
     onError: (error) => {
-      const err = error as AxiosError<ErrorResponse>;
       toast({
-        title: "Booking Status Update Failed",
-        description: err.response?.data?.message || "Something went wrong.",
+        title: t("bookingStatusUpdateFailed"),
+        description: getApiErrorMessage(error, t("somethingWentWrong")),
         variant: "destructive",
       });
     },
@@ -73,6 +74,7 @@ export function useUpdateBookingStatus() {
 }
 
 export function useSubmitPin() {
+  const t = useTranslations("translation");
   const router = useRouter();
   const queryClient = useQueryClient();
 
@@ -80,13 +82,12 @@ export function useSubmitPin() {
     mutationFn: submitPin,
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["bookings"] })
-      toast({ description: data?.message || "PIN submitted successfully" })
+      toast({ description: data?.message || t("pinSubmittedSuccessfully") })
       router.push('/booking/in_progress')
     },
     onError: (error) => {
-      const err = error as AxiosError<ErrorResponse>;
       toast({
-        description: err.response?.data?.message || "Something went wrong.",
+        description: getApiErrorMessage(error, t("somethingWentWrong")),
         variant: "destructive",
       });
     },
@@ -94,18 +95,18 @@ export function useSubmitPin() {
 }
 
 export function useExtendRental() {
+  const t = useTranslations("translation");
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: extendRental,
     onSuccess: () => {
-      toast({ description: "Extension request created successfully" })
+      toast({ description: t("extensionRequestCreatedSuccessfully") })
       queryClient.invalidateQueries({ queryKey: ["bookings"] })
       queryClient.invalidateQueries({ queryKey: ["bookingId"] })
     },
     onError: (error) => {
-      const err = error as AxiosError<ErrorResponse>;
       toast({
-        description: err.response?.data?.message || "Something went wrong.",
+        description: getApiErrorMessage(error, t("somethingWentWrong")),
         variant: "destructive",
       });
     },
