@@ -6,6 +6,7 @@ import Input from "@/components/ui/auth-input";
 import Button from "../auth/button";
 import { useChangePassword } from "@/hooks/useAuth";
 import { ChangePassword, ChangePasswordSchema } from "@/validations/auth";
+import { useTranslations } from "next-intl";
 
 interface ChangePasswordFormProps {
     setOpen: (open: boolean) => void;
@@ -13,6 +14,7 @@ interface ChangePasswordFormProps {
 
 const ChangePasswordForm = ({ setOpen }: ChangePasswordFormProps) => {
     const { mutateAsync, isPending } = useChangePassword();
+    const t = useTranslations("translation");
 
     const {
         register,
@@ -37,30 +39,30 @@ const ChangePasswordForm = ({ setOpen }: ChangePasswordFormProps) => {
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <Input
-                    label="Old Password"
+                    label={t("oldPassword")}
                     type="password"
-                    placeholder="Enter Old Password"
+                    placeholder={t("enterOldPassword")}
                     register={register("oldPassword")}
                     error={errors.oldPassword?.message}
                 />
 
                 <Input
-                    label="New Password"
+                    label={t("newPassword")}
                     type="password"
-                    placeholder="Enter New Password"
+                    placeholder={t("enterNewPassword")}
                     register={register("newPassword")}
                     error={errors.newPassword?.message}
                 />
 
                 <Input
-                    label="Confirm Password"
+                    label={t("confirmPassword")}
                     type="password"
-                    placeholder="Confirm Password"
+                    placeholder={t("confirmPasswordPlaceholder")}
                     register={register("confirmPassword")}
                     error={errors.confirmPassword?.message}
                 />
 
-                <Button isPending={isPending} text="Submit" className="text-base" />
+                <Button isPending={isPending} text={t("submit")} className="text-base" />
             </form>
         </div>
     );

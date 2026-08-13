@@ -11,11 +11,13 @@ import AboutListing from "@/components/pages/details/about-listing";
 import ReviewsSection from "@/components/pages/details/reviews-section";
 import SkeletonLoader from "@/components/common/skeleton-loader";
 import NotFound from "@/components/common/not-found";
+import { useTranslations } from "next-intl";
 
 const ListingItems = () => {
   const params = useParams();
   const category_id = params?.category_id as string;
   const id = params?.id as string;
+  const t = useTranslations("translation");
 
   const { data: listingData, isLoading } = useGetMarketplaceListing(id);
 
@@ -23,7 +25,7 @@ const ListingItems = () => {
 
   return (
     <div className="space-y-[25px]">
-      <Header title="Rental Details" />
+      <Header title={t("rentalDetails")} />
 
       {isLoading ? (
         <div className="mt-4 md:mt-6">

@@ -9,9 +9,11 @@ import Header from "../auth/header"
 import { useTwoFactorVerify } from "@/hooks/useTwoFactor"
 import { toast } from "../ui/toast"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 
 const TwoFactorVerificationForm = () => {
     const router = useRouter()
+    const t = useTranslations("translation")
     const { mutateAsync: verifyTwoFactor, isPending: isVerifying } = useTwoFactorVerify();
 
     const { register, handleSubmit, formState: { errors } } = useForm<Verification>({
@@ -28,7 +30,7 @@ const TwoFactorVerificationForm = () => {
                     localStorage.removeItem("2FAtoken")
                     localStorage.setItem("token", data.data.token)
                     toast({
-                        title: "Login Successfully",
+                        title: t("loginSuccessfully"),
                         variant: "default",
                     })
                     router.replace("/")
@@ -40,18 +42,18 @@ const TwoFactorVerificationForm = () => {
     return (
         <>
             <div className={`bg-white rounded-md shadow-2xl px-4 py-8 sm:py-10 sm:px-6 w-full lg:w-[300px]`}>
-                <Header title="2FA Verification" description="Enter OTP to verify your account" />
+                <Header title={t("twoFactorVerification")} description={t("enterOtpToVerifyAccount")} />
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                     <Input
-                        label="Enter OTP"
+                        label={t("enterOtp")}
                         type="number"
                         placeholder="643512"
                         register={register("otp")}
                         error={errors.otp?.message}
                     />
 
-                    <Button text="Verify Account" isPending={isVerifying} />
+                    <Button text={t("verifyAccount")} isPending={isVerifying} />
                 </form>
             </div>
         </>

@@ -71,7 +71,8 @@ const NotificationContent = (props: React.HTMLAttributes<HTMLDivElement>) => {
 
 export default function ProfileDropdown() {
   const { data: user = {}, isLoading } = useUser();
-    const { data: termsAndConditionsData } = useGetBusinessSettings("termsAndConditions");
+  const t = useTranslations("translation");
+  const { data: termsAndConditionsData } = useGetBusinessSettings("termsAndConditions");
   const { mutate } = useMarkAllRead();
 
   const { data: unreadData } = useGetUnreadCount();
@@ -163,14 +164,14 @@ export default function ProfileDropdown() {
           <Link
             key={index}
             href={
-              item.label === "Terms & Conditions"
+              item.key === "termsAndConditions"
                 ? `${process.env.NEXT_PUBLIC_API_BASE_URL}${termsAndConditionsData?.pageSettings?.fileUrl}`
                 : item.href
             }
-            target={item.label === "Terms & Conditions" ? "_blank" : undefined}
+            target={item.key === "termsAndConditions" ? "_blank" : undefined}
             className="block px-4 py-2 font-light text-sm text-black hover:bg-gray-50 hover:text-gray-900"
           >
-            {item.label}
+            {t(item.key)}
           </Link>
         ))}
         <LogoutButton />
