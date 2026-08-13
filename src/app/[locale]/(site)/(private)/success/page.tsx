@@ -2,8 +2,11 @@
 
 import Link from 'next/link'
 import { CheckCircle } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 const SuccessContent = () => {
+    const t = useTranslations("translation")
+
     return (
         <div className="min-h-[calc(100vh-66px)] flex items-center justify-center p-4">
             <div className="w-full max-w-md bg-white rounded-2xl shadow-xl border py-12 px-7 text-center">
@@ -18,12 +21,12 @@ const SuccessContent = () => {
 
                 {/* Title */}
                 <h1 className="text-2xl font-semibold text-gray-900 mb-1">
-                    Payment Successful!
+                    {t("paymentSuccessful")}
                 </h1>
 
                 {/* Description */}
                 <p className="text-gray-600 mb-8 text-base leading-relaxed">
-                    Your wallet has been successfully topped up. You can check your new balance in your wallet."
+                    {t("walletToppedUpSuccessfully")}
                 </p>
 
                 {/* CTA Button */}
@@ -31,7 +34,7 @@ const SuccessContent = () => {
                     href={'/wallet'}
                     className="inline-flex items-center justify-center w-full py-3 text-white bg-header rounded-full hover:bg-aqua transition-all duration-200 font-medium text-base shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                 >
-                    Go to Wallet
+                    {t("goToWallet")}
                 </Link>
             </div>
         </div>
