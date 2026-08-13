@@ -11,8 +11,10 @@ import Link from 'next/link'
 import { Notification } from '@/types/notification'
 import { getNotificationLink } from '@/utils/getNotificationLink'
 import Pagination from "@/components/ui/pagination"
+import { useTranslations } from 'next-intl'
 
 const Notifications = () => {
+    const t = useTranslations("translation")
     const [currentPage, setCurrentPage] = useState(1)
     const limit = 10
 
@@ -32,7 +34,7 @@ const Notifications = () => {
 
     return (
         <div className="min-h-screen">
-            <Header title="Notifications" />
+            <Header title={t("notifications")} />
 
             {isLoading ? (
                 <div className="max-w-2xl mx-auto p-6 space-y-4">
@@ -104,9 +106,9 @@ const Notifications = () => {
                                     <BellOff className="w-8 h-8 text-slate-400" />
                                 </div>
                                 <div className="space-y-1">
-                                    <h2 className="text-lg font-semibold text-slate-900">All caught up!</h2>
+                                    <h2 className="text-lg font-semibold text-slate-900">{t("allCaughtUp")}</h2>
                                     <p className="text-sm text-slate-500 max-w-[200px]">
-                                        You don't have any notifications right now.
+                                        {t("noNotificationsRightNow")}
                                     </p>
                                 </div>
                             </div>

@@ -20,12 +20,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { useTranslations } from "next-intl"
 
 const BookingDetails = () => {
   const [isDamagedReportOpen, setIsDamagedReportOpen] = useState(false)
   const params = useParams()
   const category_id = params?.category_id as string
   const id = params?.id as string
+  const t = useTranslations("translation")
 
   const { data, isLoading } = useGetBookingId(id);
 
@@ -66,7 +68,7 @@ const BookingDetails = () => {
     <div className="space-y-[25px]">
       <Header
         status={data?.status}
-        title="Booking Details"
+        title={t("bookingDetails")}
         isBookingLoading={isLoading}
       />
 
@@ -95,33 +97,33 @@ const BookingDetails = () => {
 
               {showReturnOtp && (
                 <div>
-                  <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-[12px]">Return OTP</h2>
+                  <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-[12px]">{t("returnOtp")}</h2>
                   <div className="inline-flex items-center px-5 py-2.5 rounded-lg border border-dashed border-aqua/40 bg-aqua/5">
                     <span className="text-2xl font-bold text-aqua tracking-[0.4em]">{data.returnOtp}</span>
                   </div>
                   <p className="text-gray-400 text-xs sm:text-sm mt-2">
                     {isEarlyReturn
-                      ? "Hand the item back and share this code with the host. Your security deposit is released after they confirm."
-                      : "Share this code with the host to confirm the return."}
+                      ? t("earlyReturnOtpHelp")
+                      : t("returnOtpHelp")}
                   </p>
                 </div>
               )}
 
               {showDepositOnHold && (
                 <div>
-                  <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-[12px]">Security Deposit</h2>
+                  <h2 className="text-lg md:text-xl font-semibold text-gray-800 mb-[12px]">{t("securityDeposit")}</h2>
                   <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 flex gap-3">
                     <Clock className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
                     <div className="space-y-1">
                       <p className="text-sm font-semibold text-amber-800">
-                        ${securityDeposit.toFixed(2)} on hold
+                        ${securityDeposit.toFixed(2)} {t("onHold")}
                       </p>
                       <p className="text-xs text-amber-700 leading-relaxed">
                         {!isReturnConfirmed
-                          ? "Return the item and share your Return OTP with the host. The dispute window starts once they confirm, and the deposit is released after it closes."
+                          ? t("depositHoldBeforeReturn")
                           : disputeWindowEndsAt
-                            ? `Returned automatically after ${disputeWindowEndsAt.toLocaleDateString()}, once the damage dispute window closes and no report has been raised.`
-                            : "Returned automatically once the damage dispute window closes and no report has been raised."}
+                            ? t("depositReturnedAfterDate", { date: disputeWindowEndsAt.toLocaleDateString() })
+                            : t("depositReturnedAfterWindow")}
                       </p>
                     </div>
                   </div>
@@ -136,7 +138,7 @@ const BookingDetails = () => {
                     className="w-auto px-6"
                     onClick={() => setIsDamagedReportOpen(true)}
                   >
-                    Damage Report
+                    {t("damageReport")}
                   </Button>
                 </div>
               )}
@@ -164,25 +166,25 @@ const BookingDetails = () => {
           <Dialog open={isDamagedReportOpen} onOpenChange={setIsDamagedReportOpen}>
             <DialogContent className="sm:max-w-lg">
               <DialogHeader>
-                <DialogTitle>Damage Report</DialogTitle>
+                <DialogTitle>{t("damageReport")}</DialogTitle>
               </DialogHeader>
 
               <div className="space-y-4 py-2">
                 <div className="grid gap-3 text-sm">
                   <div className="flex items-start justify-between gap-4 border-b pb-3">
-                    <span className="text-gray-500 font-medium">Issue Type</span>
-                    <span className="text-right font-semibold text-gray-900">{damagedReport?.issueType || "N/A"}</span>
+                    <span className="text-gray-500 font-medium">{t("issueType")}</span>
+                    <span className="text-right font-semibold text-gray-900">{damagedReport?.issueType || t("notAvailable")}</span>
                   </div>
 
                   <div className="flex items-start justify-between gap-4 border-b pb-3">
-                    <span className="text-gray-500 font-medium">Status</span>
+                    <span className="text-gray-500 font-medium">{t("status")}</span>
                     <span className="text-right font-semibold capitalize text-aqua">
-                      {damagedReport?.status?.replace(/_/g, " ") || "N/A"}
+                      {damagedReport?.status?.replace(/_/g, " ") || t("notAvailable")}
                     </span>
                   </div>
 
                   <div className="flex items-start justify-between gap-4 border-b pb-3">
-                    <span className="text-gray-500 font-medium">Reported Charges</span>
+                    <span className="text-gray-500 font-medium">{t("reportedCharges")}</span>
                     <span className="text-right font-semibold text-gray-900">
                       ${Number(damagedReport?.damagedCharges || 0).toFixed(2)}
                     </span>
@@ -190,7 +192,7 @@ const BookingDetails = () => {
 
                   {damagedReport?.approvedAmount !== undefined && (
                     <div className="flex items-start justify-between gap-4 border-b pb-3">
-                      <span className="text-gray-500 font-medium">Approved Amount</span>
+                      <span className="text-gray-500 font-medium">{t("approvedAmount")}</span>
                       <span className="text-right font-semibold text-gray-900">
                         ${Number(damagedReport.approvedAmount || 0).toFixed(2)}
                       </span>
@@ -198,20 +200,20 @@ const BookingDetails = () => {
                   )}
 
                   <div className="space-y-1 border-b pb-3">
-                    <span className="text-gray-500 font-medium">Report Text</span>
-                    <p className="text-gray-800">{damagedReport?.rentalText || "N/A"}</p>
+                    <span className="text-gray-500 font-medium">{t("reportText")}</span>
+                    <p className="text-gray-800">{damagedReport?.rentalText || t("notAvailable")}</p>
                   </div>
 
                   {damagedReport?.adminNote && (
                     <div className="space-y-1 border-b pb-3">
-                      <span className="text-gray-500 font-medium">Admin Note</span>
+                      <span className="text-gray-500 font-medium">{t("adminNote")}</span>
                       <p className="text-gray-800">{damagedReport.adminNote}</p>
                     </div>
                   )}
 
                   {damagedReport?.attachments?.length > 0 && (
                     <div className="space-y-2">
-                      <span className="text-gray-500 font-medium">Attachments</span>
+                      <span className="text-gray-500 font-medium">{t("attachments")}</span>
                       <div className="flex flex-wrap gap-2">
                         {damagedReport.attachments.map((attachment: string, index: number) => (
                           <a
@@ -221,7 +223,7 @@ const BookingDetails = () => {
                             rel="noreferrer"
                             className="rounded-md border border-gray-200 px-3 py-1.5 text-xs font-medium text-aqua hover:bg-aqua/5"
                           >
-                            Attachment {index + 1}
+                            {t("attachment")} {index + 1}
                           </a>
                         ))}
                       </div>

@@ -16,8 +16,10 @@ import GetInTouch from "@/components/getInTouch"
 import ArticleDetailDialog from "@/components/dialogs/articleDetails"
 import SkeletonLoader from "@/components/common/skeleton-loader"
 import { format } from "date-fns"
+import { useTranslations } from "next-intl"
 
 export default function HelpCenter() {
+    const t = useTranslations("translation")
     const [page, setPage] = useState(1)
     const [selectedArticleId, setSelectedArticleId] = useState<string | null>(null)
     const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -61,15 +63,15 @@ export default function HelpCenter() {
                 <div className="relative bg-header overflow-hidden flex justify-between rounded-md max-w-7xl mx-auto shrink-0">
                     <div className="relative flex items-center mx-5 md:mx-10 py-6 lg:py-6 xl:py-8">
                         <div className="max-w-2xl">
-                            <h2 className="text-xl md:text-2xl font-semibold text-white">Help Center</h2>
+                            <h2 className="text-xl md:text-2xl font-semibold text-white">{t("helpCenter")}</h2>
                             <p className="text-emerald-100 mb-4 text-sm md:text-base">
-                                Find answers to your questions and explore our latest articles and updates.
+                                {t("helpCenterIntro")}
                             </p>
 
                             <div className="flex items-center gap-2 w-full max-w-md">
                                 <div className="relative w-full">
                                     <Input
-                                        placeholder="Search articles..."
+                                        placeholder={t("searchArticles")}
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
                                         onKeyDown={handleKeyDown}
@@ -115,8 +117,8 @@ export default function HelpCenter() {
                             ) : articlesData?.articles?.length === 0 ? (
                                 <div className="col-span-full text-center pt-24 text-gray-500">
                                     <Search className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                                    <p className="text-lg font-medium">No articles found</p>
-                                    <p className="text-sm">Try adjusting your search terms.</p>
+                                    <p className="text-lg font-medium">{t("noArticlesFound")}</p>
+                                    <p className="text-sm">{t("tryAdjustingSearchTerms")}</p>
                                 </div>
                             ) : (
                                 articlesData?.articles.map((article: Article) => (
@@ -161,7 +163,7 @@ export default function HelpCenter() {
                                                 }}
                                                 className="text-header hover:text-emerald-600 font-medium shadow-none p-0 h-auto hover:bg-transparent flex items-center bg-transparent"
                                             >
-                                                <span className="mb-0.5 -ml-2">Learn more</span>
+                                                <span className="mb-0.5 -ml-2">{t("learnMore")}</span>
                                                 <ChevronRight className="w-4 h-4 text-aqua" />
                                             </Button>
                                         </CardContent>
