@@ -1,11 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
 import { getFavourite, toggleFavourite } from "@/services/favourite";
 import { toast } from "@/components/ui/toast";
-
-interface ErrorResponse {
-    message: string;
-}
+import { useTranslations } from "next-intl";
+import { getApiErrorMessage } from "@/utils/getApiErrorMessage";
 
 export const useGetFavourite = () => {
     return useQuery({
@@ -15,6 +12,7 @@ export const useGetFavourite = () => {
 };
 
 export const useToggleFavourite = () => {
+    const t = useTranslations("translation");
     const queryClient = useQueryClient();
 
     return useMutation({
@@ -26,10 +24,9 @@ export const useToggleFavourite = () => {
             });
         },
         onError: (error) => {
-            const err = error as AxiosError<ErrorResponse>;
             toast({
-                title: "Error",
-                description: err.response?.data?.message || "Failed to update favourites.",
+                title: t("error"),
+                description: getApiErrorMessage(error, t("failedToUpdateFavourites")),
                 variant: "destructive",
             });
         },
