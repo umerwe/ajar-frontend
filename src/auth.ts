@@ -17,7 +17,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/oauth/google/nextauth`
           console.log("Backend URL:", url)
 
-          const response = await axios.post(url, { idToken: account.id_token })
+          const response = await axios.post(
+            url,
+            { idToken: account.id_token },
+            { headers: { language: "en" } }
+          )
           account.backendToken = response.data.data.token
         } catch (err: any) {
           console.error("=== SIGN IN ERROR ===")
