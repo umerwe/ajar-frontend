@@ -1,12 +1,25 @@
-import axios from "axios";
+import axios, { AxiosHeaders } from "axios";
 import { baseURL } from "@/config/constants";
 
 const api = axios.create({ baseURL });
 
+const getCurrentLocale = () => {
+  if (typeof window === "undefined") return "en";
+
+  const locale = window.location.pathname.split("/").filter(Boolean)[0];
+  return locale === "ar" ? "ar" : "en";
+};
+
 api.interceptors.request.use((config) => {
+  const language = getCurrentLocale();
+
+  api.defaults.headers.common["language"] = language;
+  config.headers = AxiosHeaders.from(config.headers);
+  config.headers.set("language", language);
+
   const token = localStorage.getItem("token");
   if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+    config.headers.set("Authorization", `Bearer ${token}`);
   }
   return config;
 });
