@@ -1,9 +1,11 @@
 import { toast } from "@/components/ui/toast";
 import { sendReview } from "@/services/review";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
+import { useTranslations } from "next-intl";
+import { getApiErrorMessage } from "@/utils/getApiErrorMessage";
 
 export function useSendReview() {
+  const t = useTranslations("translation");
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: sendReview,
@@ -14,16 +16,15 @@ export function useSendReview() {
       queryClient.invalidateQueries({ queryKey: ["marketplacelisting"] });
 
       toast({
-        title: "Review Submitted",
-        description: "Thank you for your feedback!",
+        title: t("reviewSubmitted"),
+        description: t("thankYouForFeedback"),
         variant: "default",
       });
     },
     onError: (error) => {
-      const err = error as AxiosError<ErrorResponse>;
       toast({
-        title: "Review Submission Failed",
-        description: err.response?.data?.message || "Something went wrong while submitting your review.",
+        title: t("reviewSubmissionFailed"),
+        description: getApiErrorMessage(error, t("reviewSubmissionError")),
         variant: "destructive",
       });
     },
