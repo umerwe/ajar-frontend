@@ -1,16 +1,17 @@
 import { useMutation } from "@tanstack/react-query";
 import { verifyUserByEmail, resendVerificationByEmail } from "@/services/verification";
 import { toast } from "@/components/ui/toast";
-import { AxiosError } from "axios";
+import { useTranslations } from "next-intl";
+import { getApiErrorMessage } from "@/utils/getApiErrorMessage";
 
 export const useVerificationByEmail = () => {
+    const t = useTranslations("translation");
     const mutation = useMutation({
         mutationFn: verifyUserByEmail,
         onError: (error) => {
-            const err = error as AxiosError<ErrorResponse>;
             toast({
-                title: "Email Verification Failed",
-                description: err.response?.data?.message || "Please try again.",
+                title: t("emailVerificationFailed"),
+                description: getApiErrorMessage(error, t("pleaseTryAgain")),
                 variant: "destructive",
             });
         },
@@ -20,19 +21,19 @@ export const useVerificationByEmail = () => {
 };
 
 export const useResendVerificationByEmail = () => {
+    const t = useTranslations("translation");
     const mutation = useMutation({
         mutationFn: resendVerificationByEmail,
         onSuccess: () => {
             toast({
-                title: "Otp Resend Successfully",
+                title: t("otpResentSuccessfully"),
                 variant: "default",
             });
         },
         onError: (error) => {
-            const err = error as AxiosError<ErrorResponse>;
             toast({
-                title: "Otp Resend Failed",
-                description: err.response?.data?.message || "Please try again.",
+                title: t("otpResendFailed"),
+                description: getApiErrorMessage(error, t("pleaseTryAgain")),
                 variant: "destructive",
             });
         },
