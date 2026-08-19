@@ -1,16 +1,17 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
 import { disableTwoFactor, enableTwoFactor, startTwoFactor, verifyTwoFactor } from "@/services/twoFactor";
 import { toast } from "@/components/ui/toast";
+import { useTranslations } from "next-intl";
+import { getApiErrorMessage } from "@/utils/getApiErrorMessage";
 
 export const useEnableTwoFactor = () => {
+    const t = useTranslations("translation");
     const mutation = useMutation({
         mutationFn: enableTwoFactor,
         onError: (error) => {
-            const err = error as AxiosError<ErrorResponse>;
             toast({
-                title: "Two Factor Authentication Failed",
-                description: err.response?.data?.message || "Something went wrong.",
+                title: t("twoFactorAuthenticationFailed"),
+                description: getApiErrorMessage(error, t("somethingWentWrong")),
                 variant: "destructive",
             });
         },
@@ -19,19 +20,19 @@ export const useEnableTwoFactor = () => {
 };
 
 export const useTwoFactorStart = () => {
+    const t = useTranslations("translation");
     const mutation = useMutation({
         mutationFn: startTwoFactor,
         onSuccess: () => {
             toast({
-                title: "Verification Code Sent to your Email",
+                title: t("verificationCodeSentToEmail"),
                 variant: "default",
             });
         },
         onError: (error) => {
-            const err = error as AxiosError<ErrorResponse>;
             toast({
-                title: "Two Factor Authentication Failed",
-                description: err.response?.data?.message || "Something went wrong.",
+                title: t("twoFactorAuthenticationFailed"),
+                description: getApiErrorMessage(error, t("somethingWentWrong")),
                 variant: "destructive",
             });
         },
@@ -40,6 +41,7 @@ export const useTwoFactorStart = () => {
 };
 
 export const useTwoFactorVerify = () => {
+    const t = useTranslations("translation");
     const queryClient = useQueryClient();
     const mutation = useMutation({
         mutationFn: verifyTwoFactor,
@@ -47,10 +49,9 @@ export const useTwoFactorVerify = () => {
             queryClient.invalidateQueries({ queryKey: ["user"] });
         },
         onError: (error) => {
-            const err = error as AxiosError<ErrorResponse>;
             toast({
-                title: "Two Factor Authentication Failed",
-                description: err.response?.data?.message || "Something went wrong.",
+                title: t("twoFactorAuthenticationFailed"),
+                description: getApiErrorMessage(error, t("somethingWentWrong")),
                 variant: "destructive",
             });
         },
@@ -59,21 +60,21 @@ export const useTwoFactorVerify = () => {
 };
 
 export const useDisableTwoFactor = () => {
+    const t = useTranslations("translation");
     const queryClient = useQueryClient();
     const mutation = useMutation({
         mutationFn: disableTwoFactor,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["user"] });
             toast({
-                title: "Two Factor Authentication Disabled",
+                title: t("twoFactorAuthenticationDisabled"),
                 variant: "default",
             });
         },
         onError: (error) => {
-            const err = error as AxiosError<ErrorResponse>;
             toast({
-                title: "Two Factor Authentication Failed",
-                description: err.response?.data?.message || "Something went wrong.",
+                title: t("twoFactorAuthenticationFailed"),
+                description: getApiErrorMessage(error, t("somethingWentWrong")),
                 variant: "destructive",
             });
         },
