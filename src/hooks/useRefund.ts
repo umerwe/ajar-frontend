@@ -1,6 +1,8 @@
 import { toast } from "@/components/ui/toast";
 import { getRefundPreview, sendRefundRequest, getRefundById } from "@/services/refund";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
+import { getApiErrorMessage } from "@/utils/getApiErrorMessage";
 
 export function useGetRefundPreview(bookingId: string) {
     return useQuery({
@@ -11,6 +13,7 @@ export function useGetRefundPreview(bookingId: string) {
 }
 
 export function useSendRefundRequest() {
+    const t = useTranslations("translation")
     const queryClient = useQueryClient()
     return useMutation({
         mutationFn: sendRefundRequest,
@@ -18,15 +21,14 @@ export function useSendRefundRequest() {
              queryClient.invalidateQueries({ queryKey: ["refund-preview"] });
              queryClient.invalidateQueries({ queryKey: ["bookings"] });
             toast({
-                title: "Success",
-                description: "Your Refund Request has been successfully submitted.",
+                title: t("success"),
+                description: t("refundRequestSubmittedSuccessfully"),
             });
         },
-        onError: (error: any) => {
-            const message = error.response?.data?.message || "Unable to submit refund request.";
+        onError: (error) => {
             toast({
-                title: "Submission Failed",
-                description: message,
+                title: t("submissionFailed"),
+                description: getApiErrorMessage(error, t("unableToSubmitRefundRequest")),
                 variant: "destructive",
             });
         },
