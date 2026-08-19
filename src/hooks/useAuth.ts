@@ -2,9 +2,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { changePassword, forgotPassword, getUser, loginUser, resetPassword, signUpUser, updateUser } from "@/services/auth";
 import { toast } from "@/components/ui/toast";
-import { AxiosError } from "axios";
 import { Register } from "@/validations/auth";
 import { LoginSuccessResponse } from "@/types/auth";
+import { useTranslations } from "next-intl";
+import { getApiErrorMessage } from "@/utils/getApiErrorMessage";
 
 export const useUser = () => {
     return useQuery({
@@ -14,6 +15,7 @@ export const useUser = () => {
 }
 
 export const useUpdateUser = () => {
+    const t = useTranslations("translation");
     const queryClient = useQueryClient()
 
     return useMutation({
@@ -22,10 +24,9 @@ export const useUpdateUser = () => {
             queryClient.invalidateQueries({ queryKey: ["user"] });
         },
         onError: (error) => {
-            const err = error as AxiosError<ErrorResponse>;
             toast({
-                title: "Update Failed",
-                description: err.response?.data?.message || "Unable to update user. Please try again.",
+                title: t("updateFailed"),
+                description: getApiErrorMessage(error, t("unableToUpdateUser")),
                 variant: "destructive",
             });
         },
@@ -33,22 +34,22 @@ export const useUpdateUser = () => {
 }
 
 export const useSignup = () => {
+    const t = useTranslations("translation");
     const router = useRouter();
 
     const mutation = useMutation({
         mutationFn: signUpUser,
         onSuccess: (data: Register) => {
             toast({
-                description: "Account created successfully! Please check your email for verification."
+                description: t("accountCreatedCheckEmail")
             });
             localStorage.setItem("email", data.email);
             router.push("/auth/verification");
         },
         onError: (error) => {
-            const err = error as AxiosError<ErrorResponse>;
             toast({
-                title: "Registration Failed",
-                description: err.response?.data?.message || "Something went wrong.",
+                title: t("registrationFailed"),
+                description: getApiErrorMessage(error, t("somethingWentWrong")),
                 variant: "destructive",
             });
         },
@@ -57,6 +58,7 @@ export const useSignup = () => {
 };
 
 export const useLogin = () => {
+    const t = useTranslations("translation");
     const router = useRouter();
 
     const mutation = useMutation({
@@ -64,7 +66,7 @@ export const useLogin = () => {
         onSuccess: (data: LoginSuccessResponse) => {
             if (data?.user?.otp?.isVerified === false) {
                 toast({
-                    title: `4 Digit Code Sent to Email`,
+                    title: t("fourDigitCodeSentToEmail"),
                     variant: "default",
                 })
                 localStorage.setItem("email", data?.user?.email);
@@ -72,7 +74,7 @@ export const useLogin = () => {
             }
             else if (data?.require2FA) {
                 toast({
-                    title: `6 Digit Code Sent to Email`,
+                    title: t("sixDigitCodeSentToEmail"),
                     variant: "default",
                 })
                 localStorage.setItem("2FAtoken", data.tempToken!);
@@ -81,16 +83,15 @@ export const useLogin = () => {
             else {
                 localStorage.setItem("token", data.token!);
                 toast({
-                    title: "Login Successfully"
+                    title: t("loginSuccessfully")
                 });
                 router.push("/");
             }
         },
         onError: (error) => {
-            const err = error as AxiosError<ErrorResponse>;
             toast({
-                title: "Login Failed",
-                description: err.response?.data?.message || "Please try again.",
+                title: t("loginFailed"),
+                description: getApiErrorMessage(error, t("pleaseTryAgain")),
                 variant: "destructive",
             });
         },
@@ -100,21 +101,21 @@ export const useLogin = () => {
 };
 
 export const useForgotPassword = () => {
+    const t = useTranslations("translation");
     const router = useRouter();
 
     const mutation = useMutation({
         mutationFn: forgotPassword,
         onSuccess: () => {
             toast({
-                description: "A verification code has been sent to your email."
+                description: t("verificationCodeSentToEmail")
             });
             router.push("/auth/forgot-password/verification");
         },
         onError: (error) => {
-            const err = error as AxiosError<ErrorResponse>;
             toast({
-                title: "Registration Failed",
-                description: err.response?.data?.message || "Something went wrong.",
+                title: t("registrationFailed"),
+                description: getApiErrorMessage(error, t("somethingWentWrong")),
                 variant: "destructive",
             });
         },
@@ -123,13 +124,13 @@ export const useForgotPassword = () => {
 };
 
 export const useResetPassword = () => {
+    const t = useTranslations("translation");
     const mutation = useMutation({
         mutationFn: resetPassword,
         onError: (error) => {
-            const err = error as AxiosError<ErrorResponse>;
             toast({
-                title: "Registration Failed",
-                description: err.response?.data?.message || "Something went wrong.",
+                title: t("registrationFailed"),
+                description: getApiErrorMessage(error, t("somethingWentWrong")),
                 variant: "destructive",
             });
         },
@@ -138,18 +139,18 @@ export const useResetPassword = () => {
 };
 
 export const useChangePassword = () => {
+    const t = useTranslations("translation");
     const mutation = useMutation({
         mutationFn: changePassword,
         onSuccess: () => {
             toast({
-                title: "Password Changed Successfully"
+                title: t("passwordChangedSuccessfully")
             });
         },
         onError: (error) => {
-            const err = error as AxiosError<ErrorResponse>;
             toast({
-                title: "Password Change Failed",
-                description: err.response?.data?.message || "Something went wrong.",
+                title: t("passwordChangeFailed"),
+                description: getApiErrorMessage(error, t("somethingWentWrong")),
                 variant: "destructive",
             });
         },
